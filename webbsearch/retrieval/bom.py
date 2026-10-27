@@ -591,8 +591,8 @@ class Bom:
                 out["needs_confirm"] = False
                 cards = []
             elif cards and fit.get("head") and not fit.get("good"):
-                miss = [m for m in fit["misses"] if m != fit.get("head")]
-                out["fit_note"] = (f"Nearest match: no {' '.join(m for m in miss if m != '45')} {fit['head_label']} found" if miss
+                miss = [m for m in fit.get("misses", []) if m != fit.get("head")]
+                out["fit_note"] = (f"Nearest match: no {' '.join(m for m in miss if m != '45')} {fit.get('head_label', '')} found" if miss and fit.get("head_label")
                                    else "Nearest match: check it against the line")
                 weak = True
             if cards:
