@@ -2,7 +2,7 @@
    settings and written to one Excel workbook (flexbulk/report.py): how often the item staff confirmed comes first,
    what wasn't found, which brands aren't carried, what changed. Loaded after admin.js. */
 "use strict";
-const RPT = { source: "tests", days: 90, branch: "", perCust: false, file: null };
+const RPT = { hide: false, source: "tests", days: 90, branch: "", perCust: false, file: null };
 PAGES.reports = async (el) => {
   el.innerHTML = `<div class="ph"><div><h1>Match reports</h1><p>Match a set of lines again with today's settings and get one Excel workbook: every line with its top matches and their reasons, where the item it should have matched ranked, what wasn't found, which brands aren't on the list, and what changed since staff saw it. Run one, change a setting, run it again: the Summary sheet compares the two. The workbook is also the thing to hand to Claude when working on the matching.</p></div></div>
     <div class="grid g12"><div>
@@ -19,6 +19,7 @@ PAGES.reports = async (el) => {
           <label class="fl" id="rpFileL" ${RPT.source === "file" ? "" : "hidden"}>Test file<input type="file" class="in" id="rpFile" accept=".csv,.txt,.tsv,.xlsx,.parquet" style="height:auto;padding:5px"></label>
           <label class="fl">Pickup branch<select class="in" id="rpBranch"><option value="">Default</option>${A.branches.map((b) => `<option value="${esc(b.branch_id)}" ${RPT.branch === b.branch_id ? "selected" : ""}>${esc(b.name)}</option>`).join("")}</select></label>
           <label class="row small" style="gap:6px"><input type="checkbox" id="rpCust" ${RPT.perCust ? "checked" : ""}>Count each customer's own picks</label>
+          <label class="row small" style="gap:6px" title="Lines whose manufacturer and part # find their item become test cases: the part # is taken off and the description has to find the item"><input type="checkbox" id="rpHide" ${RPT.hide ? "checked" : ""}>Hide part #s (score the descriptions)</label>
           <button class="btn pri" data-a="rprun">Run report</button></div>
         <div id="rpJob" class="mt small"></div>
         <div class="pvnote"><b>Test cases</b> are orders saved in the staff app with <b>Test case</b> ticked: their documents are read again (so reading is checked too) and each confirmed item is the right answer. <b>Bundle</b> downloads the workbook with the matching code, the settings and the documents, everything needed to work on the matching from the report. A test file needs a column of lines (<b>Line</b>, Requested or Description) and, to be scored, the item # each should match (<b>Expected</b>). Quantity and unit are optional. <span class="link" data-a="rptemplate">Download a template</span>. Saved orders score every confirmed line against the item staff confirmed; lines matched in the app score the ones staff made a choice on.</div></div>
@@ -29,6 +30,7 @@ PAGES.reports = async (el) => {
   $("#rpDays").onchange = (e) => { RPT.days = +e.target.value; };
   $("#rpBranch").onchange = (e) => { RPT.branch = e.target.value; };
   $("#rpCust").onchange = (e) => { RPT.perCust = e.target.checked; };
+  $("#rpHide").onchange = (e) => { RPT.hide = e.target.checked; };
   await rpLoad();
 };
 async function rpLoad() {
@@ -49,7 +51,7 @@ const rpB64 = (f) => new Promise((ok, bad) => { const r = new FileReader(); r.on
 document.addEventListener("click", async (e) => {
   const t = e.target.closest("[data-a]"); if (!t) return;
   if (t.dataset.a === "rprun") {
-    const body = { source: RPT.source, days: RPT.days, branch: RPT.branch, per_customer: RPT.perCust };
+    const body = { source: RPT.source, days: RPT.days, branch: RPT.branch, per_customer: RPT.perCust, hide: RPT.hide };
     if (RPT.source === "documents") {
       const fs = [...$("#rpDocs").files]; if (!fs.length) { toast("Choose one or more documents", true); return; }
       if (fs.some((f) => f.size > 15e6)) { toast("Each document must be under 15 MB", true); return; }

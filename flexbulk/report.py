@@ -127,6 +127,7 @@ def from_file(name: str, data: bytes, limit: int = 5000) -> list[dict]:
     qty = pick(df, ["Qty", "Quantity", "QTY"])
     uom = pick(df, ["UOM", "U/M", "Unit"])
     brand = pick(df, ["Manufacturer", "Brand", "Mfr"])
+    partc = pick(df, ["Part #", "Mfr Part #", "Manufacturer Part Number", "Part", "MPN"])
     cases = []
     for k, r in df.head(limit).iterrows():
         t = str(r[line]).strip()
@@ -134,7 +135,8 @@ def from_file(name: str, data: bytes, limit: int = 5000) -> list[dict]:
             continue
         q = re.sub(r"[^\d.]", "", str(r[qty])) if qty else ""
         cases.append({"src": f"{name} row {k + 2}", "customer": "", "text": t, "desc": "", "qty": int(float(q)) if q else 1,
-                      "uom": str(r[uom]).strip() if uom else "", "brand": str(r[brand]).strip() if brand else "", "part": "",
+                      "uom": str(r[uom]).strip() if uom else "", "brand": str(r[brand]).strip() if brand else "",
+                      "part": str(r[partc]).strip() if partc else "",
                       "from_ocr": False, "expected": (str(r[exp]).strip() or None) if exp else None, "how": "",
                       "then_status": "", "then_top": None, "state": ""})
     return cases
@@ -257,6 +259,69 @@ def from_documents(docs: list[tuple[str, bytes]], reading: list) -> list[dict]:
     for name, data in docs:
         cases += doc_cases(name, read_doc(name, data), reading, name)
     return cases
+
+
+# ------------------------------------------------------------------ answers from part numbers, and what they teach
+def anchored(cases: list[dict], e) -> tuple[list[tuple], list[tuple], Counter]:
+    """Lines whose manufacturer and part # find their item: [(case, item index, part)], the (description, item words)
+    pairs the shorthand learns from, and (line brand, item brand) pairs where the part # is another brand's."""
+    from flexbulk.brands import get as bget
+    from webbsearch.retrieval.analyzer import compact_id
+    from webbsearch.retrieval.resolve import part_tokens
+    bn, cat = bget(e), e.catalog
+    out, pairs, other = [], [], Counter()
+    for c in cases:
+        part = (c.get("part") or "").strip()
+        if not part:
+            toks = [t for t in part_tokens(c.get("text") or "") if " " not in t]
+            part = toks[0] if toks else ""
+        k = compact_id(part) if part else ""
+        hits = cat.id_lookup(k) if len(k) >= 4 else []
+        if not hits:
+            continue
+        bset = bn.resolve(c.get("brand") or "")
+        same = [j for j in hits if str(cat.brand[j]) in bset] if bset else []
+        if not same:
+            if c.get("brand") and len(hits) == 1:
+                other[(c["brand"], str(cat.brand[hits[0]]))] += 1
+            continue
+        j = int(same[0])
+        words = str(cat.title[j]) + " " + " ".join(str(v) for v in cat.attrs(j).values())
+        pairs.append((c.get("desc") or c.get("text") or "", words))
+        out.append((c, j, part))
+    return out, pairs, other
+
+
+def hide_parts(cases: list[dict], e) -> list[dict]:
+    """Description-only test cases: the part # finds the answer, then is taken off the line."""
+    from webbsearch.retrieval.analyzer import compact_id
+    out = []
+    for c, j, part in anchored(cases, e)[0]:
+        k = compact_id(part)
+        desc = " ".join(w for w in (c.get("desc") or c.get("text") or "").split() if compact_id(w) != k and k not in compact_id(w))
+        if not desc.strip():
+            continue
+        out.append({**c, "text": desc, "desc": "", "part": "", "expected": str(e.catalog.sku[j]),
+                    "src": c["src"] + " · part # hidden"})
+    return out
+
+
+def learn(cases: list[dict], e) -> dict:
+    """Shorthand and brand names from the lines whose part # found their item."""
+    from flexbulk.brands import get as bget
+    from flexbulk.shorthand import get as sget
+    _, pairs, other = anchored(cases, e)
+    vocab = getattr(getattr(e.retriever, "b", None), "term_exists", None)
+
+    def known(w):
+        try:
+            return bool(vocab and vocab(w))
+        except Exception:  # noqa: BLE001
+            return False
+    got = sget().learn(pairs, known_words=known) if pairs else {"on": {}, "review": {}}
+    bget(e).suggest(other)
+    return {"pairs": len(pairs), "shorthand_on": got["on"], "shorthand_review": got["review"],
+            "brand_pairs": {f"{a} -> {b}": n for (a, b), n in other.most_common(30)}}
 
 
 # ------------------------------------------------------------------ matching them
@@ -429,6 +494,16 @@ def workbook(meta: dict, summary: dict, rows: list[dict], engine, reading: list 
         s.append([k, v, p, round(v - p, 4) if isinstance(v, (int, float)) and isinstance(p, (int, float)) else None])
     for k, v in (summary.get("reading") or {}).items():
         s.append([f"reading: {k}", v])
+    lr = meta.get("learned") or {}
+    if lr:
+        s.append([])
+        s.append(["Learned from this file", f"{lr.get('pairs', 0)} lines whose part # found their item"])
+        for a, w in (lr.get("shorthand_on") or {}).items():
+            s.append([f"shorthand (on): {a}", w])
+        for a, w in (lr.get("shorthand_review") or {}).items():
+            s.append([f"shorthand (to review): {a}", w])
+        for k, n in (lr.get("brand_pairs") or {}).items():
+            s.append([f"brand name? {k}", n])
     s.append([])
     s.append(["Status", "Lines"])
     for k, v in sorted(summary["status"].items(), key=lambda x: -x[1]):
@@ -521,7 +596,8 @@ def workbook(meta: dict, summary: dict, rows: list[dict], engine, reading: list 
 
 # ------------------------------------------------------------------ one report, start to end
 def make(source: str, days: int = 90, file_name: str | None = None, file_data: bytes | None = None, branch: str | None = None,
-         level: str | None = None, per_customer: bool = False, progress=None, documents: list | None = None) -> dict:
+         level: str | None = None, per_customer: bool = False, progress=None, documents: list | None = None,
+         hide: bool = False) -> dict:
     from webbsearch.api.server import engine
     e = engine()
     reading: list = []
@@ -545,9 +621,17 @@ def make(source: str, days: int = 90, file_name: str | None = None, file_data: b
         raise ValueError(f"source is one of {', '.join(SOURCES)}")
     if not cases:
         raise ValueError(f"no lines in {label}")
+    all_cases = cases
+    if hide:
+        cases = hide_parts(cases, e)
+        label += " · part #s hidden (descriptions scored)"
+        if not cases:
+            raise ValueError("no line has a manufacturer and a part # that finds its item, so there is nothing to score "
+                             "with the part # hidden")
     t0 = time.time()
     rows = run(cases, branch, level, per_customer, progress)
     summary = summarize(rows, e)
+    learned = learn(all_cases, e) if source in ("documents", "tests", "file") else None
     if reading:
         chk = [r for r in reading if r["check"]]
         summary["reading"] = {"lines_read": sum(1 for r in reading if r["read_as"].startswith("item")),
@@ -556,10 +640,10 @@ def make(source: str, days: int = 90, file_name: str | None = None, file_data: b
                               "checked": len(chk), "read_right": sum(1 for r in chk if r["check"] == "ok")}
     REPORTS.mkdir(parents=True, exist_ok=True)
     rid = time.strftime("R%y%m%d-%H%M-") + secrets.token_hex(2).upper()
-    prev = previous(source, file_name)
+    prev = previous(source, file_name, hide)
     meta = {"id": rid, "source": source, "source_label": label, "file": file_name, "days": days, "branch": branch,
             "level": level, "per_customer": per_customer, "at": time.strftime("%Y-%m-%d %H:%M"), "secs": round(time.time() - t0, 1),
-            "settings_version": e.merch.get().get("version"), "items": e.catalog.n,
+            "settings_version": e.merch.get().get("version"), "items": e.catalog.n, "hide": hide, "learned": learned,
             "previous": {k: prev["summary"].get(k) for k in ("lines", "with_expected", "top1", "top3", "in_options", "mrr",
                                                              "matched_rate", "weak_rate", "changed_since_shown", "ms_per_line")}
             | {"id": prev["meta"]["id"]} if prev else None}
@@ -578,14 +662,14 @@ def make(source: str, days: int = 90, file_name: str | None = None, file_data: b
     return {"meta": meta, "summary": {k: v for k, v in summary.items() if k not in ("not_found", "brands_not_carried", "by_category")}}
 
 
-def previous(source: str, file_name: str | None) -> dict | None:
+def previous(source: str, file_name: str | None, hide: bool = False) -> dict | None:
     best = None
     for f in sorted(REPORTS.glob("R*.json")) if REPORTS.exists() else []:
         try:
             d = json.loads(f.read_text())
         except ValueError:
             continue
-        if d["meta"]["source"] == source and (source != "file" or d["meta"].get("file") == file_name):
+        if d["meta"]["source"] == source and bool(d["meta"].get("hide")) == hide and (source != "file" or d["meta"].get("file") == file_name):
             best = d
     return best
 
@@ -622,13 +706,15 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description="Write a match report (Excel) from saved orders, the app's log or a test file")
     ap.add_argument("--source", choices=SOURCES, default="orders")
     ap.add_argument("--days", type=int, default=90)
-    ap.add_argument("--file")
+    ap.add_argument("--file", help="the test file, or (--source documents) one customer document")
     ap.add_argument("--branch")
     ap.add_argument("--level")
     ap.add_argument("--per-customer", action="store_true")
+    ap.add_argument("--hide", action="store_true", help="hide the part #s and score the descriptions")
     a = ap.parse_args(argv)
     data = Path(a.file).read_bytes() if a.file else None
-    r = make(a.source, a.days, Path(a.file).name if a.file else None, data, a.branch, a.level, a.per_customer,
+    docs = [(Path(a.file).name, data)] if a.source == "documents" and data else None
+    r = make(a.source, a.days, Path(a.file).name if a.file else None, data, a.branch, a.level, a.per_customer, hide=a.hide, documents=docs,
              progress=lambda d, n: print(f"  {d:,} of {n:,} lines", flush=True) if d % 500 == 0 or d == n else None)
     print(json.dumps(r["summary"], indent=1))
     print(f"report: {REPORTS / (r['meta']['id'] + '.xlsx')}")

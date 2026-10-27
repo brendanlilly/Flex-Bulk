@@ -510,6 +510,7 @@ class ReportBody(BaseModel):
     file_name: str | None = None
     file_b64: str | None = None
     files: list[dict] = []             # source "documents": customers' files [{name, b64}]
+    hide: bool = False                 # hide the part #s: score the description matching
 
 
 _REPORT_JOB: dict = {}
@@ -538,7 +539,8 @@ def report_start(request: Request, body: ReportBody):
         try:
             _REPORT_JOB["result"] = make(body.source, max(1, min(body.days, 3650)), body.file_name, data, body.branch or None,
                                          body.level or None, body.per_customer,
-                                         progress=lambda d, n: _REPORT_JOB.update(done=d, total=n), documents=docs)
+                                         progress=lambda d, n: _REPORT_JOB.update(done=d, total=n), documents=docs,
+                                         hide=body.hide)
         except Exception as ex:  # noqa: BLE001
             _REPORT_JOB["error"] = f"{type(ex).__name__}: {ex}" if not isinstance(ex, ValueError) else str(ex)
         finally:
@@ -577,3 +579,78 @@ def report_file(request: Request, rid: str):
         raise HTTPException(404, "no such report")
     return FileResponse(REPORTS / f"{rid}.xlsx", filename=f"flex-bulk-match-report-{rid}.xlsx",
                         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+
+
+# ------------------------------------------------------------------ brand names and shorthand (dashboard)
+class BrandNameBody(BaseModel):
+    name: str
+    brands: list[str] = []
+    brand: str = ""
+
+
+class ShorthandBody(BaseModel):
+    abbr: str
+    word: str = ""
+    action: str = "accept"            # accept | off
+
+
+def _names_changed():
+    if _bom is not None:
+        _bom._cache.clear()
+
+
+@app.get("/api/admin/names")
+def names(request: Request):
+    from flexbulk.brands import get as bget
+    from flexbulk.shorthand import get as sget
+    from webbsearch.api.admin import require
+    require(request)
+    return {"brands": bget(engine()).table(), "shorthand": sget().listing()}
+
+
+@app.post("/api/admin/names/brand")
+def names_brand_add(request: Request, body: BrandNameBody):
+    from flexbulk.brands import get as bget
+    from webbsearch.api.admin import require
+    require(request)
+    try:
+        t = bget(engine()).add(body.name, body.brands or [body.brand])
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+    _names_changed()
+    return t
+
+
+@app.post("/api/admin/names/brand/remove")
+def names_brand_remove(request: Request, body: BrandNameBody):
+    from flexbulk.brands import get as bget
+    from webbsearch.api.admin import require
+    require(request)
+    _names_changed()
+    return bget(engine()).remove(body.name)
+
+
+@app.post("/api/admin/names/brand/dismiss")
+def names_brand_dismiss(request: Request, body: BrandNameBody):
+    from flexbulk.brands import get as bget
+    from webbsearch.api.admin import require
+    require(request)
+    return bget(engine()).dismiss(body.name, body.brand)
+
+
+@app.post("/api/admin/names/shorthand")
+def names_shorthand(request: Request, body: ShorthandBody):
+    from flexbulk.shorthand import get as sget
+    from webbsearch.api.admin import require
+    require(request)
+    a = body.abbr.strip().lower()[:20]
+    if not re.fullmatch(r"[a-z][a-z.-]{0,19}", a):
+        raise HTTPException(422, "an abbreviation is letters")
+    if body.action == "off":
+        sget().switch_off(a)
+    else:
+        if not body.word.strip():
+            raise HTTPException(422, "what it stands for")
+        sget().accept(a, body.word[:60])
+    _names_changed()
+    return sget().listing()

@@ -231,9 +231,12 @@ async function findItem(rowId, q) {
 
 // ------------------------------------------------------------------ why a line matched what it did (the matcher's trace)
 const WHY_STEP = {
-  read: (t) => `Read as “${esc(t.text)}”${t.desc ? ` + “${esc(t.desc)}”` : ""}, qty ${t.qty}${t.uom ? " " + esc(t.uom) : ""}${t.brand_named ? `; names the brand <b>${esc(t.brand_named)}</b>` : ""}${t.from_ocr ? " (from handwriting)" : ""}.`,
+  read: (t) => `Read as “${esc(t.text)}”${t.desc ? ` + “${esc(t.desc)}”` : ""}, qty ${t.qty}${t.uom ? " " + esc(t.uom) : ""}${t.brand_named ? `; names the brand <b>${esc(t.brand_named)}</b>${t.brand_on_list ? ` (on the list as ${esc(t.brand_on_list.join(", "))})` : " (not a manufacturer on the list)"}` : ""}${t.from_ocr ? " (from handwriting)" : ""}.`,
   crosses: () => "No merchandising cross for this line.",
   "item cross": (t) => `Item cross: <b>${esc(t.found)}</b>.`,
+  "brand check": (t) => `Brand check: ${esc(t.found)}, so it isn't taken as exact.`,
+  "brand search": (t) => `None of the results were the line's brand: searched “${esc(t.query)}” too (${t.found} more).`,
+  "part # options": (t) => `${(t.near || []).length ? `Close part #${t.near.length > 1 ? "s" : ""} of the line's brand: ${esc(t.near.join(", "))}. ` : ""}${(t.other_brand || []).length ? `Part # match of another brand offered to check. ` : ""}`,
   "brand cross": (t) => `Brand cross: <b>${esc(t.found)}</b>.`,
   "exact lookup": (t) => t.result === "none" ? `No item #, mfr part # or UPC on the line matched${t.note ? ` (${esc(t.note)})` : ""}.` : `Exact lookup: <b>${esc(t.result)}</b>${t.via ? ` (${esc(t.via)})` : ""}${t.item ? `, item ${esc(t.item)}` : ""}.`,
   description: (t) => t.searched ? `Searched the item list for “${esc(t.expanded || t.query)}”${t.expanded ? ` (shorthand expanded from “${esc(t.query)}”)` : ""}.` : `Not searched: the line ${(t.part_numbers_on_line || []).length ? "is a part number (" + esc(t.part_numbers_on_line.join(", ")) + ") with no match" : "is empty"}.`,
@@ -250,11 +253,11 @@ async function explainLine(r) {
   const chosen = (bkItem(r) || {}).sku, tr = x.trace || [];
   const rk = tr.find((t) => t.step === "ranked");
   $("#whyBody").innerHTML = `<ol class="fb-steps">${tr.map((t) => `<li>${(WHY_STEP[t.step] || (() => esc(JSON.stringify(t))))(t)}</li>`).join("")}</ol>
-    ${rk ? `<div class="bkscroll"><table class="bkt fb-why"><thead><tr><th>#</th><th>Item</th><th title="Position in the search results">Search</th><th>Product</th><th>Size</th><th>Spec</th><th>Misses</th><th class="n">Search pts</th><th class="n">Fit pts</th><th class="n">Bonus</th><th class="n">Total</th></tr></thead><tbody>
+    ${rk ? `<div class="bkscroll"><table class="bkt fb-why"><thead><tr><th>#</th><th>Item</th><th title="Position in the search results">Search</th><th>Product</th><th>Brand</th><th>Size</th><th>Spec</th><th>Misses</th><th class="n">Search pts</th><th class="n">Fit pts</th><th class="n">Bonus</th><th class="n">Total</th></tr></thead><tbody>
       ${rk.candidates.map((c) => `<tr class="${c.sku === chosen ? "fb-chosen" : ""}"><td>${c.rank}</td><td><span class="link" data-act="open-sku" data-sku="${esc(c.sku)}">${esc(c.title)}</span><div class="muted">Item ${esc(c.sku)}${c.sku === chosen ? " · <b>on the order</b>" : ""}</div></td>
-        <td class="n">${c.search_pos}</td><td>${c.product ? "✓" : "✗"}</td><td>${c.size ? "✓" : "✗"}</td><td>${c.spec_ok ? "✓" : "✗"}</td><td class="muted">${esc(c.misses || "")}</td>
+        <td class="n">${c.search_pos}</td><td>${c.product ? "✓" : "✗"}</td><td>${c.brand_ok === false ? "✗" : "✓"}</td><td>${c.size ? "✓" : "✗"}</td><td>${c.spec_ok ? "✓" : "✗"}</td><td class="muted">${esc(c.misses || "")}</td>
         <td class="n">${c.search}</td><td class="n">${c.fit}</td><td class="n" title="${esc(Object.entries(c.bonus_parts || {}).map(([k, v]) => k + " " + v).join(", "))}">${c.bonus}</td><td class="n"><b>${c.total}</b></td></tr>`).join("")}</tbody></table></div>
-      <p class="muted" style="font-size:12px">Order: the line's product first (✓ before ✗), then its size, then nothing it asked for missing; within those, by total points (search position + fit + bonus). Hover a bonus for its parts (on the shelf, Webb's brand order, learned picks). The settings dashboard changes the weights.</p>` : ""}`;
+      <p class="muted" style="font-size:12px">Order: the line's product first (✓ before ✗), then the line's brand, then its size, then nothing it asked for missing; within those, by total points (search position + fit + bonus). Hover a bonus for its parts (on the shelf, Webb's brand order, learned picks). The settings dashboard changes the weights.</p>` : ""}`;
 }
 
 // ------------------------------------------------------------------ events

@@ -22,6 +22,7 @@ Manufacturer), numbered lines ("1. ...", "001  10  EA  ...").
 from __future__ import annotations
 
 import csv
+from collections import Counter
 import io
 import re
 import time
@@ -56,7 +57,7 @@ HEADER_WORDS = {"qty": ("qty", "quantity", "qnty", "order qty", "qty ordered"),
                          "mfr part #", "model", "model #", "sku", "catalog", "catalog #", "cat #", "product", "number"),
                 "desc": ("description", "desc", "item description", "product description", "name"),
                 "brand": ("manufacturer", "mfr", "brand", "vendor", "make", "mfg")}
-ROLES = ("qty", "part", "desc", "brand", "uom", "line", "size", "notes", "material")
+ROLES = ("qty", "part", "desc", "brand", "uom", "line", "size", "notes", "material", "category")
 
 
 def _hdr(cell: str) -> str | None:
@@ -201,6 +202,84 @@ def parse_line(raw: str, qty_first: bool = False) -> dict:
     return out
 
 
+# a part-number cell that isn't one ("See description", "N/A", "-")
+PART_PLACEHOLDER = re.compile(r"^\s*(?:see\s+desc(?:ription)?\.?|n/?a|none|tbd|various|misc\.?|-+|\?+|0)\s*$", re.I)
+SIZE_ONLY = re.compile(r"^\s*\d+(?:[-/ ]\d+(?:/\d+)?)?\s*(?:\"|in\.?|inch(?:es)?|od|id)?(?:\s*x\s*\d+(?:[-/ ]\d+(?:/\d+)?)?\s*(?:\"|in\.?|inch(?:es)?|od|id|'|ft|foot|feet)?)*\s*$", re.I)
+UOM_CELL = re.compile(rf"^\s*(?:{UOM}|ea\.|lb|lbs|gal|oz|cf|sf|sy|yd|m|mt)\s*$", re.I)
+
+
+def infer_columns(rows: list[str], delim: str, sample: int = 300) -> dict | None:
+    """A table with no header row (an export straight from a system: manufacturer | part # | description |
+    category | unit): each column's role from what's in it. Returns {roles, header} or None when the rows aren't
+    one table. Roles: qty (small whole numbers), uom (EA, FT...), part (codes, one or two tokens, mostly unique),
+    desc (the most words), brand (repeating names left of the part / description), category (repeating labels
+    right of the description, not searched)."""
+    body = [r for r in rows[:sample] if r.strip()]
+    if len(body) < 3:
+        return None
+    grid = list(csv.reader(io.StringIO("\n".join(body)), delimiter=delim))
+    widths = Counter(len(r) for r in grid)
+    ncol, nrows = widths.most_common(1)[0]
+    if ncol < 2 or nrows < 0.8 * len(grid):
+        return None
+    cols = [[(r[k] if k < len(r) else "").strip() for r in grid] for k in range(ncol)]
+    stats = []
+    for k, c in enumerate(cols):
+        vals = [v for v in c if v]
+        n = max(len(vals), 1)
+        stats.append({"k": k, "fill": len(vals) / len(c), "uniq": len(set(vals)) / n,
+                      "words": sum(len(v.split()) for v in vals) / n,
+                      "qty": sum(bool(re.fullmatch(r"\d{1,5}(?:\.0+)?", v)) for v in vals) / n,
+                      "uom": sum(bool(UOM_CELL.match(v)) for v in vals) / n,
+                      "code": sum(bool(MODEL.fullmatch(v.replace(" ", "")) or re.fullmatch(r"\d{3,14}", v) or PART_PLACEHOLDER.match(v)
+                                       or SIZE_ONLY.match(v)) for v in vals) / n,
+                      "alpha": sum(bool(re.fullmatch(r"[A-Za-z][A-Za-z .&'/(),-]*", v)) for v in vals) / n})
+    roles: dict[str, int] = {}
+    for st in stats:
+        if st["fill"] < 0.3:
+            continue
+        if st["uom"] >= 0.8 and "uom" not in roles:
+            roles["uom"] = st["k"]
+        elif st["qty"] >= 0.8 and st["words"] <= 1.05 and "qty" not in roles and st["uniq"] < 0.9:
+            roles["qty"] = st["k"]
+    rest = [st for st in stats if st["k"] not in roles.values() and st["fill"] >= 0.3]
+    if not rest:
+        return None
+    desc = max(rest, key=lambda st: (st["words"], st["uniq"]))
+    if desc["words"] < 1.6:
+        return None                                      # nothing reads like a description: not a product table
+    roles["desc"] = desc["k"]
+    codes = [st for st in rest if st is not desc and st["code"] >= 0.6 and st["words"] <= 2.5 and st["uniq"] >= 0.5]
+    if codes:
+        roles["part"] = max(codes, key=lambda st: (st["code"], st["uniq"]))["k"]
+    left = min(roles.get("part", desc["k"]), desc["k"])
+    names = [st for st in rest if st["k"] not in roles.values() and st["alpha"] >= 0.7 and st["words"] <= 5]
+    br = [st for st in names if st["k"] < left]
+    if br:
+        roles["brand"] = max(br, key=lambda st: st["k"])["k"]
+    cat = [st for st in names if st["k"] > desc["k"] and st["uniq"] < 0.9]
+    if cat:
+        roles["category"] = cat[0]["k"]
+    labels = {"qty": "Quantity", "uom": "Unit", "part": "Part #", "desc": "Description", "brand": "Manufacturer", "category": "Category"}
+    by = {v: k for k, v in roles.items()}
+    sample_ = grid[0]
+    header = [f"{labels.get(by.get(k), 'Column ' + str(k + 1))} (e.g. {sample_[k][:24]})" if k < len(sample_) and sample_[k]
+              else labels.get(by.get(k), f"Column {k + 1}") for k in range(ncol)]
+    return {"roles": roles, "header": header}
+
+
+def clean_part(part: str) -> tuple[str, str]:
+    """(part #, size words moved to the description): "See description" is no part; "1/2inch" or "3/8X3/4X25'" is a
+    size, not a part #; trailing punctuation goes."""
+    p = (part or "").strip().strip(",;:").strip()
+    if PART_PLACEHOLDER.match(p):
+        return "", ""
+    if SIZE_ONLY.match(p) and re.search(r"/|\"|'|(?i:inch|in\.?$|\bin\b|ft|foot|feet|od|id)|\d\s*[xX]\s*\d", p) \
+            and not re.search(r"[A-Za-z]{3,}", re.sub(r"(?i)inch(es)?|feet|foot", "", p)):
+        return "", p
+    return p, ""
+
+
 def _cells_line(cells: list[str]) -> dict | None:
     """A delimited row with no header: the small whole number is the quantity, cells with a
     part-number shape are the part, the rest is description."""
@@ -222,6 +301,9 @@ def _cells_line(cells: list[str]) -> dict | None:
 def _row_line(cells: list[str], roles: dict[str, int]) -> dict | None:
     get = lambda k: clean_text(cells[roles[k]]) if k in roles and roles[k] < len(cells) else ""
     part, desc, brand = get("part"), get("desc"), get("brand")
+    part, size_ = clean_part(part)
+    if size_ and size_.replace(" ", "").lower() not in desc.replace(" ", "").lower():
+        desc = f"{size_} {desc}".strip()
     size, notes, mat = get("size"), get("notes"), get("material")
     if mat and mat.lower() not in desc.lower():
         desc = f"{mat} {desc}".strip()               # "Copper" + "90 Elbow Sweat" (estimating exports)
@@ -268,13 +350,19 @@ def parse_table(text: str, max_lines: int = MAX_LINES, roles: dict | None = None
     if roles:
         d = delim or ("\t" if "\t" in rows[min(header_row or 0, len(rows) - 1)] else ",")
         t = {"delim": d, "header_row": header_row if header_row is not None else -1,
-             "header": _split(rows[header_row], d) if header_row is not None and header_row < len(rows) else None,
+             "header": _split(rows[header_row], d) if header_row is not None and 0 <= header_row < len(rows) else
+             [f"Column {k + 1}" for k in range(len(_split(rows[0], d)))],
              "roles": {k: int(v) for k, v in roles.items() if k in ROLES and v is not None and int(v) >= 0}}
     else:
         t = detect_table(rows)
+        if t is None:                           # no header row: a system export? columns from their contents
+            d0 = next((d for d in ("\t", "|", ";", ",") if sum(r.count(d) >= 1 for r in rows[:50]) >= 0.8 * min(len(rows), 50)), None)
+            inf = infer_columns(rows, d0) if d0 else None
+            if inf and ("part" in inf["roles"] or "brand" in inf["roles"] or "qty" in inf["roles"]):
+                t = {"delim": d0, "header_row": -1, "header": inf["header"], "roles": inf["roles"], "inferred": True}
     n_all = 0
     if t:
-        meta.update(header=t["header"], roles=t["roles"], header_row=t["header_row"], delim=t["delim"])
+        meta.update(header=t["header"], roles=t["roles"], header_row=t["header_row"], delim=t["delim"], inferred=bool(t.get("inferred")))
         body = rows[t["header_row"] + 1:]
         for n, cells in enumerate(csv.reader(io.StringIO("\n".join(body)), delimiter=t["delim"]), start=t["header_row"] + 2):
             ln = _row_line(cells, t["roles"])

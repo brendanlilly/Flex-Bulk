@@ -30,10 +30,12 @@ import json
 import math
 import re
 import time
+from collections import Counter
 
 import numpy as np
 
 from webbsearch.index.fixture_rules import implausible
+from webbsearch.retrieval.analyzer import compact_id
 from webbsearch.retrieval.availability import fulfil
 from webbsearch.retrieval.resolve import MAX_LINES, Resolver, parse_table, part_tokens
 from webbsearch.merch.bulkprefs import brand_cross, brand_rank, item_cross, line_key, other_brand, replace_brand
@@ -111,6 +113,45 @@ class Bom:
             names = set(self.e.catalog.brand.tolist())
             self._brand_map = {b.lower(): b for b in names if b and " " not in b and b.isalpha()}
         return self._brand_map
+
+    # -------------------------------------------------------------- Flex Bulk: brand names, shorthand, near part #s
+    def _brand_names(self):
+        try:
+            from flexbulk.brands import get
+            return get(self.e)
+        except Exception:  # noqa: BLE001
+            return None
+
+    def _short(self, text: str) -> str:
+        try:
+            from flexbulk.shorthand import get
+            return get().expand(text)
+        except Exception:  # noqa: BLE001
+            return text
+
+    def _brand_count(self) -> Counter:
+        if getattr(self, "_bc", None) is None:
+            self._bc = Counter(map(str, self.e.catalog.brand))
+        return self._bc
+
+    def near_parts(self, keys: list[str], bset) -> list[tuple[int, str]]:
+        """Items of the line's brand whose part # is the line's with something added or cut ("ENS-40" ->
+        ENS-40 200; "EX30B" -> EX30): (item, the part # it has). Only with a brand to check against."""
+        if not bset:
+            return []
+        cat, out, seen = self.e.catalog, [], set()
+        for k in keys:
+            if len(k) < 4:
+                continue
+            cands = list(cat.id_prefix(k, 30)) if len(k) >= 5 else []
+            for cut in (1, 2, 3):
+                if len(k) - cut >= 4:
+                    cands += list(cat.id_lookup(k[:-cut]))
+            for j in cands:
+                if j not in seen and str(cat.brand[j]) in bset:
+                    seen.add(j)
+                    out.append((int(j), str(cat.mfr_part[j])))
+        return out[:3]
 
     # -------------------------------------------------------------- account context
     def _invoiced(self, p) -> dict:
@@ -288,6 +329,15 @@ class Bom:
             # the catalog doesn't carry the product (a hydrant, C900 pipe): no recommendation, no focused re-search
             return [], True, {"head": sp.head, "not_carried": nt.get("what") or query}
         items = (res.get("items") or [])[:24]
+        bset = (ctx or {}).get("brands") or frozenset()
+        if bset and not any(str(it.get("brand")) in bset for it in items):
+            cb = max(bset, key=lambda b: self._brand_count().get(b, 0))
+            bq = query if cb.lower() in query.lower() else f"{cb} {query}"
+            more = [it for it in (e.results.results(bq, p, branch=branch, llm="off", settings=ms).get("items") or [])[:24]
+                    if str(it.get("brand")) in bset and it["sku"] not in {x["sku"] for x in items}]
+            if tr is not None:
+                tr.append({"step": "brand search", "query": bq, "found": len(more)})
+            items = items + more
         weak = bool(res.get("notice") and res["notice"].get("kind") in ("fallback", "partial", "phrase_miss"))
         fits = {it["sku"]: linefit.fit(sp, it) for it in items}
         # none of the right product, size and spec on the first page: search for just that; then without the
@@ -321,19 +371,20 @@ class Bom:
             # the product the line names, in its size, as specified (street, 45, reducing...) first; then the
             # account's history, invoices, brand and stock, and search position
             bonus_ = c.pop("_bonus")
-            c["_key"] = (not noun, not size, not good, -(10 * (1 - pos / max(len(items), 1)) + bonus_ + f["score"]))
+            brand_ok = not bset or str(c.get("brand")) in bset or bool(c.get("exact"))
+            c["_key"] = (not noun, not brand_ok, not size, not good, -(10 * (1 - pos / max(len(items), 1)) + bonus_ + f["score"]))
             c["_fit"] = {"good": True, "misses": []} if c["exact"] else f
             if tr is not None:
                 c["_trace"] = {"sku": c["sku"], "title": c["title"], "brand": c.get("brand"), "search_pos": pos + 1,
-                               "product": noun, "size": size, "spec_ok": good, "misses": ", ".join(f.get("misses") or []),
+                               "product": noun, "brand_ok": brand_ok, "size": size, "spec_ok": good, "misses": ", ".join(f.get("misses") or []),
                                "search": round(10 * (1 - pos / max(len(items), 1)), 2), "fit": round(f["score"], 2),
                                "bonus": round(bonus_, 2), "bonus_parts": c.get("_parts") or {},
-                               "total": round(-c["_key"][3], 2)}
+                               "total": round(-c["_key"][4], 2)}
             cards.append(c)
         cards.sort(key=lambda c: c["_key"])
         if tr is not None:
-            tr.append({"step": "ranked", "rule": "the line's product first, then its size, then nothing missing, then "
-                       "search position + fit + bonus", "candidates": [dict(c.pop("_trace"), rank=k + 1) for k, c in enumerate(cards[:15])]})
+            tr.append({"step": "ranked", "rule": "the line's product first, then the line's brand, then its size, then nothing "
+                       "missing, then search position + fit + bonus", "candidates": [dict(c.pop("_trace"), rank=k + 1) for k, c in enumerate(cards[:15])]})
             for c in cards[15:]:
                 c.pop("_trace", None)
         top = cards[0]["_fit"] if cards else {"good": False, "misses": []}
@@ -393,14 +444,19 @@ class Bom:
         parsed_brands = e.parser.parse(line_text[:300]).brands
         uncarried = "" if bc or parsed_brands else other_brand(line_text)
         req_brand = bc["from_brand"] if bc else ((ln.get("brand") or "").strip() or (parsed_brands[0] if parsed_brands else "") or uncarried)
-        ctx = {"key": key, "req_brand": req_brand, "named_brand": bool(req_brand) and not bc and not uncarried,
+        # Flex Bulk: the list's brands the line's manufacturer means (brand names table, flexbulk/brands.py)
+        bn = self._brand_names()
+        line_brand = (ln.get("brand") or "").strip() or (parsed_brands[0] if parsed_brands else "")
+        bset = bn.resolve(line_brand) if bn is not None and line_brand and not bc else frozenset()
+        ctx = {"key": key, "req_brand": req_brand, "named_brand": (bool(req_brand) and not bc and not uncarried) or bool(bset),
+               "brands": bset,
                "learned": getattr(e, "learned", None), "off": set(ms.get("learned_off") or []), "ms": ms, "acct": acct,
                "trace": [] if trace else None}
         tr = ctx["trace"]
         if tr is not None:
             tr.append({"step": "read", "text": ln.get("text"), "desc": ln.get("desc"), "brand": ln.get("brand"),
                        "part": ln.get("part"), "qty": need, "uom": uom, "from_ocr": bool(ln.get("from_ocr")),
-                       "line_key": key, "brand_named": req_brand or None})
+                       "line_key": key, "brand_named": req_brand or None, "brand_on_list": sorted(bset)[:6] or None})
         pkeys = {re.sub(r"[^a-z0-9]", "", t.lower()) for t in part_tokens(ln.get("part") or "") + part_tokens(ln.get("text") or "")}
         ic = item_cross(ms, branch, key, pkeys)
         if ic and ic["to_sku"] in e.catalog.sku_to_idx:
@@ -408,7 +464,20 @@ class Bom:
                   "alternates": [], "note": f"Webb cross: {ic['label']}" + (f" · {ic['note']}" if ic.get("note") else "")}
         else:
             r0 = self.res.one(ln, p, branch, best=False)
+        mismatch = []                       # Flex Bulk: the line's part # is another manufacturer's item
+        if r0["status"] == "exact" and bset and r0.get("item"):
+            items = [r0["item"]] + list(r0.get("alternates") or [])
+            same = [it for it in items if str(it.get("brand")) in bset]
+            if same:
+                if same[0] is not items[0]:
+                    r0 = {**r0, "item": same[0], "alternates": [it for it in items if it is not same[0]],
+                          "note": f"{len(items)} items share this number; the {line_brand} one first"}
+            else:
+                mismatch = [it for it in items if it.get("kind") == "catalog"]
+                r0 = {"status": "none", "via": None, "item": None, "alternates": [], "note": ""}
         if tr is not None:
+            if mismatch:
+                tr.append({"step": "brand check", "found": f"part # is {mismatch[0].get('brand')}'s, the line names {line_brand}"})
             tr.append({"step": "item cross" if ic else "brand cross" if bc else "crosses", "found": (ic or bc or {}).get("label")
                        or (f"{bc['from_brand']} -> {bc['to_brand']}" if bc else None)})
             tr.append({"step": "exact lookup", "result": r0["status"], "via": r0.get("via"), "note": r0.get("note") or None,
@@ -450,8 +519,12 @@ class Bom:
             pts = [t for t in pts if t.lower() in exp_line and not SPEC_TOKEN.match(t) and not trade_terms.is_term(t)]
             desc = (ln.get("desc") or "").strip()
             words = [w for w in (ln.get("text") or "").split() if w not in pts]
-            query = " ".join(x for x in ((ln.get("brand") or ""), desc) if x) if desc else \
+            cbrand = max(bset, key=lambda b: self._brand_count().get(b, 0)) if bset else ""
+            query = " ".join(x for x in ((cbrand or ln.get("brand") or ""), desc) if x) if desc else \
                 (" ".join(words) if pts and len(words) >= 2 else ln.get("text") or "")
+            if cbrand and not desc and line_brand and line_brand in query and cbrand != line_brand:
+                query = query.replace(line_brand, cbrand)          # "Mueller Industries ..." -> "Mueller ..."
+            query = self._short(query)                          # ERP shorthand: MXG VLV ADJ -> mixing valve adjustable
             partish = bool(pts) and not desc and len(words) < 2
             if ln.get("from_ocr") and not ln.get("edited"):
                 query = ocr_repair(query)          # 14 -> 1¼ on a small-bore line, +5 -> 45, IDS -> IPS ...
@@ -468,6 +541,42 @@ class Bom:
                 tr.append({"step": "description", "query": query, "expanded": searched if searched != query else None,
                            "part_numbers_on_line": pts, "searched": not (partish or not query.strip())})
             cards, weak, fit = ([], False, {}) if partish or not query.strip() else self.recommend(searched, p, branch, need, k, uom, ctx)
+            # Flex Bulk: a close part # of the line's brand, and a part # match of another brand, as options to check
+            pkeys_ = [compact_id(x) for x in ([ln.get("part")] if ln.get("part") else []) + pts if x]
+            near = [] if mismatch else self.near_parts(list(dict.fromkeys(pkeys_)), bset)
+            extra = []
+            for j, mp in near:
+                c = self._card(j, p, branch, need, inv, pref, uom, ctx)
+                c.pop("_bonus", None)
+                c.pop("_parts", None)
+                c["how"] = f"Close part #: {mp}"
+                extra.append(c)
+            for it in mismatch:
+                j = e.catalog.sku_to_idx.get(it.get("sku"))
+                if j is not None:
+                    c = self._card(j, p, branch, need, inv, pref, uom, ctx)
+                    c.pop("_bonus", None)
+                    c.pop("_parts", None)
+                    c["how"] = f"Part # match, but {c.get('brand')}'s"
+                    extra.append(c)
+            if extra:
+                dwords = set(re.findall(r"[a-z]{3,}", searched.lower()))
+                def overlap(c):
+                    t = set(re.findall(r"[a-z]{3,}", (c["title"] + " " + " ".join(map(str, (c.get("attrs") or {}).values()))).lower()))
+                    return len(dwords & t) / max(len(dwords), 1)
+                lead = [c for c in extra if c["how"].startswith("Close") or overlap(c) >= 0.25 or not cards]
+                tail = [c for c in extra if c not in lead]
+                skus = {c["sku"] for c in extra}
+                cards = lead + [c for c in cards if c["sku"] not in skus][:max(1, k - len(extra))] + tail
+                if out.get("status") == "none" or fit.get("missing") or fit.get("not_carried"):
+                    fit = {**fit, "missing": False, "not_carried": None}
+                out["part_note"] = (f"Close part #: {near[0][1]} for {ln.get('part') or (pts[0] if pts else '')}" if near and cards[0] is extra[0]
+                                    else f"Part # {ln.get('part') or (pts[0] if pts else '')} is {mismatch[0].get('brand')}'s, the line says {line_brand}: check it"
+                                    if mismatch else "")
+                pts = []                               # the part # was used: don't say "no item with part #"
+                if tr is not None:
+                    tr.append({"step": "part # options", "near": [mp for _, mp in near], "other_brand": [it.get("sku") for it in mismatch],
+                               "first": cards[0]["sku"]})
             if fit.get("not_carried"):
                 out["status"], out["via"] = "none", "Not in catalog"
                 out["note"] = f"No {fit['not_carried']} in this catalog."
@@ -488,12 +597,15 @@ class Bom:
                 weak = True
             if cards:
                 out["options"] = cards
-                exact = cards[0].get("exact") and not pts
+                exact = cards[0].get("exact") and not pts and not extra
                 out["status"] = "exact" if exact else "rec"
                 out["via"] = "Exact" if exact else "Recommended"
                 out["confirmed"] = bool(exact)
                 out["needs_confirm"] = not exact
-                if pts:
+                if out.get("part_note"):
+                    out["note"] = out.pop("part_note")
+                    out["weak"] = True
+                elif pts:
                     out["note"] = f"No item with part # {pts[0]}; recommended from “{query}”"
                     out["weak"] = True
                 elif out.get("fit_note"):

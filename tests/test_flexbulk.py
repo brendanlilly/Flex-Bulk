@@ -3,6 +3,7 @@ save, reopen and export; the staff app's endpoints match, price, look up and rec
 from __future__ import annotations
 
 import io
+import re
 import json
 
 import pandas as pd
@@ -370,3 +371,127 @@ def test_customers_documents_as_a_report(client, tmp_path, monkeypatch):
     rd = json.loads((rp.REPORTS / f"{r['meta']['id']}.json").read_text())["summary"]["reading"]
     assert rd["lines_read"] >= 6 and rd["set_aside"] >= 5                          # greeting, signature, address...
     assert (rp.REPORTS / f"{r['meta']['id']}-inputs" / "order-email.eml").exists()
+
+
+# ------------------------------------------------------------------ 1.2: files with no header, brands, shorthand
+def test_a_table_with_no_header_row_is_read_by_its_columns():
+    from webbsearch.retrieval.resolve import clean_part, parse_table
+    rows = ["Amtrol\tEX-30\tEX-30 AMTROL EXTROL TANK\tWater Heater / Tank Accessories\tEA",
+            "3M / Venture Tape\t7010378552\t2 X 60YD XH BLK DUCT TAPE\tVenting, Flue & Ductwork\tEA",
+            "Caleffi\t521516A\tMXG VLV ADJ 3W THM W/GA 3/4\" LL BRS PRS\tValves & Regulators\tEA",
+            "Commodity / Distributor House Line\t1/2inch\t1/2inch BLACK MALLEABLE 90\tFittings & Adapters\tEA",
+            "Aprilaire / Research Products\tSee description\t800 APRILAIRE STEAM HUMIDIFIER\tAir Filters & Indoor Air Quality\tEA",
+            "Amtrol\tST-12\tST-12 AMTROL THERM-X-TROL TANK\tWater Heater / Tank Accessories\tEA"]
+    t = parse_table("\n".join(rows))
+    assert t["roles"] == {"uom": 4, "desc": 2, "part": 1, "brand": 0, "category": 3} and t["header_row"] == -1 and t["inferred"]
+    L = t["lines"]
+    assert len(L) == 6 and all(x["qty"] == 1 and x["uom"] == "EA" for x in L)
+    assert L[0]["part"] == "EX-30" and L[0]["brand"] == "Amtrol" and "Water Heater" not in L[0]["text"] + L[0]["desc"]
+    assert L[1]["part"] == "7010378552"
+    assert L[3]["part"] == "" and L[3]["text"].endswith("1/2inch BLACK MALLEABLE 90")         # a size isn't a part #
+    assert L[4]["part"] == ""                                                                 # "See description"
+    assert clean_part("VCMA-20ULS-PRO,") == ("VCMA-20ULS-PRO", "") and clean_part("3/8X3/4X25'") == ("", "3/8X3/4X25'")
+    # a list with a header still reads by its header
+    assert parse_table("Qty\tDescription\n4\t3/4 ball valve\n2\t1/2 elbow")["header_row"] == 0
+
+
+def test_brand_names_resolve_vendor_spellings(tmp_path):
+    from flexbulk.brands import BrandNames
+    bn = BrandNames(["Mueller", "A.O. Smith", "State", "Honeywell Home", "Legend", "Quick-Sling", "Diversitech", "GE"],
+                    path=tmp_path / "b.json")
+    assert bn.resolve("Mueller Industries") == {"Mueller"}
+    assert bn.resolve("A. O. Smith / State") == {"A.O. Smith", "State"}
+    assert bn.resolve("Resideo (Honeywell Home)") == {"Honeywell Home"}
+    assert bn.resolve("Legend Valve") == {"Legend"} and bn.resolve("Acme Widgets") == frozenset()
+    assert bn.same("Diversitech", "Quick-Sling") is False
+    bn.add("Diversitech", ["Quick-Sling"])
+    assert bn.resolve("Diversitech") == {"Diversitech", "Quick-Sling"}
+    from collections import Counter
+    bn.suggest(Counter({("Bindus", "GE"): 2, ("Hydrolevel", "GE"): 1}))
+    assert [s["name"] for s in bn.table()["suggested"]] == ["Bindus"]
+    bn.dismiss("Bindus", "GE")
+    bn.suggest(Counter({("Bindus", "GE"): 5}))
+    assert bn.table()["suggested"] == []
+
+
+def test_shorthand_expands_and_learns(tmp_path):
+    from flexbulk.shorthand import Shorthand
+    sh = Shorthand(path=tmp_path / "s.json")
+    assert sh.expand('MXG VLV ADJ 3W THM 3/4" BRS') == 'mixing valve adjustable 3W thermostatic 3/4" brass'
+    assert sh.expand("ST-12 AMTROL THERM-X-TROL") == "ST-12 AMTROL THERM-X-TROL"          # part #s and names untouched
+    assert sh.expand("11/4 X 10 M COPPER 1/2inch") == '1-1/4 X 10 M COPPER 1/2"'
+    pairs = [("ANTFRZ CRYO-TEK 100 5GAL", "Antifreeze Cryo-Tek 5 GAL Heat Transfer Fluid")] * 3 + \
+            [("HMDFR PAD 35", "Humidifier Pad Water Panel")]
+    got = sh.learn(pairs, known_words=lambda w: w in {"pad"})
+    assert got["on"] == {"antfrz": "antifreeze"} and got["review"] == {"hmdfr": "humidifier"}
+    assert sh.expand("ANTFRZ 5GAL") == "antifreeze 5GAL"
+    sh.switch_off("antfrz")
+    assert sh.expand("ANTFRZ") == "ANTFRZ" and sh.listing()["off"] == ["antfrz"]
+
+
+def test_a_part_number_of_another_brand_is_offered_not_confirmed(client, engine):
+    cat = engine.catalog
+    j = next(i for i in range(cat.n) if len(str(cat.mfr_part[i])) >= 6 and cat.brand[i] and len(cat.id_lookup(
+        __import__("webbsearch.retrieval.analyzer", fromlist=["compact_id"]).compact_id(str(cat.mfr_part[i])))) == 1)
+    other = next(b for b in set(map(str, cat.brand)) if b and b != cat.brand[j] and len(b) >= 5 and " " not in b)
+    words = " ".join(str(cat.title[j]).split()[1:4])
+    right = client.post("/api/bom/match", json={"lines": [{"text": f"{cat.brand[j]} {cat.mfr_part[j]}", "brand": str(cat.brand[j]),
+                                                           "part": str(cat.mfr_part[j]), "desc": words, "qty": 1}]}).json()["lines"][0]
+    assert right["status"] == "exact" and right["confirmed"]
+    x = client.post("/api/bom/match", json={"lines": [{"text": f"{other} {cat.mfr_part[j]}", "brand": other, "part": str(cat.mfr_part[j]),
+                                                       "desc": words, "qty": 1}]}).json()["lines"][0]
+    assert x["status"] == "rec" and not x["confirmed"] and cat.sku[j] in [o["sku"] for o in x["options"]]
+    assert f"is {cat.brand[j]}'s" in x["note"]
+
+
+def test_a_close_part_number_of_the_lines_brand(client, engine):
+    from webbsearch.retrieval.analyzer import compact_id
+    cat = engine.catalog
+    j = next(i for i in range(cat.n) if re.fullmatch(r"[A-Z]{2,}\d{3,}[A-Z0-9-]*", str(cat.mfr_part[i])) and len(compact_id(cat.mfr_part[i])) >= 7
+             and cat.brand[i] and not cat.id_lookup(compact_id(cat.mfr_part[i])[:-2]))
+    short = compact_id(cat.mfr_part[j])[:-2]
+    x = client.post("/api/bom/match", json={"lines": [{"text": f"{cat.brand[j]} {short}", "brand": str(cat.brand[j]), "part": short,
+                                                       "desc": "", "qty": 1}]}).json()["lines"][0]
+    assert x["options"] and x["options"][0]["sku"] == cat.sku[j] and not x["confirmed"] and "Close part #" in x["note"]
+
+
+def test_hide_the_part_numbers_report(client, engine, tmp_path, monkeypatch):
+    import flexbulk.report as rp
+    import flexbulk.shorthand as shm
+    from openpyxl import Workbook
+    monkeypatch.setattr(rp, "REPORTS", tmp_path / "reports")
+    monkeypatch.setattr(shm, "_sh", shm.Shorthand(path=tmp_path / "sh.json"))
+    cat = engine.catalog
+    picks = [i for i in range(0, cat.n, 97) if len(str(cat.mfr_part[i])) >= 5 and cat.brand[i]][:40]
+    wb = Workbook()
+    ws = wb.active
+    for i in picks:
+        ws.append([f"{cat.brand[i]} Inc", str(cat.mfr_part[i]), f"{cat.mfr_part[i]} {' '.join(str(cat.title[i]).split()[1:])}", "Some Category", "EA"])
+    import io as _io
+    buf = _io.BytesIO()
+    wb.save(buf)
+    r = rp.make("documents", documents=[("vendor.xlsx", buf.getvalue())], hide=True)
+    s = r["summary"]
+    assert s["with_expected"] >= 30 and s["lines"] == s["with_expected"]
+    assert s["top3"] >= 0.5                                    # titles minus the brand still find most of them
+    assert r["meta"]["hide"] and r["meta"]["learned"]["pairs"] >= 30
+
+
+def test_brand_names_and_shorthand_pages(client, engine, tmp_path, monkeypatch):
+    import flexbulk.brands as bm
+    import flexbulk.shorthand as shm
+    monkeypatch.setattr(bm, "_bn", None)
+    monkeypatch.setenv("FLEXBULK_BRAND_NAMES", str(tmp_path / "bn.json"))
+    monkeypatch.setattr(shm, "_sh", shm.Shorthand(path=tmp_path / "sh.json"))
+    from webbsearch.api.admin import TOKEN
+    h = {"X-Admin-Token": TOKEN}
+    d = client.get("/api/admin/names", headers=h).json()
+    assert d["brands"]["names"] == [] and "vlv" in d["shorthand"]["starter"]
+    b = next(x for x in set(map(str, engine.catalog.brand)) if len(x) >= 5)
+    assert client.post("/api/admin/names/brand", json={"name": "Some Vendor Name", "brands": [b]}, headers=h).status_code == 200
+    assert client.get("/api/admin/names", headers=h).json()["brands"]["names"][0]["brands"] == [b]
+    assert client.post("/api/admin/names/brand", json={"name": "x", "brands": ["Not A Brand On The List"]}, headers=h).status_code == 422
+    client.post("/api/admin/names/shorthand", json={"abbr": "QQV", "word": "quarterturn", "action": "accept"}, headers=h)
+    assert shm.get().expand("QQV 1/2") == "quarterturn 1/2"
+    client.post("/api/admin/names/brand/remove", json={"name": "Some Vendor Name"}, headers=h)
+    assert client.get("/api/admin/names", headers=h).json()["brands"]["names"] == []

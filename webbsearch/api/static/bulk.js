@@ -188,7 +188,7 @@ function bkPaintInput() {
     el.innerHTML = `<div class="bkin muted">Type a part number, Webb item # or description on each line; it matches as you type. Enter moves to quantity, Enter again adds a line. Paste several lines into a box to add them all.</div>`;
   } else {
     const p = S.bk.parse;
-    const roles = [["", "Ignore"], ["qty", "Quantity"], ["part", "Part #"], ["desc", "Description"], ["brand", "Manufacturer"], ["uom", "Unit"], ["size", "Size"], ["material", "Material"], ["notes", "Notes"], ["line", "Line #"]];
+    const roles = [["", "Ignore"], ["qty", "Quantity"], ["part", "Part #"], ["desc", "Description"], ["brand", "Manufacturer"], ["uom", "Unit"], ["size", "Size"], ["material", "Material"], ["notes", "Notes"], ["line", "Line #"], ["category", "Category (not searched)"]];
     const map = p && p.header ? `<div class="bkmap"><span class="muted">Columns found${p.header_row ? ` (header on row ${p.header_row + 1})` : ""}:</span>
         ${p.header.map((h, k) => { const cur = Object.entries(p.roles || {}).find(([, v]) => v === k); return `<label class="bkcol"><span>${esc(h || "col " + (k + 1))}</span><select data-act="bkrole" data-k="${k}">${roles.map(([v, l]) => `<option value="${v}" ${(cur ? cur[0] : "") === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>`; }).join("")}
         <button class="btn sm" data-act="bkreread">Re-read with these columns</button></div>` : p && p.total ? `<div class="bkmap muted">No header row found: each line was read like a pasted list (quantity before or after the item).</div>` : "";

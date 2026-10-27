@@ -56,8 +56,10 @@ they hold). Without attributes in the file, size, material and joint are read fr
 
 - **New order**: customer #, name, job, PO, contact, notes. Facts a document states (an email's job name or PO) fill
   the empty boxes.
-- **Lines**: upload or paste, multi-search, or quick entry. Exact item #, mfr part # and UPC matches arrive
-  confirmed; everything else is a recommendation to confirm, with the reasons shown. **Find another** searches the
+- **Lines**: upload or paste, multi-search, or quick entry. A sheet with no header row (a system export) is read by
+  its columns. Exact item #, mfr part # and UPC matches arrive
+  confirmed (a part # is checked against the line's manufacturer: another manufacturer's item with the same part #
+  is offered, flagged, not confirmed); everything else is a recommendation to confirm, with the reasons shown. **Find another** searches the
   item list for any line. Short at the pickup branch: the transfer plan and same-spec items on the shelf.
 - **Pickup branch** and **price level** (header) apply to the whole order; changing them re-matches the lines.
 - **Save** (Ctrl/Cmd+S) keeps the order with every line as left; **Orders** lists them. **Export**: an Excel workbook
@@ -75,6 +77,9 @@ and writes one Excel workbook:
   - **customers' documents** given to the report (emails, Excel, Word, PDFs, photos): read and matched, no answers.
   - saved orders, lines matched in the app (staff choices are the answers), or a test file (a `Line` column and an
     `Expected` item #; template on the page).
+- **Hide part #s**: for a customer's list with manufacturer and part # columns. Each line's part # finds its answer,
+  then the line is matched by description and manufacturer alone: how well lines with no part # will match. The same
+  report learns shorthand and suggests brand names (dashboard → Brand names & shorthand).
 - **Why?** on any line in the staff app shows how it was matched: how it was read, crosses, the exact lookup, what
   was searched, and every candidate's points (search position, fit, bonus and its parts).
 - **Summary**: top-1 and top-3 (how often the answer came first / in the first three), lines matched, by category
@@ -96,7 +101,8 @@ matching.
 | Crosses | Brand crosses (Kohler → American Standard) and item crosses (a part # or line → one item), company-wide or per branch |
 | Brand preferences | Webb's brand order per category, for lines that name no brand |
 | Learned crosses | What staff pick for a line; make a pick permanent, or switch it off |
-| Match reports | Score the matcher on saved orders, the app's log or a test file; download the workbook |
+| Match reports | Score the matcher on test cases, customers' documents, saved orders, the app's log or a test file; download the workbook or bundle |
+| Brand names & shorthand | Which item-list manufacturers a list's manufacturer name means; ERP abbreviations searched as words; suggestions from match reports |
 | Ranking weights | Bulk order weights (Webb's brand order, learned picks, on the shelf) and search weights |
 | Relevance by field, Search dictionary, Rewrites, Rules | How the search underneath reads trade words |
 | Change log, Data & access, Claude usage, Sign-ins | Admin |
