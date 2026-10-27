@@ -404,7 +404,21 @@ def listing(limit: int = 50) -> list[dict]:
     return out
 
 
+def mac_libomp(module: str) -> None:
+    """macOS: LightGBM needs the OpenMP library scikit-learn ships; start.sh points the loader at it, and a command
+    run by hand gets the same by starting itself again with the path set (once)."""
+    import sys
+    if sys.platform != "darwin" or os.environ.get("FLEXBULK_OMP"):
+        return
+    import sklearn
+    lib = os.path.join(os.path.dirname(sklearn.__file__), ".dylibs")
+    env = dict(os.environ, FLEXBULK_OMP="1",
+               DYLD_FALLBACK_LIBRARY_PATH=lib + (":" + os.environ["DYLD_FALLBACK_LIBRARY_PATH"] if os.environ.get("DYLD_FALLBACK_LIBRARY_PATH") else ""))
+    os.execve(sys.executable, [sys.executable, "-m", module, *sys.argv[1:]], env)
+
+
 def main(argv=None):
+    mac_libomp("flexbulk.report")
     ap = argparse.ArgumentParser(description="Write a match report (Excel) from saved orders, the app's log or a test file")
     ap.add_argument("--source", choices=SOURCES, default="orders")
     ap.add_argument("--days", type=int, default=90)
