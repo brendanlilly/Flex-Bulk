@@ -63,6 +63,21 @@ they hold). Without attributes in the file, size, material and joint are read fr
 - **Save** (Ctrl/Cmd+S) keeps the order with every line as left; **Orders** lists them. **Export**: an Excel workbook
   (header, every line, an order-entry sheet), a CSV, or the order-entry file (confirmed lines: item # and quantity).
 
+## Match reports
+
+Dashboard → **Match reports** (or `python -m flexbulk.report`) matches a set of lines again with today's settings
+and writes one Excel workbook:
+
+- **Lines from**: saved orders (each confirmed line's item is the answer), lines matched in the app (staff choices
+  are the answers), or a test file (a `Line` column and, to be scored, an `Expected` item #; template on the page).
+- **Summary**: top-1 and top-3 (how often the answer came first / in the first three), lines matched, by category
+  and line shape, compared with the previous report from the same source.
+- **Misses** (answer not first: what came first instead, and why), **Not found**, **Brands** not on the list,
+  **Changed** since staff saw it, the **Settings** in force.
+
+Change a setting, run the same report again, compare. The workbook is also what to hand to Claude to work on the
+matching.
+
 ## The dashboard (`/admin`)
 
 | Page | What it changes |
@@ -71,6 +86,7 @@ they hold). Without attributes in the file, size, material and joint are read fr
 | Crosses | Brand crosses (Kohler → American Standard) and item crosses (a part # or line → one item), company-wide or per branch |
 | Brand preferences | Webb's brand order per category, for lines that name no brand |
 | Learned crosses | What staff pick for a line; make a pick permanent, or switch it off |
+| Match reports | Score the matcher on saved orders, the app's log or a test file; download the workbook |
 | Ranking weights | Bulk order weights (Webb's brand order, learned picks, on the shelf) and search weights |
 | Relevance by field, Search dictionary, Rewrites, Rules | How the search underneath reads trade words |
 | Change log, Data & access, Claude usage, Sign-ins | Admin |

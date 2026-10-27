@@ -256,3 +256,54 @@ def test_every_match_links_to_its_web_store_page(client):
     o = x["options"][0]
     assert o["web_url"] == f"https://www.fwwebb.com/product/{o['sku']}"
     assert client.get(f"/api/product/{o['sku']}").json()["web_url"] == o["web_url"]
+
+
+def test_match_reports_from_orders_log_and_a_test_file(client, tmp_path, monkeypatch):
+    import flexbulk.report as rp
+    from openpyxl import load_workbook
+    monkeypatch.setattr(rp, "REPORTS", tmp_path / "reports")
+    m = client.post("/api/bom/match", json={"lines": [{"text": "3/4 ball valve sweat", "qty": 2}, {"text": "1/2 pex b tubing", "qty": 1},
+                                                      {"text": "zzqx flux capacitor", "qty": 1}], "sid": "rep1"}).json()["lines"]
+    second = m[0]["options"][1]
+    rows = [{"ln": {"n": 1, "text": "3/4 ball valve sweat", "qty": 2}, "m": m[0], "ch": {"t": "opt", "i": 1}, "state": "ok", "item": second, "confirmed": True},
+            {"ln": {"n": 2, "text": "1/2 pex b tubing", "qty": 1}, "m": m[1], "ch": {"t": "opt", "i": 0}, "state": "ok", "item": m[1]["options"][0], "confirmed": True},
+            {"ln": {"n": 3, "text": "zzqx flux capacitor", "qty": 1}, "m": m[2], "state": "none"}]
+    client.post("/api/orders", json={"customer_no": "C-5", "staff": "Pat", "rows": rows})
+    r = rp.make("orders", 30)
+    s = r["summary"]
+    assert s["lines"] == 3 and s["with_expected"] == 2 and s["top1"] == 0.5 and s["top3"] == 1.0
+    assert s["how_staff_chose"] == {"chose another option": 1, "kept top pick": 1}
+    wb = load_workbook(rp.REPORTS / f"{r['meta']['id']}.xlsx")
+    assert wb.sheetnames == ["Summary", "Lines", "Misses", "Not found", "Brands", "Changed", "Settings", "About"]
+    miss = list(wb["Misses"].iter_rows(min_row=2, values_only=True))
+    assert len(miss) == 1 and miss[0][0] == "3/4 ball valve sweat" and miss[0][2] == second["sku"] and miss[0][4] == 2
+    assert all(v != "'" for row in wb["Lines"].iter_rows(values_only=True) for v in row)          # no stray apostrophes
+    # a second run from the same source is compared with the first
+    r2 = rp.make("orders", 30)
+    assert r2["meta"]["previous"]["id"] == r["meta"]["id"] and r2["meta"]["previous"]["top1"] == 0.5
+    # the app's log: a choice made on a matched line is its answer
+    client.post("/api/track", json={"kind": "bulk_choice", "sid": "rep1", "sku": second["sku"], "meta": {"key": m[0]["key"], "how": "chosen"}})
+    lg = rp.make("log", 1)["summary"]
+    assert lg["lines"] >= 3 and lg["with_expected"] >= 1
+    # a test file
+    f = "Line,Expected,Qty\n3/4 ball valve sweat,%s,2\n1/2 pex b tubing,,1\n" % m[0]["options"][0]["sku"]
+    t = rp.make("file", file_name="t.csv", file_data=f.encode())["summary"]
+    assert t["lines"] == 2 and t["with_expected"] == 1 and t["top1"] == 1.0
+    with pytest.raises(ValueError, match="no line column"):
+        rp.make("file", file_name="t.csv", file_data=b"Foo,Bar\n1,2\n")
+
+
+def test_reports_through_the_dashboard(client):
+    import time as _t
+    from webbsearch.api.admin import TOKEN
+    h = {"X-Admin-Token": TOKEN}
+    assert client.post("/api/admin/reports", json={"source": "orders"}).status_code == 403
+    assert client.post("/api/admin/reports", json={"source": "orders", "days": 30}, headers=h).json()["ok"]
+    for _ in range(100):
+        d = client.get("/api/admin/reports", headers=h).json()
+        if not d["job"]["running"]:
+            break
+        _t.sleep(0.2)
+    assert d["job"]["error"] is None and d["reports"]
+    x = client.get(f"/api/admin/reports/{d['reports'][0]['id']}.xlsx", headers=h)
+    assert x.status_code == 200 and x.content[:2] == b"PK"

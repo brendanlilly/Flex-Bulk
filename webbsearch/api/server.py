@@ -475,3 +475,65 @@ def order_export(oid: str, fmt: str = Query("xlsx", pattern="^(xlsx|csv|entry)$"
 
 if os.environ.get("FLEXBULK_WARM", "1") == "0":       # tests build the engine themselves
     app.router.on_startup.clear()
+
+
+# ------------------------------------------------------------------ match reports (dashboard)
+class ReportBody(BaseModel):
+    source: str = "orders"
+    days: int = 90
+    branch: str | None = None
+    level: str | None = None
+    per_customer: bool = False
+    file_name: str | None = None
+    file_b64: str | None = None
+
+
+_REPORT_JOB: dict = {}
+
+
+@app.post("/api/admin/reports")
+def report_start(request: Request, body: ReportBody):
+    """Start a match report (flexbulk/report.py) in the background; the page polls GET /api/admin/reports."""
+    import base64
+    import threading
+    from webbsearch.api.admin import require
+    require(request)
+    if _REPORT_JOB.get("running"):
+        raise HTTPException(409, "a report is already running")
+    data = base64.b64decode(body.file_b64.split(",", 1)[-1]) if body.file_b64 else None
+    if data and len(data) > 30_000_000:
+        raise HTTPException(413, "test file is over 30 MB")
+    _REPORT_JOB.clear()
+    _REPORT_JOB.update(running=True, done=0, total=0, error=None, result=None, started=time.time())
+
+    def go():
+        from flexbulk.report import make
+        try:
+            _REPORT_JOB["result"] = make(body.source, max(1, min(body.days, 3650)), body.file_name, data, body.branch or None,
+                                         body.level or None, body.per_customer,
+                                         progress=lambda d, n: _REPORT_JOB.update(done=d, total=n))
+        except Exception as ex:  # noqa: BLE001
+            _REPORT_JOB["error"] = f"{type(ex).__name__}: {ex}" if not isinstance(ex, ValueError) else str(ex)
+        finally:
+            _REPORT_JOB["running"] = False
+    threading.Thread(target=go, daemon=True).start()
+    return {"ok": True}
+
+
+@app.get("/api/admin/reports")
+def report_list(request: Request):
+    from flexbulk.report import listing
+    from webbsearch.api.admin import require
+    require(request)
+    return {"job": {k: v for k, v in _REPORT_JOB.items()}, "reports": listing()}
+
+
+@app.get("/api/admin/reports/{rid}.xlsx")
+def report_file(request: Request, rid: str):
+    from flexbulk.report import REPORTS
+    from webbsearch.api.admin import require
+    require(request)
+    if not re.fullmatch(r"R[\w-]{6,30}", rid) or not (REPORTS / f"{rid}.xlsx").exists():
+        raise HTTPException(404, "no such report")
+    return FileResponse(REPORTS / f"{rid}.xlsx", filename=f"flex-bulk-match-report-{rid}.xlsx",
+                        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
