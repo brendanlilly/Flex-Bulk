@@ -1,0 +1,104 @@
+# Vietnamese (vi) · with and without tone marks (people often type without them); short words like "van", "co", "ong"
+# count only when the search is clearly Vietnamese. Trade words: cao su non = PTFE tape, mỏ lết = pipe wrench,
+# bình nóng lạnh = water heater, lốc = compressor, rắc co = union. PVC sizes in mm (phi 21 = 1/2 in.) are read by the engine.
+valve	van|van nước|van nuoc|vale
+ball valve	van bi|van tay gạt|van tay gat|van bi tay gạt|van bi tay gat
+gate valve	van cổng|van cửa|van cong|van cua|van tay quay
+check valve	van một chiều|van mot chieu|van 1 chiều|van 1 chieu|van chống ngược|van chong nguoc|van một chiều lá lật
+butterfly valve	van bướm|van buom
+relief valve	van an toàn|van an toan|van xả áp|van xa ap|van xả an toàn
+pressure reducing valve	van giảm áp|van giam ap|van điều áp|van dieu ap
+shutoff valve	van khóa|van khoa|van chặn|van chan|van tổng|van tong
+gas valve	van gas|van ga|van khí|van khi
+fitting	phụ kiện|phu kien|phụ kiện ống|phu kien ong
+elbow	co|cút|khuỷu|khuyu|co 90|cút 90|co vuông|co vuong
+tee	tê|te|chữ t|chu t|ba chạc|ba chac
+coupling	măng sông|mang song|măng xông|mang xong|nối thẳng|noi thang|khớp nối|khop noi
+union	rắc co|rac co|rắc-co|racco|zắc co|rắcco
+reducer	côn thu|con thu|bầu giảm|bau giam|nối giảm|noi giam|côn giảm|con giam
+nipple	kép|kép ren|kep ren|ống kép|ong kep
+cap	nút bịt|nut bit|bịt|bit|nắp bịt|nap bit
+plug	nút bịt ren ngoài|nút ren|nut ren
+adapter	đầu nối|dau noi|khâu nối|khau noi|nối ren|noi ren|đầu chuyển|dau chuyen
+flange	mặt bích|mat bich
+pipe	ống|ong|ống nước|ong nuoc|đường ống|duong ong
+copper	đồng|dong|bằng đồng|bang dong
+brass	đồng thau|dong thau
+stainless steel	inox|thép không gỉ|thep khong gi|inốc|thép không rỉ
+steel	thép|thep|sắt|sat
+galvanized	mạ kẽm|ma kem|tráng kẽm|trang kem
+cast iron	gang|gang đúc|gang duc
+plastic	nhựa|nhua
+threaded	ren|có ren|co ren
+male	ren ngoài|ren ngoai
+female	ren trong
+sweat	hàn|han|nối hàn|noi han
+toilet	bồn cầu|bon cau|bàn cầu|ban cau|cầu tiêu|cau tieu
+sink	bồn rửa|bon rua|lavabo|chậu rửa|chau rua|chậu rửa mặt|chau rua mat
+kitchen sink	chậu rửa chén|chau rua chen|bồn rửa chén|bon rua chen|chậu rửa bát|chau rua bat
+faucet	vòi|voi|vòi nước|voi nuoc|vòi rửa|voi rua
+shower	sen tắm|sen tam|vòi tắm|voi tam
+shower head	vòi sen|voi sen|bát sen|bat sen|đầu sen|dau sen
+bathtub	bồn tắm|bon tam
+drain	thoát nước|thoat nuoc|cống|ống thoát|ong thoat
+floor drain	phễu thu sàn|pheu thu san|ga thoát sàn|ga thoat san|thoát sàn|thoat san
+p-trap	xi phông|xi phong|siphon|bẫy nước|bay nuoc|ống xi phông
+cartridge	lõi|loi|lõi van|loi van|lõi vòi|loi voi
+water heater	bình nóng lạnh|binh nong lanh|máy nước nóng|may nuoc nong|bình nước nóng|binh nuoc nong|bình nóng|binh nong
+tankless water heater	máy nước nóng trực tiếp|may nuoc nong truc tiep|nước nóng trực tiếp|nuoc nong truc tiep|bình nóng lạnh trực tiếp
+boiler	nồi hơi|noi hoi|lò hơi|lo hoi|lò nước nóng
+expansion tank	bình giãn nở|binh gian no|bình giãn nở nhiệt
+circulator	bơm tuần hoàn|bom tuan hoan|bơm hồi|bom hoi
+pump	bơm|bom|máy bơm|may bom|máy bơm nước|may bom nuoc
+sump pump	bơm chìm|bom chim|bơm hố móng|bom ho mong|bơm thoát nước|bom thoat nuoc
+well pump	bơm giếng|bom gieng|bơm hỏa tiễn|bom hoa tien
+air conditioner	máy lạnh|may lanh|điều hòa|dieu hoa|máy điều hòa|may dieu hoa|máy lạnh trung tâm
+heat pump	bơm nhiệt|bom nhiet
+mini split	máy lạnh treo tường|may lanh treo tuong|điều hòa treo tường|dieu hoa treo tuong|mini split
+thermostat	bộ điều nhiệt|bo dieu nhiet|bộ điều chỉnh nhiệt độ|công tắc nhiệt|cong tac nhiet|thermostat
+filter	lọc|loc|bộ lọc|bo loc|lưới lọc|luoi loc|màng lọc
+duct	ống gió|ong gio|ống dẫn gió|ong dan gio
+refrigerant	gas lạnh|ga lạnh|ga lanh|gas lanh|môi chất lạnh|moi chat lanh|ga máy lạnh
+capacitor	tụ điện|tu dien|tụ|cục tụ|cuc tu|tụ đề|tu de
+motor	mô tơ|mo to|mô-tơ|động cơ|dong co|motor
+fan	quạt|quat|cánh quạt|canh quat
+compressor	máy nén|may nen|lốc máy lạnh|loc may lanh|block máy lạnh
+radiator	bộ tản nhiệt|bo tan nhiet|két sưởi|ket suoi
+radiant	sưởi sàn|suoi san|sưởi ấm sàn
+pipe wrench	mỏ lết|mo let|cờ lê ống|co le ong|mỏ lết răng|mo let rang
+pipe cutter	dao cắt ống|dao cat ong|kéo cắt ống|keo cat ong
+solder	thiếc hàn|thiec han|que hàn|que han
+PTFE tape	băng tan|bang tan|cao su non|băng keo non|bang keo non|băng tan ren
+pipe thread sealant	keo ren|keo dán ren|keo dan ren
+PVC cement	keo dán ống|keo dan ong|keo pvc|keo dán nhựa|keo dan nhua|keo
+clamp	đai ôm|dai om|kẹp ống|kep ong|cùm|đai kẹp|dai kep
+insulation	bảo ôn|bao on|cách nhiệt|cach nhiet|ống bảo ôn|ong bao on
+gasket	gioăng|gioang|ron|joăng|zoăng|zoang|đệm cao su|dem cao su
+hose	ống mềm|ong mem|dây mềm|day mem|ống nhựa mềm
+supply line	dây cấp|day cap|dây cấp nước|day cap nuoc
+lead free	không chì|khong chi|không có chì
+natural gas	khí thiên nhiên|khi thien nhien|khí đốt tự nhiên
+propane	khí propan|propan|ga bình|ga binh|bình ga|binh ga
+hot water	nước nóng|nuoc nong
+cold water	nước lạnh|nuoc lanh
+repair kit	bộ sửa chữa|bo sua chua|bộ phụ tùng sửa chữa|bo phu tung
+water	nước|nuoc
+heating	sưởi|suoi|sưởi ấm|suoi am
+gas	ga|gas|khí ga|khi ga
+electric	điện|dien|chạy điện|chay dien
+kitchen	nhà bếp|nha bep|bếp|bep
+bathroom	phòng tắm|phong tam|nhà vệ sinh|nha ve sinh
+inch	inch|in
+for	cho
+pressure tank	bình tích áp|binh tich ap
+globe valve	van cầu|van cau
+fill valve	van phao|van phao cơ|van phao co
+solenoid valve	van điện từ|van dien tu
+pressure switch	công tắc áp suất|cong tac ap suat|rơ le áp suất|ro le ap suat
+silicone	keo silicon|keo silicone|silicon
+condenser	dàn nóng|dan nong|cục nóng|cuc nong
+evaporator coil	dàn lạnh|dan lanh
+copper pipe	ống đồng|ong dong
+air filter	lọc gió|loc gio
+kitchen faucet	vòi rửa chén|voi rua chen|vòi bếp|voi bep
+water filter	lọc nước|loc nuoc|máy lọc nước|may loc nuoc

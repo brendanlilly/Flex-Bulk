@@ -1,0 +1,101 @@
+# Albanian (sq) · trade Albanian borrows from Italian (rakord, saracineskë, manikotë, bojler, kaldajë). Short words that
+# are also English ("tub", "tape") are left out or only used inside longer terms.
+valve	valvol*|valvul*|ventil|ventili|ventila|ventilat
+ball valve	valvol* sferik*|rubinet* sferik*|valvol* me sfer*|valvul* sferik*|rubinet* me sfer*|saracinesk* me sfer*|saracinesk* sferik*
+gate valve	valvol* porte|valvol* me portë
+check valve	valvol* moskthyese|valvol* njëkahëshe|valvol* njekaheshe|valvol* kundër kthimit|valvol* moskthim*|valvul* moskthim*
+relief valve	valvol* sigurie|valvol* e sigurisë|valvol* shkarkimi
+pressure reducing valve	reduktor* presioni|valvol* reduktuese|reduktues* presioni|valvol* uljeje presioni
+shutoff valve	valvol* mbyllëse|rubinet* mbyllës*|rubinet* ndalues*|valvol* ndaluese|rubinet* kryesor*|saracinesk*
+gas valve	valvol* gazi|rubinet* gazi|valvol* e gazit|rubinet* i gazit
+fitting	rakord*|lidhës*|lidhëse
+elbow	bërryl*|berryl*|kurb*|gomit*
+tee	rakord* t|lidhës* t|treshe|rakord* tre dalje|ti
+coupling	manikot*|bashkues*|manikotë|lidhës* i drejtë
+union	rakord* bashkimi|rakord* me dado|hollandez*|holandez*|bashkues* me dado
+reducer	reduksion*|reduktim*|redukt*
+nipple	nipel*|nipull*|nipli
+cap	kapak*|kapuç*|tapë fundore
+plug	tapë mashkull|tapa mashkull
+adapter	adaptor*|përshtatës*|pershtates*
+flange	fllanxh*|flanxh*|fllanxha
+pipe	tubacion*|tubi|tubat|tubave|tubo
+copper	bakër|bakri|bakre|bakër|prej bakri
+brass	tunxh*|bronz* i verdhë
+bronze	bronz*
+stainless steel	inoks|inox|çelik* inoks|çelik* i pandryshkshëm|celik* inoks|celik i pandryshkshem
+steel	çelik*|celik*
+galvanized	galvanizuar|i galvanizuar|e galvanizuar|zinkuar|i zinkuar
+cast iron	gizë|gize|hekur* i derdhur|hekur* i shkrirë
+plastic	plastik*
+threaded	me filetë|filet*|fileto|me fileto
+male	mashkull|meshkuj|filetë e jashtme|fileto e jashtme
+female	femër|femer|femra|filetë e brendshme|fileto e brendshme
+sweat	për saldim|saldim*|me saldim|për ngjitje
+toilet	tualet*|wc|guaç*|vaskë tualeti|kazan* tualeti
+sink	lavaman*|lavaman|lavamani
+kitchen sink	lavapjat*|lavaman* kuzhine|lavaman* i kuzhinës
+faucet	rubinet*|çezm*|cezm*|miksera|mikser*
+shower	dush*
+shower head	kokë dushi|koke dushi|telefon dushi|telefon* dushi|kokë e dushit
+bathtub	vask*
+drain	kullues*|shkarkim*|kanalizim*|shkarkues*
+floor drain	pilet*|sifon dyshemeje|kullues* dyshemeje|pilet dyshemeje
+p-trap	sifon*
+cartridge	kartuç*|kartuc*|fishek*
+water heater	bojler*|ngrohës* uji|ngrohes* uji|ngrohës* i ujit
+tankless water heater	ngrohës* i menjëhershëm|ngrohës* me rrjedhje|bojler* i menjëhershëm|ngrohës* i çastit
+boiler	kaldaj*|kaldajë
+expansion tank	enë zgjerimi|ene zgjerimi|vazo zgjerimi|depozit* zgjerimi|enë ekspansioni|vaso ekspansioni
+circulator	pomp* qarkulluese|pomp* qarkullimi|qarkullues*|pompë cirkulimi
+pump	pomp*
+sump pump	pomp* zhytëse|pomp* zhytese|pomp* drenazh*
+well pump	pomp* pusi|pomp* për pus|pomp* e pusit
+air conditioner	kondicioner*|klimatizues*|klimë|klima|kondicionieri
+heat pump	pomp* nxehtësie|pomp* nxehtesie|pompë termike
+mini split	split|kondicioner* split
+thermostat	termostat*
+filter	filtri|filtra|filtrat
+duct	kanal* ajri|tub* ajri|kanal* ventilimi
+refrigerant	gaz* ftohës*|gaz* ftohes*|freon*|gaz* për kondicioner
+capacitor	kondensator*
+motor	motorr*|motori
+fan	ventilator*
+compressor	kompresor*
+radiator	kalorifer*|radiatori|radiator* ngrohjeje
+radiant	ngrohje dyshemeje|ngrohje me dysheme|ngrohje në dysheme
+pipe wrench	çelës* tubash|celes* tubash|çelës* suedez|celes* suedez|çelës* për tuba|pincë tubash|pince tubash
+pipe cutter	prerës* tubash|preres* tubash|prerëse tubash|gërshërë tubash
+solder	kallaj*|tel saldimi
+PTFE tape	shirit* teflon*|teflon|shirit* për fileto|shirit* izolues për fileto
+pipe thread sealant	kanap|kërp*|kerp*|pastë për filetë|paste per filete|pastë izoluese
+PVC cement	ngjitës* pvc|ngjites* pvc|zamk* pvc|kollë pvc|kolle pvc|ngjitës* për pvc
+clamp	kapës*|kapese|fasheto|fashetë|qafore
+insulation	izolim*|izolues*|izolant*
+gasket	guarnicion*|guarnicione|garnicion*
+hose	zorr*|zorrë uji
+lead free	pa plumb|pa plumbi|pa plumbit
+natural gas	gaz natyror|gazi natyror
+propane	propan*|gaz i lëngshëm|gaz i lengshem|bombol* gazi
+hot water	ujë i ngrohtë|uje i ngrohte|ujë të ngrohtë|ujë i nxehtë|uje i nxehte
+cold water	ujë i ftohtë|uje i ftohte|ujë të ftohtë
+repair kit	komplet* riparimi|kit riparimi|set riparimi|pjesë këmbimi
+water	ujë|uji|ujit|uje
+heating	ngrohj*
+gas	gaz|gazi|gazit
+electric	elektrik*
+kitchen	kuzhin*
+bathroom	banjo|banja|banjë
+inch	inç|inçi|inçe|col|cole
+1/2 inch	gjysmë inçi|gjysem inci|gjysmë col|gjysme cole
+3/4 inch	tre të katërtat|tre të katërtat e inçit
+for	për
+sewage pump	pomp* për ujëra të zeza|pomp* grirëse
+supply line	tub* fleksib*|fleksib*
+press	me presim|presim*
+butterfly valve	valvol* flutur*
+mixing valve	valvol* mishelimi
+air vent	valvol* shfryrëse|valvol* ajrimi
+toilet seat	kapak* wc|kapak* tualeti
+kitchen faucet	rubinet* për lavapjatë|mikser* kuzhine
+lavatory faucet	rubinet* për lavaman|rubinet* lavamani

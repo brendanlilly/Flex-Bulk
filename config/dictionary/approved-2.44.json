@@ -1,0 +1,716 @@
+{
+ "release": "2.44",
+ "note": "Review-backlog entries approved Oct 25 2026 (Claude for Brendan). A copy that lacks one gets it from here.",
+ "entries": [
+  {
+   "kind": "synonym",
+   "term": "22 refrigerant",
+   "to": "R-22 refrigerant",
+   "dept": "HVAC/R",
+   "definition": "R-22 refrigerant",
+   "why": "was off; typed 205 results, 0% on target; as the target 245, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "32 refrigerant",
+   "to": "R-32 refrigerant",
+   "dept": "HVAC/R",
+   "definition": "R-32 refrigerant",
+   "why": "was off; typed 234 results, 0% on target; as the target 245, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "410a",
+   "to": "R-410A",
+   "dept": "HVAC/R",
+   "definition": "R-410A refrigerant",
+   "why": "was off; typed 155 results, 0% on target; as the target 525, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "410A refrigerant",
+   "to": "R-410A refrigerant",
+   "dept": "HVAC/R",
+   "definition": "R-410A refrigerant",
+   "why": "was off; typed 12 results, 10% on target; as the target 245, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "454B refrigerant",
+   "to": "R-454B refrigerant",
+   "dept": "HVAC/R",
+   "definition": "R-454B refrigerant",
+   "why": "was off; typed 12 results, 40% on target; as the target 244, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "air conditioning unit",
+   "to": "air conditioner",
+   "dept": "HVAC/R",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "air eliminator",
+   "to": "air separator",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 320, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "ball shut off valve",
+   "to": "ball valve",
+   "dept": "Plumbing",
+   "why": "was off; typed 553 results, 0% on target; as the target 548, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "baseboard cabinet",
+   "to": "baseboard enclosure",
+   "dept": "Heating",
+   "why": "was review; typed 0 results, 0% on target; as the target 72, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "bath overflow plate",
+   "to": "tub overflow cover",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "bleed valve",
+   "to": "manual radiator air vent",
+   "dept": "Heating",
+   "why": "was review; typed 0 results, 0% on target; as the target 523, 75%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "blower cage",
+   "to": "blower wheel",
+   "dept": "HVAC/R",
+   "why": "was review; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "blower relay",
+   "to": "fan relay",
+   "dept": "HVAC/R and Heating",
+   "why": "was off; typed 454 results, 50% on target; as the target 420, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "cast iron rad",
+   "to": "cast iron radiator",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "CI pipe",
+   "to": "cast iron pipe",
+   "dept": "Plumbing",
+   "definition": "cast iron",
+   "why": "was off; typed 0 results, 0% on target; as the target 40, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "combination gas valve",
+   "to": "gas control valve",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "combustion tester",
+   "to": "combustion analyzer",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 476, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "commode",
+   "to": "toilet",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 300, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "CPVC glue",
+   "to": "CPVC solvent cement",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 189, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "crimping tool for PEX",
+   "to": "PEX crimp tool",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "ducted mini split",
+   "to": "concealed ducted indoor unit",
+   "dept": "HVAC/R",
+   "why": "was off; typed 600 results, 33% on target; as the target 600, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "FA adapter",
+   "to": "female adapter",
+   "dept": "Plumbing",
+   "why": "was review; typed 294 results, 55% on target; as the target 553, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "fan switching relay",
+   "to": "fan relay",
+   "dept": "HVAC/R and Heating",
+   "why": "was off; typed 454 results, 50% on target; as the target 420, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "faucet cart",
+   "to": "faucet cartridge",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "FD",
+   "to": "floor drain",
+   "any": [
+    "strainer",
+    "drain",
+    "trap",
+    "body",
+    "grate",
+    "pvc",
+    "cast iron",
+    "top"
+   ],
+   "dept": "Plumbing",
+   "why": "was review; typed 341 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "flushometer valve",
+   "to": "flushometer",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "forty five elbow",
+   "to": "45 degree elbow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 510, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "gas cock",
+   "to": "gas valve",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 474, 100%",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "gas-fired warm air furnace",
+   "to": "gas furnace",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "gate shut off valve",
+   "to": "gate valve",
+   "dept": "Plumbing",
+   "why": "was off; typed 543 results, 0% on target; as the target 533, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "gravity flow check",
+   "to": "flow-control check valve",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "hand held shower",
+   "to": "hand shower",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 572, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "handheld shower",
+   "to": "hand shower",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 572, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "ion exchange softener",
+   "to": "water softener",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "janitor sink",
+   "to": "service sink",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "janitorial sink",
+   "to": "service sink",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "laundry box",
+   "to": "washing machine outlet box",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "laundry sink",
+   "to": "utility sink",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 578, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "lav",
+   "to": "lavatory",
+   "dept": "Plumbing",
+   "why": "was off; typed 600 results, 50% on target; as the target 324, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "LLFD",
+   "to": "liquid-line filter-drier",
+   "dept": "HVAC/R",
+   "why": "was review; typed 0 results, 0% on target; as the target 350, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "long turn 90",
+   "to": "long sweep 90 degree elbow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 437, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "low water cut-off",
+   "to": "low-water cutoff",
+   "dept": "Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 75%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "modcon boiler",
+   "to": "modulating condensing boiler",
+   "dept": "Heating",
+   "why": "was review; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "moisture indicator sight glass",
+   "to": "refrigerant sight glass",
+   "dept": "HVAC/R",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "NH",
+   "to": "no hub",
+   "any": [
+    "coupling",
+    "band",
+    "clamp",
+    "cast iron",
+    "pipe",
+    "fitting",
+    "bend",
+    "tee",
+    "wye"
+   ],
+   "dept": "Plumbing",
+   "why": "was review; typed 455 results, 0% on target; as the target 40, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "ninety",
+   "to": "90 degree elbow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 544, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "ninety elbow",
+   "to": "90 degree elbow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 544, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "overflow plate",
+   "to": "tub overflow cover",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "PEX pinch tool",
+   "to": "PEX clamp tool",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 440, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "PVC glue",
+   "to": "PVC solvent cement",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 252, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "radiator thermostatic valve",
+   "to": "thermostatic radiator valve",
+   "dept": "Heating",
+   "why": "was off; typed 146 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "recovery unit",
+   "to": "refrigerant recovery machine",
+   "dept": "HVAC/R",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "reduced pressure principle backflow preventer",
+   "to": "reduced pressure zone assembly",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 150, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "running capacitor",
+   "to": "motor run capacitor",
+   "dept": "HVAC/R",
+   "why": "was review; typed 0 results, 0% on target; as the target 560, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sched 40",
+   "to": "sch 40",
+   "dept": "Plumbing",
+   "definition": "Schedule 40",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sched 80",
+   "to": "sch 80",
+   "dept": "Plumbing",
+   "definition": "Schedule 80",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "septic effluent pump",
+   "to": "effluent pump",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 550, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sewer ejector",
+   "to": "sewage ejector pump",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 565, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sewer grinder pump",
+   "to": "grinder pump",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 565, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sink supply hose",
+   "to": "faucet supply connector",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 360, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Sloane",
+   "to": "Sloan",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 717, 100%",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "spring loaded check",
+   "to": "spring check valve",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "spud washer for toilet tank",
+   "to": "tank-to-bowl gasket",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 75%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "squirrel cage wheel",
+   "to": "blower wheel",
+   "dept": "HVAC/R",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "starter collar",
+   "to": "starting collar",
+   "dept": "HVAC/R",
+   "why": "was off; typed 0 results, 0% on target; as the target 288, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "steamer boiler",
+   "to": "steam boiler",
+   "dept": "Heating",
+   "why": "was review; typed 0 results, 0% on target; as the target 576, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "step down transformer",
+   "to": "control transformer",
+   "dept": "HVAC/R and Heating",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "street ninety",
+   "to": "90 degree street elbow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sump pit pump",
+   "to": "sump pump",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 598, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "tank bowl donut",
+   "to": "tank-to-bowl gasket",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 75%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "tap",
+   "to": "faucet",
+   "any": [
+    "kitchen",
+    "bath",
+    "bathroom",
+    "sink",
+    "lav",
+    "lavatory",
+    "washroom"
+   ],
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "thermostatic tempering valve",
+   "to": "thermostatic mixing valve",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 320, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "toilet flex",
+   "to": "toilet supply connector",
+   "dept": "Plumbing",
+   "why": "was review; typed 461 results, 0% on target; as the target 180, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "trap seal primer",
+   "to": "trap primer",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "tub drain assembly",
+   "to": "bath waste and overflow",
+   "dept": "Plumbing",
+   "why": "was off; typed 0 results, 0% on target; as the target 454, 67%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "valve stem for faucet",
+   "to": "faucet stem",
+   "dept": "Plumbing",
+   "why": "was off; typed 454 results, 50% on target; as the target 600, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "vic coupling",
+   "to": "grooved coupling",
+   "dept": "PVF",
+   "why": "was off; typed 0 results, 0% on target; as the target 288, 100%",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "washer box",
+   "to": "washing machine outlet box",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "water closet",
+   "to": "toilet",
+   "dept": "Plumbing",
+   "why": "was review; typed 600 results, 0% on target; as the target 300, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "water filter canister",
+   "to": "filter housing",
+   "dept": "Plumbing",
+   "why": "was review; typed 0 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "WC",
+   "to": "toilet",
+   "any": [
+    "bowl",
+    "seat",
+    "carrier",
+    "flush",
+    "tank",
+    "elongated",
+    "round"
+   ],
+   "none": [
+    "in",
+    "inch",
+    "gauge",
+    "manometer",
+    "column"
+   ],
+   "dept": "Plumbing",
+   "why": "was review; typed 600 results, 0% on target; as the target 454, 100%",
+   "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "well x trol",
+   "to": "well tank",
+   "dept": "Water systems",
+   "why": "was off; typed 0 results, 0% on target; as the target 440, 100%",
+   "source": "Claude review, Sep 27 2026"
+  }
+ ]
+}

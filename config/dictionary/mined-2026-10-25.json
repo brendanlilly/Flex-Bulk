@@ -1,0 +1,546 @@
+{
+ "mined": "2026-10-25",
+ "entries": [
+  {
+   "kind": "synonym",
+   "term": "smoke pipe",
+   "to": "vent pipe",
+   "status": "review",
+   "why": "Single-wall smoke pipe is flue vent pipe.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 2825,
+    "ga4_queries": [
+     "smoke pipe",
+     "6\" smoke pipe"
+    ],
+    "answered": {
+     "not_carried": 2
+    },
+    "demo_titles": null,
+    "real_webb_items": 2,
+    "webb_examples": [
+     "northeast metal smoke pipe 6\" × 2 ft 24 ga black",
+     "northeast metal smoke pipe elbow 6\" 90° 24 ga"
+    ],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "slimduct",
+   "to": "line set cover kit",
+   "status": "live",
+   "why": "SlimDuct (Inaba Denko) is a line set cover.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 2533,
+    "ga4_queries": [
+     "slimduct"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "mini split stand",
+   "to": "condenser stand",
+   "status": "review",
+   "why": "A mini-split stand holds the outdoor unit.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1738,
+    "ga4_queries": [
+     "mini split stand"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 1,
+    "webb_examples": [
+     " quick-sling mini split stand 18\""
+    ],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "hot water heater",
+   "to": "water heater",
+   "status": "live",
+   "why": "A hot water heater is a water heater.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1654,
+    "ga4_queries": [
+     "electric hot water heater",
+     "hot water heater"
+    ],
+    "answered": {
+     "partial": 2
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "zip ties",
+   "to": "cable ties",
+   "status": "review",
+   "why": "Zip ties are cable ties.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1406,
+    "ga4_queries": [
+     "zip ties"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "slim duct",
+   "to": "line set cover kit",
+   "status": "live",
+   "why": "SlimDuct (Inaba Denko) is a line set cover.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1364,
+    "ga4_queries": [
+     "slim duct"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "air scoop",
+   "to": "air separator",
+   "status": "live",
+   "why": "B&G's Air Scoop is an air separator.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1302,
+    "ga4_queries": [
+     "air scoop",
+     "1\" AIR SCOOP",
+     "1 1/4 AIR SCOOP",
+     "1-1/4 AIR SCOOP"
+    ],
+    "answered": {
+     "not_carried": 4
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "circuit setter",
+   "to": "balancing valve",
+   "status": "live",
+   "why": "B&G's Circuit Setter is a balancing valve.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1078,
+    "ga4_queries": [
+     "circuit setter"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "kick space heater",
+   "to": "kickspace heater",
+   "status": "review",
+   "why": "Toe-kick and kickspace heaters are the same thing.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1066,
+    "ga4_queries": [
+     "kick space heater"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "polypro",
+   "to": "polypropylene vent pipe",
+   "status": "review",
+   "why": "PolyPro is a polypropylene vent for condensing appliances.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 1064,
+    "ga4_queries": [
+     "polypro"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "pigtail",
+   "to": "gauge siphon",
+   "status": "review",
+   "why": "A pigtail is a gauge siphon on steam, or a cord on an appliance: ambiguous.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 979,
+    "ga4_queries": [
+     "pigtail"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "blue monster",
+   "to": "PTFE tape",
+   "status": "live",
+   "why": "Blue Monster (Mill-Rose) is PTFE thread seal tape.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 954,
+    "ga4_queries": [
+     "blue monster"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "duct seal",
+   "to": "duct sealant",
+   "status": "review",
+   "why": "Duct seal is a duct sealant (or the putty that seals line-set penetrations: ask).",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 924,
+    "ga4_queries": [
+     "duct seal"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "mastic tape",
+   "to": "duct mastic tape",
+   "status": "review",
+   "why": "Mastic tape seals duct joints.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 924,
+    "ga4_queries": [
+     "mastic tape"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "spelling",
+   "term": "silcock",
+   "to": "sillcock",
+   "status": "live",
+   "why": "Common spelling of sillcock.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 889,
+    "ga4_queries": [
+     "silcock"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "hepex",
+   "to": "PEX oxygen barrier tubing",
+   "status": "live",
+   "why": "Uponor hePEX is oxygen-barrier PEX-a.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 867,
+    "ga4_queries": [
+     "hepex"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 1,
+    "webb_examples": [
+     "uponor hepex tubing 1/2\" × 300 ft"
+    ],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "tridicator",
+   "to": "boiler pressure temperature gauge",
+   "status": "review",
+   "why": "A tridicator reads boiler pressure and temperature.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 815,
+    "ga4_queries": [
+     "tridicator"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "3/8 nut",
+   "to": "3/8 flare nut",
+   "status": "review",
+   "why": "On HVAC searches, a 3/8 nut is usually a flare nut.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 765,
+    "ga4_queries": [
+     "3/8 nut"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "water feeder",
+   "to": "boiler water feeder",
+   "status": "review",
+   "why": "On a boiler, a water feeder is an automatic feeder.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 755,
+    "ga4_queries": [
+     "water feeder"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "rib relay",
+   "to": "relay",
+   "status": "review",
+   "why": "Functional Devices' RIB is an enclosed pilot relay.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 747,
+    "ga4_queries": [
+     "rib relay"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "toe kick heater",
+   "to": "kickspace heater",
+   "status": "review",
+   "why": "Toe-kick and kickspace heaters are the same thing.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 722,
+    "ga4_queries": [
+     "toe kick heater"
+    ],
+    "answered": {
+     "phrase_miss": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "hydrostat",
+   "to": "aquastat",
+   "status": "review",
+   "why": "Hydrolevel's Hydrostat is an electronic boiler control (aquastat and low-water cutoff in one); aquastat is the nearest kind.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 699,
+    "ga4_queries": [
+     "hydrostat"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": 0,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  },
+  {
+   "kind": "synonym",
+   "term": "equipment pad",
+   "to": "condenser pad",
+   "status": "review",
+   "why": "An equipment pad is the outdoor unit's pad.",
+   "how": "curated",
+   "evidence": {
+    "ga4_searches": 681,
+    "ga4_queries": [
+     "equipment pad"
+    ],
+    "answered": {
+     "not_carried": 1
+    },
+    "demo_titles": null,
+    "real_webb_items": 0,
+    "webb_examples": [],
+    "xref_nouns": 0,
+    "extended_titles": 0
+   },
+   "source": "Mined Oct 25 2026 (GA4 site search, xref lake, Extended Catalog)"
+  }
+ ]
+}

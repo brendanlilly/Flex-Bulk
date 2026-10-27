@@ -1,0 +1,171 @@
+# Polish (pl) · nouns and adjectives change their endings (zawór kulowy, zaworu kulowego, zawory kulowe), so most
+# terms are stems; both word orders where Polish uses both. GZ / GW = male / female thread; "szwed" = pipe wrench.
+valve	zawor*|zaworek*|zawork*|kurek*|kurk*
+ball valve	zawor* kulow*|kulow* zawor*|kurek* kulow*|kurk* kulow*|zaworek* kulow*|zawork* kulow*
+gate valve	zasuw*|zawor* zasuwow*
+globe valve	zawor* grzybkow*|grzybkow* zawor*
+check valve	zawor* zwrotn*|zwrotn* zawor*|klap* zwrotn*|zaworek* zwrotn*|zawork* zwrotn*
+butterfly valve	przepustnic*|zawor* motylkow*|zawor* klapow*
+relief valve	zawor* bezpieczenstw*|zawor* nadmiarow*|zawor* upustow*|zawor* bezpieczenstwa|grup* bezpieczenstw*
+pressure reducing valve	reduktor* cisnienia|zawor* redukcyjn*|reduktor* cisn*|zawor* redukujac*
+shutoff valve	zawor* odcinajac*|zawor* odcinaj*|zawor* glown*|zawor* odcinajacy
+angle stop	zawor* katow*|zaworek* katow*|zawork* katow*|kurek* katow*|kurk* katow*
+mixing valve	zawor* mieszajac*|zawor* trojdrogow*|zawor* mieszaj*
+zone valve	zawor* strefow*
+solenoid valve	elektrozawor*|zawor* elektromagnetyczn*|zawor* magnetyczn*
+backflow preventer	zawor* antyskazeniow*|zabezpieczeni* przed przeplywem zwrotnym|zawor* antyskaz*
+gas valve	zawor* gazow*|kurek* gazow*|kurk* gazow*|zawor* do gazu
+fill valve	zawor* napelniajac*|zawor* plywakow*|plywak*|zawor* napelniania
+flush valve	zawor* spustow*|zawor* splukujac*|mechanizm* splukujac*
+fitting	ksztaltk*|zlaczk*
+elbow	kolan*|kolank*|luk|luki|luku|lukow|lukiem
+street elbow	kolan* nyplow*|kolank* nyplow*|kolan* gz gw|kolan* gw gz
+tee	trojnik*|trojniczek*
+coupling	muf*|zlaczk* prost*|muf* prost*
+union	srubunek*|srubunk*|dwuzlaczk*|holender*
+reducer	redukcj*|zwezk*|redukcj* prost*
+bushing	tulej* redukcyjn*|redukcj* nyplow*
+nipple	nypel*|nypl*|nyple
+cap	zaslepk*|kapturek*|kapturk*
+plug	korek*|korki|korka|korkiem
+adapter	adapter*|lacznik*|przejsciow*|przejsciowk*
+flange	kolnierz*|kolnierz|flansz*
+wye	trojnik* skosn*|trojnik* 45|trojnik* pod katem
+cross	czwornik*|krzyzak*
+pipe	rur*|rurk*|rurociag*|wielowarstwow*
+copper	miedzian*|miedz|miedzi|miedzia
+brass	mosiezn*|mosiadz*|mosiadzu
+bronze	braz|brazu|brazow*
+stainless steel	nierdzewn*|stal* nierdzewn*|inox|kwasoodporn*
+steel	stal|stali|stalow*
+black iron	stal* czarn*|czarn* stal*
+galvanized	ocynkowan*|ocynk*|cynkowan*
+cast iron	zeliwn*|zeliwo|zeliwa
+plastic	plastikow*|tworzyw*|plastik*
+threaded	gwintowan*|gwint*|na gwint
+male	gwint* zewnetrzn*|gz|z gwintem zewnetrznym
+female	gwint* wewnetrzn*|gw|z gwintem wewnetrznym
+sweat	lutowan*|do lutowania|pod lut|lutowa*|kapilarn*
+press	zaprasow*|zaprasowywan*|do zaprasowania|press|zaciskan*
+push to connect	wcisk*|wciskow*|szybkozlacz*
+compression	zaciskow*|skrecan*|zlaczk* zaciskow*
+flare	kielichowan*|pod kielich|nakretk* kielichow*
+grooved	rowkow*|victaulic*
+toilet	toalet*|sedes*|misk* ustepow*|misk* wc|kibel*|kompakt* wc|muszl*|spluczk*
+sink	zlew*|umywalk*
+kitchen sink	zlewozmywak*|zlew* kuchenn*
+faucet	kran|kranu|kranem|krany|kranow|kranie|bateri*|kranik*
+kitchen faucet	bateri* kuchenn*|kran* kuchenn*|bateri* zlewozmywakow*|bateri* do zlewu|bateri* do kuchni
+lavatory faucet	bateri* umywalkow*|kran* umywalkow*|bateri* do umywalki|bateri* lazienkow*
+shower	prysznic*|natrysk*|brodzik*
+shower head	sluchawk* prysznicow*|deszczownic*|sluchawk*|glowic* prysznicow*
+bathtub	wann*
+urinal	pisuar*
+drain	odplyw*|spust*|kanalizacj*|odplywow*|kanalizacyj*
+floor drain	kratk* sciekow*|odplyw* liniow*|odplyw* podlogow*|wpust* podlogow*|odwodnieni* liniow*
+p-trap	syfon*
+cartridge	glowic*|kartusz*|wklad*|glowic* ceramiczn*
+aerator	perlator*
+flapper	uszczelk* zaworu spustowego|klapk* spluczki
+wax ring	uszczelk* do sedesu|pierscien* woskow*|uszczelk* miski
+toilet seat	desk* sedesow*|desk* wc
+garbage disposal	rozdrabniacz* odpadow|rozdrabniacz*|mlynek* do odpadow
+water filter	filtr* do wody|filtr* wody|filtr* wodn*
+water heater	podgrzewacz* wody|bojler*|podgrzewacz*|terma|termy|termie|zasobnik* cwu|zasobnik*|terme|terma elektryczna
+tankless water heater	przeplywow* podgrzewacz*|podgrzewacz* przeplywow*|przeplywow*|piecyk* gazow*|piecyk* lazienkow*|junkers*
+gas water heater	podgrzewacz* gazow*|terma gazowa|bojler* gazow*
+electric water heater	podgrzewacz* elektryczn*|terma elektryczna|bojler* elektryczn*
+boiler	kociol|kotl*|piec* gazow*|piec* co|piec|pieca|piece|piecem|piecu|piecow|kociol gazowy
+expansion tank	naczyni* wzbiorcz*|zbiornik* wzbiorcz*|naczyni* przeponow*|naczynie przeponowe
+circulator	pomp* obiegow*|pomp* cyrkulacyjn*|cyrkulacyjn*|pomp* co
+pump	pomp*
+sump pump	pomp* zatapialn*|pomp* do szamba|pomp* odwadniajac*|pomp* zanurzeniow*|pomp* do brudnej wody
+well pump	pomp* glebinow*|pomp* studzienn*|pomp* do studni
+pressure tank	zbiornik* hydroforow*|hydrofor*|zbiornik* cisnieniow*
+anode rod	anod*|anod* magnezow*
+thermocouple	termopar*|termoelement*|termoogniw*
+burner	palnik*
+igniter	zapalark*|zapalnik*|elektrod* zaplonow*|iskrownik*
+flame sensor	czujnik* plomienia|elektrod* jonizacyjn*|elektrod* kontroli plomienia
+pressure switch	presostat*|czujnik* cisnienia|wylacznik* cisnieniow*
+heating element	grzalk*
+furnace	piec* nadmuchow*|piec* powietrzn*|nagrzewnic*
+air conditioner	klimatyzator*|klimatyzacj*|klima
+condenser	skraplacz*|jednostk* zewnetrzn*|agregat*
+heat pump	pomp* ciepla|pomp* ciepl*
+air handler	central* wentylacyjn*|jednostk* wewnetrzn*|centrala
+mini split	split|klimatyzator* split|klimatyzator* scienn*|klimatyzator* typu split
+thermostat	termostat*|regulator* temperatury|sterownik* temperatury|glowic* termostatyczn*
+filter	filtr*
+air filter	filtr* powietrza|filtr* do powietrza
+duct	kanal|kanalu|kanaly|kanalow|kanalem|przewod* wentylacyjn*|kanal* wentylacyjn*|rur* wentylacyjn*|spiro
+register	anemostat*|nawiewnik*|kratk* wentylacyjn*|kratk* nawiewn*
+grille	kratk*
+damper	przepustnic* powietrza|przepustnic* wentylacyjn*|klap* wentylacyjn*
+refrigerant	czynnik* chlodnicz*|freon*
+line set	rur* chlodnicz*|instalacj* chlodnicz*|przewod* chlodnicz*|rurki do klimatyzacji
+capacitor	kondensator*
+contactor	stycznik*
+motor	silnik*|silniczek*
+fan	wentylator*|wiatrak*
+blower	dmuchaw*|wentylator* promieniow*
+compressor	sprezark*|kompresor*
+evaporator coil	parownik*|wymiennik* parownika
+radiator	grzejnik*|kaloryfer*|grzejnik* plytow*
+baseboard	grzejnik* listwow*|listw* grzewcz*|grzejnik* przypodlogow*
+radiant	ogrzewani* podlogow*|podlogowk*|ogrzewani* plaszczyznow*
+humidifier	nawilzacz*
+dehumidifier	osuszacz*
+vent	wywiewk*|odpowietrzenie|napowietrzacz*|zawor* napowietrzajac*|wywietrzak*
+wrench	klucz*|klucz* nastawn*|zabk*|klucz* plaski*|klucz* francusk*
+pipe wrench	klucz* do rur|klucz* nastawn* do rur|szwed*|klucz* szwedzki*|klucz* szwedz*
+pipe cutter	obcinak* do rur|obcinak*|przecinak* do rur|obcinark*
+torch	lutlamp*|palnik* do lutowania|palnik* lutowniczy
+solder	lut|lutu|lutem|cyna|cyny|cyne|cyna lutownicza|spoiw*
+flux	topnik*|past* lutownicz*|pasta* do lutowania
+PTFE tape	tasm* teflonow*|teflon|tasm* ptfe|tasm* do gwintow
+pipe thread sealant	past* uszczelniajac*|past* do gwintow|pakul*|nic* uszczelniajac*|loctite|unipak*
+silicone	silikon*
+PVC cement	klej* do pcv|klej* do pvc|klej* pcv|klej* pvc|klej* do rur|klej*
+primer	srodk* czyszczac*|srodek czyszczacy|preparat* do czyszczenia pcv|primer*
+hanger	wieszak*|uchwyt* do rur|zawiesi*
+strap	tasm* montazow*|tasm* perforowan*
+clamp	obejm*|opask* zaciskow*|zacisk*
+insulation	izolacj*|otulin*|otulin* do rur
+gasket	uszczelk*|uszczelnieni*
+o-ring	oring*|o-ring*|pierscien* uszczelniajac*|pierscien* o
+washer	podkladk*
+screw	wkret*|srubk*
+bolt	srub*
+nut	nakretk*
+hose	waz|weza|weze|wezy|weza ogrodowego
+supply line	wezyk* w oplocie|wezyk* do baterii|wezyk* przylaczeniow*|przylacze* elastyczn*|wezyk*
+lead free	bezolowiow*|bez olowiu
+potable water	woda pitna|wody pitnej|do wody pitnej|wode pitna
+natural gas	gaz ziemny|gazu ziemnego|gaz sieciowy
+propane	propan*|gaz w butli|gaz plynny|lpg
+hot water	ciepla woda|cieplej wody|cwu|goraca woda|goracej wody|c.w.u.
+cold water	zimna woda|zimnej wody|zw
+repair kit	zestaw* naprawcz*|zestaw* serwisow*
+kit	zestaw*|komplet*
+water	woda|wody|wode|wod
+heating	ogrzewani*|centralne ogrzewanie|c.o.
+gas	gaz|gazu|gazow*
+electric	elektryczn*
+kitchen	kuchnia|kuchni|kuchenn*
+bathroom	lazienk*
+inch	cal|cala|cali|calowy|calow*|cal.
+1/2 inch	pol cala|polcalowy|polcalow*
+3/4 inch	trzy czwarte cala|trzy czwarte
+1-1/2 inch	poltora cala
+gallon	galon*
+volt	wolt*
+ton	ton|tony|tona
+air vent	odpowietrznik*
+black iron pipe	rur* czarn*|czarn* rur*
+copper pipe	rur* miedzian*|miedzian* rur*
+1/4 inch	cwierc cala
+1-1/4 inch	cal i cwierc|5/4
+pvc	pcv
+reversing valve	zawor* czterodrogow*|zawor* 4-drogow*|zawor* rewersyjn*
+TXV valve	zawor* rozprezn*|zawor* rozprężn*|termostatyczn* zawor* rozprezn*

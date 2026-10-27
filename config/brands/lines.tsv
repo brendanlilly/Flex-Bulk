@@ -1,0 +1,72 @@
+# FlexSearch product lines (v2.42): a brand's named product lines, as customers search them ("lochinvar knight",
+# "bosch greenstar", "toto drake"). Lines the catalog lists are also read from its own series attribute; this file adds
+# the ones customers type that the catalog may not list, and the kind of product each line is, so a line the catalog
+# doesn't have still finds that brand's products of that kind ("No Knight line here. These are Lochinvar boilers.").
+#
+# columns: brand	line	aliases (| separated)	kind (the product words to search)	alone	note
+#   note   (optional) what the page says instead of the standard line notice
+#   kind   "none": nothing here stands in for it (a different system), so the page shows nothing and says why
+#   alone  yes: the line names the brand by itself ("greenstar" is Bosch); no: only after the brand ("knight" alone is
+#          too common a word); generic: the trade uses the name for the product type ("propress" is any copper press
+#          fitting), so alone it searches the kind without holding the brand
+Lochinvar	Knight	knight	boiler	no
+Lochinvar	Noble	noble	combi boiler	no
+Lochinvar	Armor	armor	boiler	no
+Lochinvar	Shield	shield	water heater	no
+Bradford White	Brute	brute|brute elite|brute magnum	boiler	no
+Bosch	Greenstar	greenstar|green star	combi boiler	yes
+Bosch	IDS	ids|ids 2.0|ids premium	heat pump	no
+Burnham	Alta	alta	combi boiler	no
+Toto	Drake	drake|drake ii	toilet	no
+Kohler	Highline	highline|high line	toilet	no
+American Standard	Cadet	cadet	toilet	no
+American Standard	Champion	champion	toilet	no
+Moen	Flo	flo|flo smart water	water shutoff	no
+Moen	Align	align	faucet	no
+Delta	Trinsic	trinsic	faucet	yes
+Delta	Leland	leland	faucet	no
+Milwaukee	Packout	packout|pack out	tool storage	yes
+Grundfos	Alpha	alpha|alpha2|alpha 2	circulator	no
+Grundfos	UPS	ups15|ups 15|ups	circulator	no
+Taco	Bumblebee	bumblebee|bumble bee	circulator	yes
+Taco	007	007	circulator	no
+Taco	007	007e|007-f5|007-f5-7ifc|007ifc|007 f5	circulator	yes
+Navien	NPE	npe|npe-a|npe-2	tankless water heater	yes
+Navien	NCB	ncb|ncb-e	combi boiler	yes
+Navien	NHB	nhb	boiler	yes
+Rinnai	RU	ru|rur|ru199|ru180	tankless water heater	no
+Rinnai	i-Series	i-series|i series|i060|i090|i120|i150	combi boiler	no
+Weil-McLain	Ultra	ultra	boiler	no
+Weil-McLain	Evergreen	evergreen	boiler	no
+Weil-McLain	GV90+	gv90|gv90+	boiler	yes
+Buderus	G115	g115	boiler	yes
+Buderus	GB142	gb142	boiler	yes
+Viega	ProPress	propress|pro press	press fitting	generic
+Viega	MegaPress	megapress|mega press|megapress g	none	generic	MegaPress is Viega's press system for steel pipe, and the demo catalog has no steel press fittings. Copper press fittings don't fit steel pipe; ask your branch for MegaPress.
+Viega	PureFlow	pureflow|pure flow	pex	yes
+Uponor	ProPEX	propex|pro pex	pex fitting	generic
+Honeywell	T6 Pro	t6|t6 pro	thermostat	no
+Honeywell	Lyric	lyric	thermostat	no
+Honeywell	VisionPro	visionpro|vision pro	thermostat	yes
+Caleffi	Discal	discal	air separator	yes
+Caleffi	Dirtcal	dirtcal	dirt separator	yes
+Spirotherm	Spirovent	spirovent|spiro vent	air separator	yes
+Bell & Gossett	ecocirc	ecocirc|eco circ	circulator	yes
+Bell & Gossett	Series 100	series 100|nrf	circulator	no
+Sloan	Royal	royal	flushometer	no
+Sloan	Regal	regal	flushometer	no
+Rheem	Marathon	marathon	water heater	no
+Rheem	Prestige	prestige	furnace	no
+A. O. Smith	Voltex	voltex	heat pump water heater	yes
+Mitsubishi Electric	Hyper-Heat	hyper heat|hyperheat|h2i	heat pump	yes
+Fujitsu	Halcyon	halcyon	mini split	yes
+# v2.44: model series people type as the product (the Oct 25 trade-vocabulary probes)
+Watts	LF25AUB	25aub|lf25aub|25 aub|lf 25aub|n45b|lfn45b	pressure reducing valve	yes
+Watts	LF009	009|lf009|009m2|lf009m2|009 m2	reduced pressure zone assembly	no
+Watts	9D	9d|n9|9 d	dual check	no
+Amtrol	Extrol	extrol|ex30|ex 30|ex-30|ex60|ex 60	expansion tank	yes
+Amtrol	Well-X-Trol	well x trol|wellxtrol|well-x-trol|wx202|wx 202	none	yes	Well-X-Trol is Amtrol's well pressure tank, and the demo catalog has no well tanks. Ask your branch for Well-X-Trol.
+Bell & Gossett	Series 100	100|series 100|nrf	circulator	no
+Bell & Gossett	Monoflo	monoflo|mono flo|mono-flo	none	yes	Monoflo is Bell & Gossett's diverter tee for one-pipe hot-water systems, and the demo catalog has none. Ask your branch for Monoflo tees.
+Taco	Hy-Vent	hy vent|hyvent|hy-vent	air vent	yes
+Grundfos	UPS	ups15-58|ups 15-58|ups15 58|ups26|ups 26	circulator	yes

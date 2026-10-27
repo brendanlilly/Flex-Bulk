@@ -1,0 +1,4 @@
+{
+  "_note": "Display-name overrides for demo users (synthetic data). Keys are user_id; applied when account data loads.",
+  "50680": {"first_name": "Brendan", "email": "brendan@kennebecheatingcoo.com"}
+}

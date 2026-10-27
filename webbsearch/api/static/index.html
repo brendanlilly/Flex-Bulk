@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flex Bulk</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon.png">
+<link rel="stylesheet" href="/static/app.css">
+<link rel="stylesheet" href="/static/bulkapp.css">
+</head>
+<body>
+<header class="top fb-top">
+  <a class="logo" href="#new" title="Flex Bulk: a new order" aria-label="F.W. Webb · Flex Bulk, new order">
+    <img class="mark" src="/static/brand/fwwebb-mark.png" alt="F.W. Webb" width="40" height="40">
+    <span class="wm"><span class="w1">Flex<b>Bulk</b></span><span class="beta">bulk order matching · <span id="ver">v1.0</span></span></span>
+  </a>
+  <nav class="fb-nav" aria-label="Pages">
+    <a href="#new" data-nav="new">New order</a>
+    <a href="#orders" data-nav="orders">Orders</a>
+  </nav>
+  <span class="fb-sp"></span>
+  <div class="hdr-ctl">
+    <label class="pill2" title="Pickup branch: stock, transfers and substitutes are worked out for it"><svg viewBox="0 0 24 24"><path d="M12 22s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      <span class="two"><small>Pickup branch</small><b id="branchLbl">…</b></span><svg class="caret" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><select id="branch" aria-label="Pickup branch"></select></label>
+    <span class="vr" aria-hidden="true"></span>
+    <label class="pill2" title="Price level for this order"><svg viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>
+      <span class="two"><small>Price level</small><b id="levelLbl">List</b></span><svg class="caret" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><select id="level" aria-label="Price level"><option value="">List</option></select></label>
+    <span class="vr" aria-hidden="true"></span>
+    <button class="pill2" id="staffBtn" title="Your name goes on the orders you save"><span class="avatar" id="avatar">?</span>
+      <span class="two"><small>Prepared by</small><b id="staffLbl">Add your name</b></span></button>
+    <a class="pill2 fb-dash" href="/admin" target="_blank" rel="noopener" title="Settings: crosses, brand order, weights, dictionary, learned crosses"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="two"><small>Settings</small><b>Dashboard</b></span></a>
+  </div>
+</header>
+<main id="main" class="fb-main"></main>
+<footer class="fb-foot muted" id="foot"></footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="/static/csv.js"></script>
+<script src="/static/glyphs.js"></script>
+<script src="/static/bulkapp.js"></script>
+<script src="/static/bulk.js"></script>
+</body>
+</html>

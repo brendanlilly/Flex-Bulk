@@ -1,0 +1,156 @@
+# The English every language file translates to: the catalog's own words (each checked to find its products, or the
+# "not carried" notice where the demo catalog lacks it). tier: core = every language; full = the top five as well.
+valve	core
+ball valve	core
+gate valve	core
+globe valve	full
+check valve	core
+butterfly valve	full
+relief valve	core
+pressure reducing valve	core
+shutoff valve	core
+angle stop	full
+mixing valve	full
+zone valve	full
+solenoid valve	full
+backflow preventer	full
+gas valve	core
+fill valve	full
+flush valve	full
+fitting	core
+elbow	core
+street elbow	full
+tee	core
+coupling	core
+union	core
+reducer	core
+bushing	full
+nipple	core
+cap	core
+plug	core
+adapter	core
+flange	core
+wye	full
+cross	full
+pipe	core
+copper	core
+brass	core
+bronze	full
+stainless steel	core
+steel	core
+black iron	full
+galvanized	core
+cast iron	core
+plastic	core
+threaded	core
+male	core
+female	core
+sweat	core
+press	full
+push to connect	full
+compression	full
+flare	full
+grooved	full
+toilet	core
+sink	core
+kitchen sink	core
+faucet	core
+kitchen faucet	full
+lavatory faucet	full
+shower	core
+shower head	core
+bathtub	core
+urinal	full
+drain	core
+floor drain	core
+p-trap	core
+cartridge	core
+aerator	full
+flapper	full
+wax ring	full
+toilet seat	full
+garbage disposal	full
+water filter	full
+water heater	core
+tankless water heater	core
+gas water heater	full
+electric water heater	full
+boiler	core
+expansion tank	core
+circulator	core
+pump	core
+sump pump	core
+well pump	core
+pressure tank	full
+anode rod	full
+thermocouple	full
+burner	full
+igniter	full
+flame sensor	full
+pressure switch	full
+heating element	full
+furnace	full
+air conditioner	core
+condenser	full
+heat pump	core
+air handler	full
+mini split	core
+thermostat	core
+filter	core
+air filter	full
+duct	core
+register	full
+grille	full
+damper	full
+refrigerant	core
+line set	full
+capacitor	core
+contactor	full
+motor	core
+fan	core
+blower	full
+compressor	core
+evaporator coil	full
+radiator	core
+baseboard	full
+radiant	core
+humidifier	full
+dehumidifier	full
+vent	full
+wrench	full
+pipe wrench	core
+pipe cutter	core
+torch	full
+solder	core
+flux	full
+PTFE tape	core
+pipe thread sealant	core
+silicone	full
+PVC cement	core
+primer	full
+hanger	full
+strap	full
+clamp	core
+insulation	core
+gasket	core
+o-ring	full
+washer	full
+screw	full
+bolt	full
+nut	full
+hose	core
+supply line	full
+lead free	core
+potable water	full
+natural gas	core
+propane	core
+hot water	core
+cold water	core
+repair kit	core
+kit	full
+water	core
+heating	core
+gas	core
+electric	core
+kitchen	full
+bathroom	full

@@ -1,0 +1,213 @@
+"""Flex Bulk 1.0: the item, stock and price files load through the mapping; stock and prices come from them; orders
+save, reopen and export; the staff app's endpoints match, price, look up and record choices."""
+from __future__ import annotations
+
+import io
+import json
+
+import pandas as pd
+import pytest
+
+from flexbulk import loader
+
+
+# ------------------------------------------------------------------ loading files
+ITEMS = pd.DataFrame({
+    "ITEM NO": ["1001", "1002", "1002", "1003", "", "1004"],
+    "Item Description": ["NIBCO 3/4 in. Copper Sweat Ball Valve Full Port", "Charlotte 2 in. PVC Sch 40 90 Elbow",
+                         "duplicate row", "Uponor 1/2 in. PEX-B Tubing 100 ft Coil", "no number", ""],
+    "Vendor Name": ["NIBCO", "Charlotte", "x", "Uponor", "", "Acme"],
+    "MPN": ["T-585-70-66", "PVC 02300 0600", "", "F1040500", "", "Z-1"],
+    "Department": ["Plumbing", "Plumbing", "", "Plumbing", "", ""],
+    "Status": ["Active", "Active", "", "Discontinued", "", ""],
+})
+
+
+def _cfg(layout="long"):
+    c = loader.config()
+    c["stock"]["layout"] = layout
+    return c
+
+
+@pytest.fixture()
+def files(tmp_path):
+    inc = tmp_path / "incoming"
+    inc.mkdir()
+    ITEMS.to_excel(inc / "items.xlsx", index=False)
+    pd.DataFrame({"Item #": ["1001", "1001", "1002", "9999"], "Whse": ["100", "102", "100", "100"],
+                  "QOH": ["12", "3", "0", "5"]}).to_csv(inc / "stock.csv", index=False)
+    pd.DataFrame({"Item": ["1001", "1002", "1003", "7777"], "List Price": ["$1,204.50", "4.10", "", "9"],
+                  "Contractor Price": ["800", "", "", "5"]}).to_parquet(inc / "prices.parquet", index=False)
+    return inc
+
+
+def test_items_stock_and_prices_load_through_the_mapping(files, tmp_path):
+    out = tmp_path / "data"
+    r = loader.load(log=lambda *_: None, incoming=files, data_dir=out, cfg=_cfg())
+    p = pd.read_parquet(out / "canonical" / "products.parquet").set_index("sku")
+    assert list(p.index) == ["1001", "1002", "1003"]                      # blank #, blank description, duplicate: out
+    assert p.loc["1001", "brand"] == "NIBCO" and p.loc["1001", "mfr_part"] == "T-585-70-66"
+    assert p.loc["1001", "list_price"] == pytest.approx(1204.50)          # "$1,204.50" read as a number
+    assert p.loc["1003", "status"] == "D" and p.loc["1003", "list_price"] == 0
+    assert json.loads(p.loc["1001", "attrs"]) == {"size": "3/4", "material": "copper", "connection": "sweat"}
+    assert p.loc["1001", "cat3"] == "Plumbing" and p.loc["1001", "family"] == "plumbing"   # categories fall back
+    assert p.loc["1001", "stock_tier"] != "dc" and p.loc["1002", "stock_tier"] == "dc"     # from the branches holding it
+    st = pd.read_parquet(out / "canonical" / "stock.parquet")
+    assert set(map(tuple, st[["sku", "branch_id"]].to_numpy())) == {("1001", "100"), ("1001", "102")}
+    pr = pd.read_parquet(out / "canonical" / "prices.parquet").set_index("sku")
+    assert pr.loc["1001", "Contractor"] == 800 and pd.isna(pr.loc["1002", "Contractor"])
+    w = " ".join(r["warnings"])
+    assert "duplicate item numbers" in w and "no item number" in w and "not on the item list" in w and "no list price" in w
+    assert r["counts"]["items"] == 3 and r["price_levels"] == ["Contractor"]
+    for t in ("accounts", "orders", "order_lines", "invoices", "content"):         # empty, but readable
+        assert pd.read_parquet(out / "canonical" / f"{t}.parquet").empty
+
+
+def test_wide_stock_layout(files, tmp_path):
+    (files / "stock.csv").unlink()
+    pd.DataFrame({"Item #": ["1001", "1003"], "QOH_100": [4, 0], "QOH_131": [0, 7]}).to_csv(files / "stock.csv", index=False)
+    out = tmp_path / "data"
+    loader.load(log=lambda *_: None, incoming=files, data_dir=out, cfg=_cfg("wide"))
+    st = pd.read_parquet(out / "canonical" / "stock.parquet")
+    assert sorted(map(tuple, st[["sku", "branch_id", "qty"]].to_numpy().tolist())) == [("1001", "100", 4.0), ("1003", "131", 7.0)]
+
+
+def test_a_missing_required_column_says_which_and_what_the_file_has(files, tmp_path):
+    ITEMS.rename(columns={"Item Description": "Words"}).to_excel(files / "items.xlsx", index=False)
+    with pytest.raises(ValueError, match=r"no column for title.*The file has: ITEM NO, Words"):
+        loader.load(log=lambda *_: None, incoming=files, data_dir=tmp_path / "d", cfg=_cfg(), write=False)
+
+
+def test_prices_fall_back_to_list(tmp_path):
+    from flexbulk.prices import Prices
+    pd.DataFrame({"sku": ["a", "b"], "list_price": [10.0, 0.0], "Net": [7.5, None]}).to_parquet(tmp_path / "p.parquet")
+    pr = Prices(tmp_path / "p.parquet")
+    assert pr.levels == ["Net"] and pr.price("a", "Net") == (7.5, "Net") and pr.price("a", None) == (10.0, "list")
+    assert pr.price("b", "Net") == (None, "none")
+    c = {"kind": "catalog", "sku": "a", "price": 99}
+    pr.apply(c, "Net")
+    assert c["price"] == 7.5 and c["list_price"] == 10.0 and c["price_basis"] == "Net"
+
+
+def test_stock_comes_from_the_stock_file(engine):
+    import numpy as np
+    from webbsearch.config import settings
+    av = engine.availability
+    assert av.table is not None
+    st = pd.read_parquet(settings.canonical_dir / "stock.parquet").head(50)
+    for sku, b, q in zip(st["sku"], st["branch_id"], st["qty"]):
+        i, bi = engine.catalog.sku_to_idx[sku], av.pos[str(b)]
+        if av.counter[bi]:
+            assert av._qty(np.array([i]), np.array([bi]))[0, 0] == int(round(q))
+
+
+# ------------------------------------------------------------------ orders
+def test_orders_save_reopen_and_export(tmp_path):
+    from flexbulk.orders import Orders, to_csv, to_entry_csv, to_xlsx
+    o = Orders(tmp_path / "o.sqlite")
+    item = {"sku": "1001", "title": "NIBCO 3/4 Ball Valve", "brand": "NIBCO", "mfr_part": "T-585", "price": 12.5, "units": 4,
+            "fulfil": {"text": "12 on hand at Bedford", "status": "pickup"}, "why": [{"k": "webb", "t": "Webb's #1 brand"}]}
+    rows = [{"ln": {"n": 1, "text": "3/4 ball valve", "qty": 4, "crop": "data:image/png;base64,AAAA"}, "state": "ok",
+             "item": item, "m": {"note": "", "options": [item], "crop": "x"}, "confirmed": True},
+            {"ln": {"n": 2, "text": "=HYPERLINK(\"x\")", "qty": 1}, "state": "none", "item": None, "m": {"note": "Nothing relevant found"}},
+            {"ln": {"n": 3, "text": "", "qty": 1}, "state": "new"}]
+    s = o.save({"customer_no": "C-77", "customer_name": "Merrimack Mechanical", "job": "Library", "staff": "Dana", "rows": rows})
+    assert s["id"].startswith("B") and s["n_lines"] == 2 and s["n_confirmed"] == 1 and s["total"] == 50.0
+    got = o.get(s["id"])
+    assert got["rows"][0]["ln"].get("crop") is None and "crop" not in got["rows"][0]["m"]     # bulky bits not kept
+    o.save({**got, "job": "Library phase 2", "rows": got["rows"]})                             # same id: replaced
+    assert o.get(s["id"])["job"] == "Library phase 2" and len(o.list()) == 1
+    assert o.list(q="merrimack")[0]["id"] == s["id"] and o.customers("C-7")[0]["customer_name"] == "Merrimack Mechanical"
+    csv_ = to_csv(o.get(s["id"])).decode("utf-8-sig")
+    assert "C-77 · Merrimack Mechanical" in csv_ and "'=HYPERLINK" in csv_ and "Not found" in csv_
+    assert to_entry_csv(o.get(s["id"])).decode("utf-8-sig").splitlines() == ["Item #,Qty", "1001,4"]
+    from openpyxl import load_workbook
+    wb = load_workbook(io.BytesIO(to_xlsx(o.get(s["id"]))))
+    assert wb.sheetnames == ["Order", "Order entry"] and wb["Order entry"]["A2"].value == "1001"
+    assert o.delete(s["id"]) and o.get(s["id"]) is None
+
+
+# ------------------------------------------------------------------ the app
+@pytest.fixture(scope="module")
+def client(engine, tmp_path_factory):
+    import os
+    os.environ["FLEXBULK_ORDERS_DB"] = str(tmp_path_factory.mktemp("orders") / "o.sqlite")
+    from fastapi.testclient import TestClient
+    from webbsearch.api import server
+    server._engine, server._bom, server._prices = engine, None, None
+    import flexbulk.orders as fo
+    fo._store = None
+    return TestClient(server.app)
+
+
+def test_setup_and_health(client):
+    s = client.get("/api/setup").json()
+    assert s["items"] > 1000 and s["branches"] and s["stock"] and s["levels"]
+    assert client.get("/api/health").json()["app"] == "flex-bulk"
+
+
+def test_match_prices_at_the_orders_level(client):
+    lv = client.get("/api/setup").json()["levels"][0]
+    body = {"lines": [{"text": "3/4 ball valve sweat", "qty": 6}, {"text": "", "qty": 1}], "branch": "100"}
+    a = client.post("/api/bom/match", json=body).json()
+    b = client.post("/api/bom/match", json={**body, "level": lv}).json()
+    assert len(a["lines"]) == 1 and a["level"] == "List" and b["level"] == lv
+    oa, ob = a["lines"][0]["options"][0], b["lines"][0]["options"][0]
+    assert oa["sku"] == ob["sku"] and oa["price"] == oa["list_price"] and ob["price"] < oa["price"]
+    assert oa["fulfil"]["status"] in ("pickup", "partial", "transfer", "dc", "special")
+
+
+def test_lookup_and_item_detail(client):
+    d = client.get("/api/lookup", params={"q": "pex b tubing 1/2", "branch": "100", "qty": 200, "uom": "FT"}).json()
+    assert d["items"] and all("fulfil" in c for c in d["items"])
+    sku = d["items"][0]["sku"]
+    p = client.get(f"/api/product/{sku}", params={"branch": "100"}).json()
+    assert p["sku"] == sku and p["branches"] and p["branches"][0]["home"]
+    assert client.get("/api/product/not-an-item").status_code == 404
+
+
+def test_a_customers_own_picks_count_for_more(client, engine):
+    line = {"text": "3/4 sweat ball valve full port", "qty": 4}
+    before = client.post("/api/bom/match", json={"lines": [line], "branch": "100", "customer": "C-1"}).json()["lines"][0]
+    pick = before["options"][3]
+    for i in range(1):            # one pick: enough for this customer, not yet for everyone (learned_min = 2)
+        r = client.post("/api/track", json={"kind": "bulk_choice", "sid": f"s{i}", "sku": pick["sku"], "customer": "C-1",
+                                            "meta": {"key": before["key"], "brand": pick["brand"], "family": pick["family"]}})
+        assert r.json()["ok"]
+    mine = client.post("/api/bom/match", json={"lines": [line], "branch": "100", "customer": "C-1"}).json()["lines"][0]
+    other = client.post("/api/bom/match", json={"lines": [line], "branch": "100", "customer": "C-2"}).json()["lines"][0]
+    pos_mine = [o["sku"] for o in mine["options"]].index(pick["sku"])
+    assert pos_mine < 3 and any(w["k"] == "learned" for w in mine["options"][pos_mine]["why"])
+    assert [o["sku"] for o in other["options"]].index(pick["sku"]) == 3          # another customer: unchanged
+    assert client.post("/api/track", json={"kind": "click", "sku": "x"}).status_code == 422
+
+
+def test_an_item_cross_to_an_item_not_on_the_list_is_ignored(engine):
+    from webbsearch.api import server
+    from webbsearch.retrieval.entitlements import ANONYMOUS
+    s = {**engine.merch.get(), "crosses": [{"id": "x1", "kind": "item", "enabled": True, "scope": "company",
+                                             "from_text": "kohler highline toilet", "from_part": "", "from_brand": "",
+                                             "to_sku": "NOT-ON-LIST", "note": ""}]}
+    m = server.bom().match({"text": "kohler highline toilet", "qty": 1}, ANONYMOUS, None, settings=s)
+    assert m["status"] in ("rec", "none") and "cross" not in m
+
+
+def test_orders_through_the_api(client):
+    r = client.post("/api/orders", json={"customer_no": "C-9", "customer_name": "Kennebec Plumbing", "staff": "Pat",
+                                         "rows": [{"ln": {"text": "3/4 ball valve", "qty": 2}, "state": "ok",
+                                                   "item": {"sku": "1", "title": "Valve", "price": 3.0, "units": 2}}]}).json()
+    assert r["n_confirmed"] == 1 and r["total"] == 6.0
+    assert client.get("/api/orders", params={"q": "kennebec"}).json()[0]["id"] == r["id"]
+    x = client.get(f"/api/orders/{r['id']}/export", params={"fmt": "xlsx"})
+    assert x.status_code == 200 and x.headers["content-type"].startswith("application/vnd.openxmlformats")
+    assert "Kennebec-Plumbing" in x.headers["content-disposition"]
+    assert client.get(f"/api/orders/{r['id']}/export", params={"fmt": "pdf"}).status_code == 422
+    assert client.delete(f"/api/orders/{r['id']}").json()["ok"]
+    assert client.get(f"/api/orders/{r['id']}").status_code == 404
+
+
+def test_the_page_and_dashboard_load(client):
+    h = client.get("/").text
+    assert "Flex<b>Bulk</b>" in h and "/static/bulk.js?v=" in h and "/static/app.js" not in h
+    a = client.get("/admin").text
+    assert "Flex<b>Bulk</b> <span class=\"w2\">Settings</span>" in a and 'data-page="crosses"' in a and 'data-page="overview"' not in a

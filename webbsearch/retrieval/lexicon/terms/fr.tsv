@@ -1,0 +1,169 @@
+# French (fr) · France and Québec trade words (champlure = faucet, thermopompe = heat pump, fournaise = furnace,
+# boyau = hose, trappe = P-trap, chauffe-eau = water heater, « po » = inch). Haitian Creole has its own file.
+valve	vanne*|clapet*|soupape*
+ball valve	vanne* à bille|vanne* a bille|robinet* à bille|robinet* a bille|valve* à bille|valve* a bille|vanne* à boisseau sphérique|vanne* quart de tour|robinet* quart de tour|robinet* à tournant sphérique
+gate valve	vanne* à opercule|robinet-vanne*|robinet* vanne*|vanne* à guillotine|valve* à barrière|robinet* à passage direct
+globe valve	robinet* à soupape|vanne* à soupape|robinet* soupape
+check valve	clapet* anti-retour|clapet* antiretour|clapet* anti retour|clapet* de non-retour|clapet* de retenue|valve* antiretour|clapet* de non retour
+butterfly valve	vanne* papillon|robinet* papillon|valve* papillon
+relief valve	soupape* de sûreté|soupape* de sécurité|soupape* de décharge|soupape* de surpression|soupape* de détente
+pressure reducing valve	réducteur* de pression|détendeur*|régulateur* de pression|valve* réductrice* de pression
+shutoff valve	robinet* d'arrêt|robinet* d arret|vanne* d'arrêt|valve* d'arrêt|robinet* d'arret|vanne* d'isolement|robinet* d'isolement
+angle stop	robinet* d'équerre|robinet* équerre|robinet* d'arrêt d'équerre|robinet* d'équerre d'alimentation
+mixing valve	mitigeur* thermostatique*|vanne* mélangeuse*|vanne* de mélange
+zone valve	vanne* de zone|valve* de zone
+solenoid valve	électrovanne*|vanne* solénoïde*|valve* solénoïde*
+backflow preventer	dispositif* antirefoulement|dispositif* anti-refoulement|disconnecteur*|clapet* antirefoulement
+gas valve	robinet* de gaz|vanne* de gaz|valve* de gaz|robinet* gaz|vanne* gaz
+fill valve	robinet* flotteur|flotteur*|robinet* de remplissage|valve* de remplissage
+flush valve	mécanisme* de chasse|valve* de chasse|robinet* de chasse|chasse d'eau
+fitting	raccord*|raccords
+elbow	coude*
+street elbow	coude* mâle femelle|coude* mâle-femelle|coude* m-f
+tee	té|tés|te|raccord* en té|raccord* té
+coupling	manchon*|raccord* droit*|raccord* de jonction
+union	raccord* union|raccord* trois pièces|raccord* 3 pièces
+reducer	réduction*|réducteur*|raccord* de réduction|réduction* concentrique*
+bushing	bague* de réduction|réduction* mâle femelle
+nipple	mamelon*|mamelon* double*
+cap	bouchon*|capuchon*|bouchon* femelle
+plug	bouchon* mâle|tampon* de dégorgement|bouchon* fileté*
+adapter	adaptateur*|raccord* adaptateur*
+flange	bride*|brides|collerette*
+wye	culotte*|té oblique|té à 45|y de renvoi
+cross	croix|raccord* en croix
+pipe	tuyau*|tuyaux|tuyauterie*|tube*|conduite*
+copper	cuivre
+brass	laiton
+bronze	bronze
+stainless steel	acier inoxydable|acier inox|inox|inoxydable
+steel	acier
+black iron	fer noir|acier noir|fonte malléable noire
+galvanized	galvanisé*|galvanise*|acier galvanisé
+cast iron	fonte|en fonte
+plastic	plastique*
+threaded	fileté*|filete*|taraudé*|à visser|filetage*
+male	mâle|mâles
+female	femelle*
+sweat	à souder|a souder|soudé*|à braser|pour souder
+press	à sertir|a sertir|sertir|à presser|sertissage*
+push to connect	instantané*|à emboîter|emboîtement|raccord* rapide*|push fit
+compression	à compression|a compression|bicône*|compression
+flare	évasé*|evase*|à collet|collet* battu*|dudgeon*
+grooved	rainuré*|à rainure*
+toilet	toilette*|cuvette*|wc|cuvette* de toilette|bol* de toilette
+sink	lavabo*|vasque*|lave-mains
+kitchen sink	évier*|evier*|évier* de cuisine|lavabo* de cuisine
+faucet	robinet*|mitigeur*|champlure*|robinetterie*|robinet* mélangeur*
+kitchen faucet	robinet* de cuisine|mitigeur* de cuisine|champlure* de cuisine|robinet* d'évier|mitigeur* d'évier
+lavatory faucet	robinet* de lavabo|mitigeur* de lavabo|robinet* de salle de bain|champlure* de lavabo
+shower	douche*
+shower head	pomme* de douche|pommeau*|tête* de douche|douchette*
+bathtub	baignoire*|bain|bains
+urinal	urinoir*
+drain	égout*|évacuation*|vidange*|renvoi*|drain
+floor drain	drain de plancher|siphon* de sol|bonde* de sol|avaloir*|drain de sol
+p-trap	siphon*|trappe*|trappe* en p|siphon* en p
+cartridge	cartouche*
+aerator	aérateur*|aerateur*|mousseur*|brise-jet*
+flapper	clapet* de chasse|clapet* de toilette|obturateur*|flapper
+wax ring	anneau* de cire|joint* de cire|joint* de cuvette
+toilet seat	siège* de toilette|abattant*|siège* de wc|lunette* de toilette
+garbage disposal	broyeur*|broyeur* à déchets|broyeur* d'évier
+water filter	filtre* à eau|filtre* d'eau|filtre* pour eau
+water heater	chauffe-eau|chauffe eau|chauffe-eaux|cumulus|ballon* d'eau chaude|réservoir* d'eau chaude|tank* à eau chaude
+tankless water heater	chauffe-eau instantané*|chauffe-eau sans réservoir|chauffe eau instantané*|chauffe-eau à la demande
+gas water heater	chauffe-eau au gaz|chauffe-eau à gaz|chauffe eau gaz
+electric water heater	chauffe-eau électrique*|chauffe eau électrique*
+boiler	chaudière*|chaudiere*|bouilloire*
+expansion tank	vase* d'expansion|réservoir* d'expansion|vase* d expansion|vase* expansion|réservoir* de dilatation
+circulator	circulateur*|pompe* de circulation|pompe* de recirculation
+pump	pompe*
+sump pump	pompe* de puisard|pompe* submersible*|pompe* de relevage|pompe* d'assèchement|pompe* de vidange
+well pump	pompe* de puits|pompe* à puits
+pressure tank	réservoir* sous pression|réservoir* à pression|ballon* surpresseur*|réservoir* de surpression
+anode rod	anode*|tige* d'anode|anode* de magnésium|anode* sacrificielle*
+thermocouple	thermocouple*
+burner	brûleur*|bruleur*
+igniter	allumeur*|électrode* d'allumage|allumage*
+flame sensor	détecteur* de flamme|capteur* de flamme|sonde* de flamme|électrode* d'ionisation
+pressure switch	pressostat*|interrupteur* à pression|manostat*
+heating element	élément* chauffant*|element* chauffant*|résistance* chauffante*|thermoplongeur*
+furnace	fournaise*|générateur* d'air chaud|chaudière* à air
+air conditioner	climatiseur*|air climatisé|climatisation|air conditionné|clim|climatiseur* central*
+condenser	condenseur*|unité* extérieure|groupe* extérieur
+heat pump	thermopompe*|pompe* à chaleur|pac
+air handler	unité* de traitement d'air|unité* intérieure|caisson* de traitement d'air
+mini split	minisplit*|mini-split*|mini split|climatiseur* mural*|climatiseur* split|thermopompe* murale*
+thermostat	thermostat*
+filter	filtre*
+air filter	filtre* à air|filtre* de fournaise|filtre* à air de fournaise
+duct	conduit*|gaine*|gaine* de ventilation|conduit* de ventilation
+register	diffuseur*|bouche* de soufflage|grille* de plancher
+grille	grille*|grille* de retour|grille* de ventilation
+damper	registre*|registre* de tirage|volet* d'air|clapet* d'air
+refrigerant	réfrigérant*|frigorigène*|fréon|gaz réfrigérant
+line set	ensemble* de tuyauterie frigorifique|liaison* frigorifique*|tuyauterie* frigorifique*|ligne* frigorifique*
+capacitor	condensateur*|condo de démarrage
+contactor	contacteur*
+motor	moteur*
+fan	ventilateur*|ventilo*
+blower	soufflante*|ventilateur* centrifuge*|souffleur*
+compressor	compresseur*
+evaporator coil	serpentin*|évaporateur*|serpentin* d'évaporateur
+radiator	radiateur*|calorifère*
+baseboard	plinthe* chauffante*|plinthe* électrique*|convecteur* plinthe
+radiant	plancher* chauffant*|chauffage* radiant*|plancher* radiant*|chauffage* au sol
+humidifier	humidificateur*
+dehumidifier	déshumidificateur*|deshumidificateur*
+vent	évent*|ventilation|évent* de plomberie
+wrench	clé|clés|clé* à molette|clé* anglaise|clef*
+pipe wrench	clé* à tuyau|clé* a tuyau|clé* serre-tube|clé* à tube|clé* stillson|clé* de plombier|cle a tuyau
+pipe cutter	coupe-tube*|coupe tube*|coupe-tuyau*|coupe tuyau*
+torch	chalumeau*|torche*
+solder	soudure*|brasure*|fil* à souder|étain
+flux	décapant*|pâte* à souder|pate* a souder|flux
+PTFE tape	ruban* téflon|ruban* de téflon|téflon|ruban* ptfe|ruban* d'étanchéité|ruban* à filetage
+pipe thread sealant	pâte* à joint|pate* a joint|filasse|scellant* à filet*|pâte* d'étanchéité|pate* d'etancheite
+silicone	silicone*|scellant* silicone
+PVC cement	colle* pvc|colle* à pvc|colle* pour pvc|colle* de plomberie|colle*
+primer	apprêt*|nettoyant* pvc|nettoyant* à pvc|décapant* pvc|primaire*
+hanger	support* de tuyau|suspente*|support* de tuyauterie|crochet* de tuyau
+strap	feuillard*|bande* perforée*
+clamp	collier*|bride* de serrage|attache*
+insulation	isolant*|isolation|manchon* isolant*|gaine* isolante*|isolant* de tuyau
+gasket	joint*|garniture*
+o-ring	joint* torique*|torique*|o-ring*
+washer	rondelle*
+screw	vis
+bolt	boulon*
+nut	écrou*|ecrou*
+hose	boyau*|tuyau* d'arrosage|tuyau* souple*|flexible*
+supply line	flexible* d'alimentation|tuyau* d'alimentation|tuyau* tressé*|flexible* tressé*
+lead free	sans plomb
+potable water	eau potable
+natural gas	gaz naturel
+propane	propane
+hot water	eau chaude
+cold water	eau froide
+repair kit	kit* de réparation|trousse* de réparation|nécessaire* de réparation|kit* de réfection
+kit	trousse*|ensemble*
+water	eau|eaux
+heating	chauffage
+gas	gaz
+electric	électrique*|electrique*
+kitchen	cuisine
+bathroom	salle de bain|salle de bains
+inch	pouce*|po
+1/2 inch	demi-pouce|un demi pouce|1/2 po|demi pouce
+3/4 inch	trois quarts de pouce|3/4 po|trois quarts
+1/4 inch	quart de pouce|1/4 po
+gallon	gallon*
+for	pour
+air vent	purgeur* d'air|purgeur*
+drain valve	robinet* de vidange|vanne* de vidange
+shower valve	mitigeur* de douche|robinet* de douche
+sewage pump	pompe* à eaux usées|pompe* d'égout
+condensing unit	groupe* de condensation|unité* de condensation
+ft	pi
+ton	tonne*

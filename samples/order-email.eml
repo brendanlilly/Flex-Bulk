@@ -1,0 +1,40 @@
+Subject: FW: 25 Main St material
+From: Pat Rep <pat.rep@example.com>
+To: counter@example.com
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3046876452487214409=="
+
+--===============3046876452487214409==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+
+See below and attached.
+
+From: Jane Doe <jane@acmeplumbing.example>
+Sent: Tuesday
+Subject: 25 Main St material
+
+Hi Pat,
+Please place order, P.O. AC-7781 for delivery at 7am.
+6 - 1/2" copper elbows
+3 - 3" NH wye
+2 - 2" HD2000
+10 - 3/4" pro press 90
+4 - 1/2" ball valve
+40 - 3" SCH 80 black pipe
+Thanks
+Jane
+Acme Plumbing
+555-0100 Main
+10 Main Street, Springfield, MA 01101
+
+--===============3046876452487214409==
+Content-Type: text/csv
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="takeoff.csv"
+MIME-Version: 1.0
+
+UXR5LERlc2NyaXB0aW9uCjIsSG9uZXl3ZWxsIFY4MTY4QTEwNjkgZ2FzIHZhbHZlCjEsVGFjbyAw
+MDctRjUgY2lyY3VsYXRvcgo=
+
+--===============3046876452487214409==--

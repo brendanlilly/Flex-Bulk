@@ -1,0 +1,62 @@
+/* Flex Bulk: the page around the matcher (app.css has the matcher's own styles, from FlexSearch). */
+.fb-top{gap:14px}
+.fb-nav{display:flex;gap:2px;margin-left:6px}
+.fb-nav a{color:#d9dbde;text-decoration:none;font-weight:600;padding:9px 12px;border-radius:8px}
+.fb-nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.fb-nav a.on{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 -2px 0 var(--webb-red)}
+.fb-sp{flex:1}
+.fb-dash{text-decoration:none}
+.fb-main{min-height:calc(100vh - 120px)}
+.fb-foot{max-width:1440px;margin:0 auto;padding:14px 20px 28px;font-size:12px}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.2px}
+.n{text-align:right;font-variant-numeric:tabular-nums}
+
+.fb-order,.fb-orders{max-width:1440px;margin:0 auto;padding:18px 20px 0}
+.fb-ohead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.fb-ohead h1{margin:0;font-size:22px}
+.fb-otitle{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fb-otitle .muted{font-size:13px}
+.fb-dirty{color:var(--warn);font-weight:600}
+.fb-oact{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fb-menu{position:relative}
+.fb-pop{position:absolute;right:0;top:calc(100% + 4px);z-index:30;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow2);padding:6px;min-width:260px}
+.fb-pop button{display:flex;flex-direction:column;align-items:flex-start;width:100%;border:0;background:none;text-align:left;padding:8px 10px;border-radius:7px;cursor:pointer;font-weight:600}
+.fb-pop button small{font-weight:400;color:var(--muted);font-size:12px}
+.fb-pop button:hover{background:var(--tile)}
+
+.fb-cust{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px 12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;box-shadow:var(--shadow);margin-bottom:6px}
+.fb-cust .fl{display:flex;flex-direction:column;gap:3px;font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.fb-cust .w1{grid-column:span 1}.fb-cust .w2{grid-column:span 2}.fb-cust .wfull{grid-column:1 / -1}
+.fb-custhint{grid-column:1 / -1;font-size:12px}
+.fb-custhint:empty{display:none}
+.fb-in{width:100%;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:var(--bg);color:var(--ink);font-size:14px;text-transform:none;letter-spacing:0;font-weight:400}
+.fb-in:focus{outline:2px solid color-mix(in srgb,var(--brand) 55%,transparent);outline-offset:0;background:var(--panel)}
+@media (max-width:900px){.fb-cust{grid-template-columns:repeat(2,minmax(0,1fr))}.fb-cust .w1,.fb-cust .w2{grid-column:span 1}.fb-cust .fl:nth-child(2),.fb-cust .fl:nth-child(3){grid-column:1 / -1}}
+
+.fb-bk{padding:8px 0 90px;max-width:none}
+.fb-bk .bkhead h2{margin:0 0 2px;font-size:17px}
+.fb-find1{font-size:11.5px;margin-top:4px;color:var(--muted)}
+.fb-find1:hover{color:var(--brand)}
+
+.fb-ot tbody tr{cursor:pointer}
+.fb-ot tbody tr:hover td{background:var(--tile)}
+.fb-ot th,.fb-ot td{padding:8px 10px;white-space:nowrap}
+.fb-ex{white-space:nowrap}
+.fb-empty{padding:40px 16px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:var(--r)}
+
+.fb-small{max-width:460px}
+.fb-small h3,.fb-mh h3{margin:0 0 4px}
+.fb-mh{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:10px}
+.fb-find{display:flex;gap:8px;margin-bottom:12px}
+.fb-found{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.fb-pdp{max-width:820px}
+.fb-pdpg{display:grid;grid-template-columns:1.1fr 1fr;gap:18px}
+@media (max-width:720px){.fb-pdpg{grid-template-columns:1fr}}
+.fb-k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:12px 0 4px}
+.fb-k:first-child{margin-top:0}
+.fb-mini{border-collapse:collapse;width:100%;font-size:13px}
+.fb-mini td{padding:4px 6px;border-bottom:1px solid var(--line2)}
+.fb-home td{font-weight:700;background:var(--ok-soft)}
+
+@media (max-width:1100px){.fb-top .pill2 .two small{display:none}.fb-dash .two{display:none}}
+@media (max-width:820px){.fb-top{flex-wrap:wrap}.fb-sp{display:none}.fb-top .hdr-ctl{width:100%;justify-content:space-between}}

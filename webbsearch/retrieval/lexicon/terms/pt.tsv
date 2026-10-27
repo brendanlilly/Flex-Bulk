@@ -1,0 +1,175 @@
+# Portuguese (pt) · Brazilian trade usage first (most Portuguese speakers in Webb's trades), European words alongside.
+# In Brazil "registro" is a shutoff valve (registro de gaveta = gate valve, registro de esfera = ball valve),
+# "luva" a coupling, "joelho" an elbow, "engate" a flexible supply line, "reparo" a faucet cartridge.
+valve	válvula*|registro*
+ball valve	válvula* de esfera|registro* de esfera|válvula* esfera|registro* esfera|válvula* de bola
+gate valve	registro* de gaveta|válvula* de gaveta|válvula* gaveta|registro* gaveta
+globe valve	válvula* globo|válvula* de globo|registro* de pressão|registro* pressão
+check valve	válvula* de retenção|válvula* retenção|válvula* de retencao|retenção|válvula* de pé|válvula* antirretorno|válvula* de não retorno
+butterfly valve	válvula* borboleta|válvula* de borboleta
+relief valve	válvula* de alívio|válvula* de segurança|válvula* de alivio|válvula* de alívio de pressão
+pressure reducing valve	válvula* redutora* de pressão|redutor* de pressão|válvula* redutora*|regulador* de pressão
+shutoff valve	registro* geral|válvula* de corte|válvula* de fechamento|válvula* de bloqueio|registro* de corte
+angle stop	registro* de ângulo|válvula* angular|registro* angular
+mixing valve	válvula* misturadora*|misturador* termostático*|válvula* termostática*
+zone valve	válvula* de zona|válvula* zona
+solenoid valve	válvula* solenoide*|eletroválvula*|válvula* solenóide*
+backflow preventer	válvula* antirrefluxo|dispositivo* antirrefluxo|válvula* de refluxo|antirrefluxo|preventor* de refluxo
+gas valve	válvula* de gás|registro* de gás|válvula* do gás|registro* do gás
+fill valve	torneira* boia|torneira* de boia|boia*|válvula* de enchimento|válvula* de entrada
+flush valve	válvula* de descarga|válvula* de saída|mecanismo* de descarga
+fitting	conexão|conexões|conexao|conexoes
+elbow	joelho*|cotovelo*|curva*
+street elbow	joelho* macho fêmea|joelho* macho e fêmea|cotovelo* macho fêmea|joelho* macho-fêmea
+tee	tê|tês|te|tee
+coupling	luva*|luva* de correr|luva* simples
+union	união|uniões|uniao|uniões de|união roscável
+reducer	redução|reduções|reducao|luva* de redução|luva* redução
+bushing	bucha* de redução|bucha* redução|bucha* de reducao
+nipple	niple*|nípel*|nipel*|niple* duplo*
+cap	tampão|tampões|tampao|tampa*|cap|caps
+plug	plugue*|bujão|bujões|bujao|tampão macho|plug*
+adapter	adaptador*|conector*
+flange	flange*|flanges
+wye	junção|junções|juncao|ípsilon|ipsilon|junção 45
+cross	cruzeta*
+pipe	cano*|tubo*|tubulação|tubulacao|tubulações
+copper	cobre
+brass	latão|latao
+bronze	bronze
+stainless steel	aço inox|aço inoxidável|inox|aco inox|aço inoxidavel
+steel	aço|aco
+black iron	ferro preto|aço preto
+galvanized	galvanizad*|ferro galvanizado
+cast iron	ferro fundido
+plastic	plástico*|plastico*
+threaded	roscável|roscavel|rosqueável|rosqueavel|roscad*|com rosca|de rosca|rosca*
+male	macho
+female	fêmea|femea|fêmeas
+sweat	para solda|de soldar|soldar|para soldar|de solda
+press	prensar|para prensar|de prensar|prensável|prensavel
+push to connect	engate* rápido*|conexão rápida|encaixe rápido|de encaixe
+compression	compressão|compressao|de compressão|anilha*
+flare	flangeador|flangeado*|porca* flange
+grooved	ranhurad*
+toilet	vaso sanitário|vaso*|privada*|bacia* sanitária*|bacia*|sanitário*|vasos sanitários|caixa* acoplada*
+sink	pia*|lavatório*|cuba*|lavatorio*
+kitchen sink	pia* de cozinha|cuba* de cozinha|cuba* inox|pia* da cozinha
+faucet	torneira*|misturador*|monocomando*
+kitchen faucet	torneira* de cozinha|misturador* de cozinha|torneira* de pia|torneira* da cozinha|torneira* gourmet
+lavatory faucet	torneira* de banheiro|torneira* de lavatório|misturador* de lavatório|torneira* de lavatorio|torneira* do banheiro
+shower	ducha*|banho
+shower head	chuveiro*|crivo*|ducha* de teto|cabeça* de chuveiro|chuveirinho*
+bathtub	banheira*
+urinal	mictório*|mictorio*
+drain	dreno*|esgoto*|escoamento|ralo* linear|saída de esgoto|válvula* de escoamento|válvula* americana|válvula* para pia|válvula* click|válvula* clique
+floor drain	ralo*|ralo* de piso|caixa* sifonada*|ralo* sifonado*|ralo* seco
+p-trap	sifão|sifões|sifao|sifoes|sifão de pia
+cartridge	reparo*|cartucho*|refil*|castelo*
+aerator	arejador*|bico* arejador*
+flapper	obturador*|vedação da descarga|comporta* da caixa
+wax ring	anel* de vedação|anel* de cera|anel* de vedação para vaso|anel* de vedacao|vedação do vaso
+toilet seat	assento* sanitário*|assento* de vaso|tampa* de vaso|assento*|tampa* do vaso
+garbage disposal	triturador* de alimentos|triturador* de lixo|triturador* de resíduos|triturador*
+water filter	filtro* de água|filtro* de agua|purificador* de água|filtro* para água
+water heater	aquecedor* de água|aquecedor* de agua|boiler de água|aquecedor* de acumulação|aquecedor* a acumulação
+tankless water heater	aquecedor* de passagem|aquecedor* a gás de passagem|aquecedor* instantâneo*|aquecedor* sem tanque|aquecedor* de passagem a gás
+gas water heater	aquecedor* a gás|aquecedor* de gás|aquecedor* a gas|aquecedor* de agua a gas
+electric water heater	aquecedor* elétrico*|aquecedor* eletrico*|aquecedor* de água elétrico*
+boiler	caldeira*
+expansion tank	vaso* de expansão|tanque* de expansão|vaso* de expansao|tanque* de expansao|vaso* expansão
+circulator	bomba* circuladora*|bomba* de recirculação|circulador*|bomba* de circulação|pressurizador* de recirculação
+pump	bomba*|motobomba*|pressurizador*
+sump pump	bomba* submersa|bomba* de esgoto|bomba* sapo|bomba* de drenagem|bomba* de porão|bomba* submersível
+well pump	bomba* de poço|bomba* de poco|bomba* submersa de poço|bomba* para poço|bomba* de cisterna
+pressure tank	tanque* de pressão|tanque* hidropneumático*|tanque* pressurizado*|tanque* de pressao
+anode rod	ânodo*|anodo*|ânodo* de sacrifício|ânodo* de magnésio|barra* de magnésio
+thermocouple	termopar*|termo par
+burner	queimador*
+igniter	ignitor*|acendedor*|eletrodo* de ignição|ignitor* do aquecedor|acendimento
+flame sensor	sensor* de chama|eletrodo* de ionização|sensor* de chama da fornalha
+pressure switch	pressostato*|interruptor* de pressão|chave* de pressão
+heating element	resistência*|resistencia*|resistência* do aquecedor
+furnace	fornalha*|aquecedor* a ar|aquecedor* de ar|aquecedor* central|calefator*
+air conditioner	ar condicionado|ar-condicionado|ares condicionados|condicionador* de ar|ar condicionados
+condenser	condensadora*|unidade* condensadora*|condensador*|unidade* externa
+heat pump	bomba* de calor|ar quente e frio
+air handler	unidade* evaporadora*|evaporadora*|unidade* interna|fancoil|fan coil
+mini split	mini split|minisplit|ar split|split* hi wall|ar condicionado split|split|hi wall|hi-wall
+thermostat	termostato*
+filter	filtro*
+air filter	filtro* de ar|filtro* do ar|filtro* para ar
+duct	duto*|tubulação de ar|duto* flexível*|dutos de ar
+register	difusor*|grelha* de insuflamento|registro* de ar de piso
+grille	grelha*|grade* de ventilação|grade* de retorno
+damper	registro* de ar|damper*|registro* de duto
+refrigerant	gás refrigerante|fluido* refrigerante*|refrigerante*|freon|gás do ar
+line set	linha* de cobre|kit* de tubulação|tubulação de cobre para ar|linha* frigorígena*|tubulação frigorígena
+capacitor	capacitor*
+contactor	contator*|contactor*|contatora*
+motor	motor|motores
+fan	ventilador*|ventoinha*|hélice*
+blower	soprador*|turbina*|ventilador* centrífugo*|blower
+compressor	compressor|compressores
+evaporator coil	serpentina*|evaporador*|serpentina* evaporadora*
+radiator	radiador*
+baseboard	rodapé* aquecedor*|aquecedor* de rodapé|rodapé* térmico*
+radiant	piso aquecido|aquecimento radiante|piso radiante|aquecimento de piso|aquecimento sob o piso
+humidifier	umidificador*
+dehumidifier	desumidificador*
+vent	respiro*|ventilação|suspiro*|tubo de ventilação
+wrench	chave* inglesa|chave* ajustável|chave* de boca
+pipe wrench	chave* de grifo|chave* de cano|chave* grifo|chave* para cano|chave* stillson|chave* de tubo|chave* stilson
+pipe cutter	cortador* de tubo*|corta tubo*|cortador* de cano*|corta-tubo*|cortador* de cobre
+torch	maçarico*|macarico*
+solder	solda*|estanho|fio de solda|solda de estanho
+flux	fluxo* de solda|pasta* de solda|pasta* para solda
+PTFE tape	fita* veda rosca|fita* veda-rosca|veda rosca|veda-rosca|fita* teflon|fita* de teflon|teflon|fita* vedarosca
+pipe thread sealant	vedante* de rosca|selante* de rosca|pasta* vedante*|vedarosca líquido|veda rosca líquido|selante* para rosca
+silicone	silicone|silicones
+PVC cement	adesivo* plástico* para pvc|cola* de pvc|cola* pvc|adesivo* pvc|adesivo* para pvc|cola* para cano*|cola* de cano*|adesivo* plástico*
+primer	primer|solução limpadora|solucao limpadora|limpador* pvc|limpador* de pvc
+hanger	suporte* para tubo*|suporte* de tubo*|abraçadeira* de suspensão|pendural* para tubo*
+strap	fita* perfurada|cinta* metálica|fita* metálica perfurada
+clamp	abraçadeira*|abracadeira*|braçadeira*|bracadeira*
+insulation	isolamento*|isolante*|espuma* isolante*|isolamento* térmico*|isotubo*
+gasket	junta*|vedação|vedacao|guarnição|guarnicao|vedante*|gaxeta*
+o-ring	anel* o|o-ring*|oring*|anel* de borracha|o'ring
+washer	arruela*|borrachinha*
+screw	parafuso*
+bolt	parafuso* sextavado*|parafuso* francês|chumbador*
+nut	porca*
+hose	mangueira*|mangote*
+supply line	flexível|flexíveis|flexivel|flexiveis|engate* flexível*|engate*|ligação flexível|rabicho*
+lead free	sem chumbo|livre de chumbo|isento de chumbo
+potable water	água potável|agua potavel|água para consumo
+natural gas	gás natural|gas natural|gás encanado
+propane	propano|gás glp|glp|gás de cozinha|gás de botijão|botijão|bujão de gás|botijão de gás
+hot water	água quente|agua quente
+cold water	água fria|agua fria
+repair kit	kit* de reparo|kit* reparo|jogo* de reparo|kit* de conserto
+kit	jogo*|conjunto*
+water	água|agua|águas
+heating	aquecimento
+gas	gás
+electric	elétrico*|eletrico*|elétrica*|eletrica*
+kitchen	cozinha
+bathroom	banheiro*
+inch	polegada*|pol
+1/2 inch	meia polegada|1/2 polegada|meia pol
+3/4 inch	três quartos|tres quartos|3/4 de polegada|três quartos de polegada
+1/4 inch	um quarto|1/4 de polegada|quarto de polegada
+1-1/2 inch	polegada e meia|uma polegada e meia
+ft	pés
+gallon	galão|galões|galao|galoes
+volt	volts|volt|voltagem
+ton	tonelada*|toneladas
+for	para|p/
+pvc	soldável|soldavel|soldáveis
+air vent	ventosa*|purgador* de ar|eliminador* de ar
+3/8 inch	três oitavos|3/8 de polegada
+1 inch	uma polegada|1 polegada
+1-1/4 inch	polegada e um quarto|uma polegada e um quarto
+2 inch	duas polegadas|2 polegadas
+reversing valve	válvula* reversora*|válvula* de reversão|válvula* de 4 vias|válvula* de quatro vias
+TXV valve	válvula* de expansão|válvula* de expansao|válvula* termostática* de expansão

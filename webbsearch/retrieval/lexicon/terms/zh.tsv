@@ -1,0 +1,167 @@
+# Chinese (zh) · simplified and traditional characters, Mandarin and Cantonese trade words (水掣 = valve, 由任 = union,
+# 雪種 = refrigerant, 士巴拿 = wrench, 星盆 = kitchen sink, 摩打 = motor, 水膠布 = PTFE tape, 喉 = pipe).
+# Sizes are read by the engine: 4分 = 1/2 in., 6分 = 3/4 in., 1寸 = 1 in., 寸二 = 1-1/4 in., 寸半 = 1-1/2 in., DN20 = 3/4 in.
+valve	阀门|阀|閥門|閥|水掣|凡尔|凡爾
+ball valve	球阀|球閥|球阀门|球閥門|波子掣
+gate valve	闸阀|閘閥|闸门阀|閘門閥|闸板阀|閘掣|闸掣
+globe valve	截止阀|截止閥
+check valve	止回阀|止回閥|单向阀|單向閥|逆止阀|逆止閥|止逆阀|止逆閥|逆止掣
+butterfly valve	蝶阀|蝶閥
+relief valve	安全阀|安全閥|泄压阀|洩壓閥|泄壓閥|溢流阀|溢流閥|泄放阀
+pressure reducing valve	减压阀|減壓閥|调压阀|調壓閥|稳压阀|穩壓閥
+shutoff valve	总阀|總閥|总水阀|總水閥|关断阀|關斷閥|总掣|總掣|止水阀|止水閥
+angle stop	角阀|角閥|三角阀|三角閥|角掣
+mixing valve	混水阀|混水閥|恒温阀|恆溫閥|恒温混水阀|恆溫混水閥|温控阀
+zone valve	区域阀|區域閥|分区阀|分區閥
+solenoid valve	电磁阀|電磁閥
+backflow preventer	倒流防止器|防回流阀|防回流閥|防倒流阀|防倒流閥|防逆流阀
+gas valve	燃气阀|燃氣閥|煤气阀|煤氣閥|气阀|氣閥|燃气阀门|煤氣掣
+fill valve	进水阀|進水閥|浮球阀|浮球閥|上水阀|水箱进水阀
+flush valve	冲水阀|沖水閥|马桶排水阀|冲洗阀|沖洗閥|冲水器|沖水器
+fitting	管件|接头|接頭|喉件|水管配件|管道配件
+elbow	弯头|彎頭|弯管|彎管|弯|彎
+street elbow	内外丝弯头|內外絲彎頭|内外牙弯头|內外牙彎頭
+tee	三通|三通接头|三通接頭|丁字
+coupling	直接|管箍|直通|外接|直接头|直接頭
+union	活接|活接头|活接頭|由任|油任
+reducer	异径|異徑|大小头|大小頭|变径|變徑|异径直接|異徑直接
+bushing	补芯|補芯|内外丝|內外絲|内外牙|內外牙
+nipple	双外丝|雙外絲|对丝|對絲
+cap	管帽|堵帽|管帽盖|闷头|悶頭
+plug	堵头|堵頭|丝堵|絲堵|塞头|塞頭
+adapter	转换接头|轉換接頭|转接头|轉接頭|转接|轉接|外丝直接|外絲直接|内丝直接|內絲直接
+flange	法兰|法蘭|法兰盘|法蘭盤
+wye	斜三通|y型三通|y形三通|45度三通
+cross	四通
+pipe	水管|管子|管道|管材|水喉|喉|管
+copper pipe	铜管|銅管|紫铜管|紫銅管
+copper	铜|銅|紫铜|紫銅
+brass	黄铜|黃銅
+bronze	青铜|青銅
+stainless steel	不锈钢|不鏽鋼|不銹鋼
+steel	钢|鋼|钢管|鋼管
+black iron	黑铁|黑鐵|焊管
+galvanized	镀锌|鍍鋅|镀锌管|鍍鋅管
+cast iron	铸铁|鑄鐵|生铁|生鐵
+plastic	塑料|塑胶|塑膠
+threaded	丝扣|絲扣|螺纹|螺紋|丝口|絲口|牙
+male	外丝|外絲|外牙|外螺纹|外螺紋
+female	内丝|內絲|内牙|內牙|内螺纹|內螺紋
+sweat	焊接|焊口|焊|銲接|銲口
+press	卡压|卡壓|压接|壓接
+push to connect	快插|快接|快速接头|快速接頭
+compression	卡套|压缩接头|壓縮接頭
+flare	喇叭口|扩口|擴口
+grooved	沟槽|溝槽|卡箍连接
+toilet	马桶|馬桶|坐便器|座便器|坐厕|坐廁
+sink	洗手盆|面盆|台盆|洗面盆|水槽|水盆|盆
+kitchen sink	洗菜盆|厨房水槽|廚房水槽|星盆|洗碗盆|厨盆
+faucet	水龙头|水龍頭|龙头|龍頭|水喉头|水喉頭|水嘴
+kitchen faucet	厨房龙头|廚房龍頭|厨房水龙头|廚房水龍頭|菜盆龙头|菜盆龍頭
+lavatory faucet	面盆龙头|面盆龍頭|洗手盆龙头|洗手盆龍頭|台盆龙头|台盆龍頭
+shower	淋浴|沐浴|淋浴器
+shower head	花洒|花灑|喷头|噴頭|莲蓬头|蓮蓬頭|顶喷|頂噴
+bathtub	浴缸|浴盆
+urinal	小便器|小便斗|尿斗
+drain	排水|下水|去水|排水管|下水道
+floor drain	地漏|地面排水
+p-trap	存水弯|存水彎|p弯|p彎|s弯|s彎|隔气弯|隔氣彎
+cartridge	阀芯|閥芯|陶瓷阀芯|陶瓷閥芯
+aerator	起泡器|起泡嘴
+flapper	排水阀胶垫|皮塞|水箱胶塞
+wax ring	蜡圈|蠟圈|法兰圈|马桶密封圈|馬桶密封圈|法蘭圈
+toilet seat	马桶盖|馬桶蓋|马桶圈|馬桶圈|厕板|廁板
+garbage disposal	垃圾处理器|垃圾處理器|食物垃圾处理器|厨余处理器|廚餘處理器
+water filter	净水器|淨水器|滤水器|濾水器|过滤水|前置过滤器
+water heater	热水器|熱水器|热水炉|熱水爐|储水式热水器|儲水式熱水器
+tankless water heater	即热式热水器|即熱式熱水器|即热式|即熱式|即热|即熱|无储水|無儲水|恒温热水器
+gas water heater	燃气热水器|燃氣熱水器|煤气热水器|煤氣熱水器
+electric water heater	电热水器|電熱水器
+boiler	锅炉|鍋爐|壁挂炉|壁掛爐|采暖炉|採暖爐
+expansion tank	膨胀罐|膨脹罐|膨胀水箱|膨脹水箱|膨胀箱|膨脹箱|定压罐|定壓罐
+circulator	循环泵|循環泵|热水循环泵|熱水循環泵
+pump	泵|水泵|抽水机|抽水機|水泵浦|泵浦
+sump pump	污水泵|排污泵|潜水泵|潛水泵|地下室排水泵
+well pump	深井泵|井泵|井用泵
+pressure tank	压力罐|壓力罐|气压罐|氣壓罐
+anode rod	镁棒|鎂棒|阳极棒|陽極棒
+thermocouple	热电偶|熱電偶
+burner	燃烧器|燃燒器|炉头|爐頭|火排
+igniter	点火器|點火器|点火针|點火針|打火针
+flame sensor	火焰感应针|火焰感應針|感应针|感應針|火焰传感器|火焰傳感器
+pressure switch	压力开关|壓力開關|风压开关|風壓開關|压力掣|壓力掣
+heating element	加热管|加熱管|发热管|發熱管|电热管|電熱管
+furnace	暖气炉|暖氣爐|热风炉|熱風爐|火炉|火爐
+air conditioner	空调|空調|冷气|冷氣|冷气机|冷氣機|空调机|窗口机|窗口機
+condenser	外机|外機|室外机|室外機|冷凝器
+heat pump	热泵|熱泵|空气能|空氣能
+air handler	内机|內機|室内机|室內機|风柜|風櫃
+mini split	分体式|分體式|分体空调|分體空調|挂机|掛機|分体机|分體機
+thermostat	温控器|溫控器|恒温器|恆溫器|温度控制器|溫度控制器|温控开关
+filter	过滤器|過濾器|滤网|濾網|过滤网|過濾網|滤芯|濾芯
+air filter	空气过滤器|空氣過濾器|空调滤网|空調濾網
+duct	风管|風管|风道|風道|通风管|通風管
+register	风口|風口|出风口|出風口|散流器
+grille	格栅|格柵|回风口|回風口
+damper	风阀|風閥|风闸|風閘
+refrigerant	冷媒|雪种|雪種|制冷剂|製冷劑|氟利昂|冷煤|加氟
+line set	空调铜管|空調銅管|冷媒管|空调连接管|空調連接管
+capacitor	电容|電容|启动电容|啟動電容
+contactor	接触器|接觸器
+motor	电机|電機|马达|馬達|摩打|电动机|電動機
+fan	风扇|風扇|风机|風機|风叶|風葉
+blower	鼓风机|鼓風機|离心风机|離心風機
+compressor	压缩机|壓縮機
+evaporator coil	蒸发器|蒸發器
+radiator	暖气片|暖氣片|散热器|散熱器
+baseboard	踢脚线暖气|踢腳線暖氣
+radiant	地暖|地热|地熱|地板采暖
+humidifier	加湿器|加濕器
+dehumidifier	除湿机|除濕機|抽湿机|抽濕機
+vent	透气阀|透氣閥
+wrench	扳手|士巴拿|活动扳手|活動扳手
+pipe wrench	管钳|管鉗|水管钳|水管鉗|喉钳|喉鉗
+pipe cutter	割管刀|切管器|管子割刀|割刀|剪管器
+torch	焊枪|焊槍|喷枪|噴槍|喷火枪
+solder	焊锡|焊錫|焊料|焊条|焊條|銲錫
+flux	助焊剂|助焊劑|焊膏|焊油
+PTFE tape	生料带|生料帶|密封带|密封帶|水胶布|水膠布|四氟带|生胶带|生膠帶
+pipe thread sealant	螺纹密封胶|螺紋密封膠|管螺纹胶|麻丝|麻絲|厌氧胶
+silicone	玻璃胶|玻璃膠|硅胶|矽膠|硅酮胶
+PVC cement	pvc胶|pvc胶水|pvc膠水|胶水|膠水|胶粘剂
+primer	底漆
+hanger	吊架|吊卡|管卡|管码|管碼|喉码|喉碼|管道支架|管支架
+strap	打孔带|打孔帶|吊带|吊帶
+clamp	卡箍|管夹|管夾|喉箍|抱箍
+insulation	保温|保溫|保温棉|保溫棉|隔热|隔熱|保温管
+gasket	垫片|墊片|胶垫|膠墊
+o-ring	o型圈|o形圈|密封圈|o圈
+washer	垫圈|墊圈|介子|平垫|平墊
+screw	螺丝|螺絲|螺钉|螺釘
+bolt	螺栓
+nut	螺母|螺帽
+hose	软管|軟管|喉管|胶管|膠管
+supply line	进水软管|進水軟管|编织软管|編織軟管|上水管|进水管|進水管
+lead free	无铅|無鉛
+potable water	饮用水|飲用水
+natural gas	天然气|天然氣
+propane	液化气|液化氣|丙烷|石油气|石油氣|煤气罐
+hot water	热水|熱水
+cold water	冷水
+repair kit	维修包|維修包|维修套件|維修套件|修理包|维修配件
+kit	套装|套裝|套件
+heating	暖气|暖氣|供暖|采暖|採暖
+water	自来水|自來水|清水
+gas	燃气|燃氣|煤气|煤氣
+electric	电热|電熱|电动|電動
+kitchen	厨房|廚房
+bathroom	卫生间|衛生間|浴室|洗手间|洗手間|厕所|廁所
+inch	英寸|吋
+gallon	加仑|加侖
+air vent	排气阀|排氣閥|放气阀|放氣閥
+black iron pipe	黑铁管|黑鐵管
+ft	英尺|呎
+volt	伏特
+ton	冷吨|冷噸
+reversing valve	四通阀|四通閥|换向阀|換向閥|四通换向阀|四通換向閥
+TXV valve	膨胀阀|膨脹閥|热力膨胀阀|熱力膨脹閥

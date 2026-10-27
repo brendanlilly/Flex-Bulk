@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="admin-token" content="__ADMIN_TOKEN__">
+<title>Flex Bulk · Settings</title>
+<link rel="icon" type="image/png" href="/static/brand/favicon.png">
+<link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+<header class="atop">
+  <a class="alogo" href="/admin" aria-label="Merchandising dashboard home">
+    <img src="/static/brand/fwwebb-mark.png" alt="F.W. Webb" width="36" height="36">
+    <span class="wm"><span class="w1">Flex<b>Bulk</b> <span class="w2">Settings</span></span><span class="beta">bulk order matching · <span id="ver">v1.0</span> · staff only</span></span>
+  </a>
+  <span class="sp"></span>
+  <span class="envchip" title="The dashboard is served only to the computer running Flex Bulk (or, on the demo, past the admin sign-in), and every call carries a per-start token.">
+    <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>This computer only</span>
+  <label class="whobox" title="Recorded with every change you publish"><small>Your name</small><input id="who" placeholder="e.g. Brendan L." maxlength="60" autocomplete="name"></label>
+  <a class="openapp" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 3h4v15H4V6h4z"/><path d="M8 11h8M8 15h8"/></svg>Open Flex Bulk</a>
+</header>
+
+<div class="shell">
+  <nav class="side" id="side" aria-label="Dashboard sections">
+    <div class="sgrp">Bulk order</div>
+    <a data-page="bulk" href="#bulk"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 3h4v15H4V6h4z"/><path d="M8 11h8M8 15h8"/></svg>Bulk order analytics</a>
+    <a data-page="crosses" href="#crosses"><svg viewBox="0 0 24 24"><path d="M4 7h11l-3-3M20 17H9l3 3"/><circle cx="18" cy="7" r="2"/><circle cx="6" cy="17" r="2"/></svg>Crosses <span class="cnt" id="nX"></span></a>
+    <a data-page="brandprefs" href="#brandprefs"><svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>Brand preferences <span class="cnt" id="nBp"></span></a>
+    <a data-page="learned" href="#learned"><svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2l.9-5.5-4-3.9 5.5-.8z"/></svg>Learned crosses</a>
+    <div class="sgrp">Matching</div>
+    <a data-page="weights" href="#weights"><svg viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Ranking weights</a>
+    <a data-page="relevance" href="#relevance"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg>Relevance by field</a>
+    <a data-page="dictionary" href="#dictionary"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/></svg>Search dictionary <span class="cnt" id="nDict" title="In review"></span></a>
+    <a data-page="synonyms" href="#synonyms"><svg viewBox="0 0 24 24"><path d="M4 7h13l-3-3M20 17H7l3 3"/></svg>Rewrites <span class="cnt" id="nRw"></span></a>
+    <a data-page="rules" href="#rules"><svg viewBox="0 0 24 24"><path d="M12 17v5M5 7l7-5 7 5-7 5z"/><path d="M5 12l7 5 7-5"/></svg>Rules <span class="cnt" id="nRules"></span></a>
+    <div class="sgrp">Admin</div>
+    <a data-page="changes" href="#changes"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Change log</a>
+    <a data-page="data" href="#data"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>Data &amp; access</a>
+    <a data-page="usage" href="#usage"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg>Claude usage</a>
+    <a data-page="signins" href="#signins"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Sign-ins</a>
+    <span hidden id="nRecs"></span><span hidden id="nFb"></span><span hidden id="nAb"></span><span hidden id="nKc"></span>
+    <div class="sfoot" id="sfoot"></div>
+  </nav>
+
+  <main class="content">
+    <div class="draftbar" id="draftbar" hidden></div>
+    <div id="page"></div>
+  </main>
+</div>
+
+<div class="ascrim" id="ascrim"></div>
+<aside class="adrawer" id="adrawer" role="dialog" aria-label="Details"></aside>
+<div class="atoast" id="atoast" role="status"></div>
+<script src="/static/admin.js"></script>
+<script src="/static/admin_commerce.js"></script>
+<script src="/static/admin_avail.js"></script>
+<script src="/static/dictionary.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+# Italian (it) · trade words (bocchettone = union, manicotto = coupling, saracinesca = gate valve, giratubi = pipe wrench,
+# scaldabagno = water heater, canapa = hemp thread sealant). Words that are also English ("water", "radiator") are left out.
+valve	valvol*
+ball valve	valvol* a sfera|rubinett* a sfera|valvol* sfera|sfera
+gate valve	saracinesc*|valvol* a saracinesca|valvol* a saracinesche
+globe valve	valvol* a globo|valvol* a flusso avviato|valvol* a sede
+check valve	valvol* di ritegno|valvol* di non ritorno|valvol* ritegno|ritegno|valvol* antiritorno
+butterfly valve	valvol* a farfalla
+relief valve	valvol* di sicurezza|valvol* di sfioro|valvol* di scarico termico
+pressure reducing valve	riduttor* di pressione|riduttor* pressione|valvol* riduttric*
+shutoff valve	valvol* di intercettazione|rubinett* d'arresto|valvol* d'arresto|rubinett* di arresto|rubinett* generale
+angle stop	rubinett* sottolavello|rubinett* a squadra|rubinett* d'angolo
+mixing valve	valvol* miscelatric*|miscelator* termostatic*
+gas valve	valvol* del gas|valvol* gas|rubinett* gas|rubinett* del gas
+fitting	raccord*
+elbow	gomit*|curv*
+tee	raccordo a t|raccordi a t|tee|ti
+coupling	manicott*
+union	bocchetton*|raccordo a tre pezzi|raccordo tre pezzi
+reducer	riduzion*|riduzion* concentric*
+bushing	riduzion* maschio femmina
+nipple	nippl*|nipplo|nipplo ridotto
+cap	tapp*|calott*|tappo femmina
+plug	tappo maschio|tappi maschio
+adapter	adattator*|raccordo di transizione
+flange	flangia|flange in acciaio|flangie
+wye	braga|braghe|braga a 45
+pipe	tubo|tubi|tubazion*
+copper	rame
+brass	ottone
+bronze	bronzo
+stainless steel	acciaio inox|acciaio inossidabile|inox|inossidabile
+steel	acciaio
+black iron	ferro nero|acciaio nero
+galvanized	zincat*
+cast iron	ghisa
+plastic	plastica|plastiche
+threaded	filettat*|filetto
+male	maschio|maschi
+female	femmina|femmine
+sweat	a saldare|da saldare|saldare|a brasare
+press	a pressare|pressfitting|press fitting
+toilet	vaso* sanitari*|vaso*|tazza* wc|wc|tazza*
+sink	lavandin*|lavabo*
+kitchen sink	lavell*|lavello* da cucina|lavello* cucina
+faucet	rubinett*|miscelator*
+kitchen faucet	miscelator* cucina|miscelator* da cucina|rubinett* cucina|miscelator* lavello
+lavatory faucet	miscelator* lavabo|rubinett* lavabo|miscelator* per lavabo
+shower	doccia|docce
+shower head	soffion*|telefono doccia|doccino*
+bathtub	vasca* da bagno|vasca*
+urinal	orinatoi*
+drain	scarico|scarichi|scarico a parete|pilett*
+floor drain	scarico a pavimento|piletta a pavimento|chiusino*
+p-trap	sifon*
+cartridge	cartuccia|cartucce|vitone*
+aerator	rompigetto|aeratore*|frangigetto
+water heater	scaldabagno|scaldacqua|bollitore*|scaldabagni
+tankless water heater	scaldabagno istantaneo|scaldacqua istantaneo|scaldabagno a gas istantaneo
+boiler	caldaia|caldaie
+expansion tank	vaso* di espansione|vaso* d'espansione|vaso* espansione
+circulator	circolator*|pompa di circolazione|pompa di ricircolo
+pump	pomp*
+sump pump	pomp* sommers*|pomp* ad immersione|pomp* a immersione|pomp* di drenaggio
+well pump	pomp* per pozzo|pomp* da pozzo|elettropomp* sommers*
+pressure tank	autoclave|vaso* autoclave|serbatoi* a pressione
+burner	bruciator*
+furnace	generator* d'aria calda|caldaia ad aria
+air conditioner	condizionator*|climatizzator*|aria condizionata|condizionatore d'aria
+heat pump	pomp* di calore
+mini split	mono split|monosplit|climatizzator* split|split
+thermostat	termostat*|cronotermostat*
+filter	filtro|filtri
+duct	condott*|canal* d'aria|canalizzazion*
+refrigerant	gas refrigerante|refrigerant*
+capacitor	condensator*
+motor	motore|motori
+fan	ventilator*|ventola|ventole
+compressor	compressore|compressori
+radiator	radiatore|radiatori|termosifon*|calorifer*
+radiant	riscaldamento a pavimento|pannelli radianti|pavimento radiante|impianto radiante
+pipe wrench	giratubi|chiave* per tubi|chiave* stillson|chiave* svedese
+pipe cutter	tagliatubi|taglia tubi
+torch	cannell*|saldatore a gas
+solder	stagno|lega per saldatura|filo di stagno
+flux	disossidante*|pasta salda|flussante*
+PTFE tape	nastro* teflon|teflon|nastro* ptfe|nastro* in teflon
+pipe thread sealant	canapa|pasta sigillante|sigillante* per filetti|pasta verde
+PVC cement	colla* per pvc|colla* pvc|collant*|colla*
+clamp	fascett*|collar*|morsett*
+insulation	isolant*|isolamento|guaina isolante|coppelle
+gasket	guarnizion*
+o-ring	o-ring*|oring
+hose	tubo flessibile|tubo in gomma|manichetta|tubo da giardino
+supply line	flessibil*|flessibil* per rubinetto|tubo flessibile inox
+lead free	senza piombo
+potable water	acqua potabile
+natural gas	gas naturale|metano
+propane	propano|gpl
+hot water	acqua calda
+cold water	acqua fredda
+repair kit	kit* di riparazione|kit riparazione|kit di ricambio|ricambi
+water	acqua
+heating	riscaldamento
+gas	gas
+electric	elettric*
+kitchen	cucina
+bathroom	bagno|bagni
+inch	pollic*|pollice
+1/2 inch	mezzo pollice
+3/4 inch	tre quarti
+for	per
+solenoid valve	elettrovalvol*|valvol* solenoide
+backflow preventer	disconnettor*
+fill valve	galleggiant*|rubinett* a galleggiante
+thermocouple	termocoppi*
+anode rod	anod*|anodo di magnesio
+pressure switch	pressostat*
+air vent	sfiat*|valvol* di sfogo aria|valvol* sfogo aria
+wrench	chiave inglese|chiav* regolabil*
+nut	dado|dadi
+screw	vite|viti
+toilet seat	sedil* wc|copriwater
+condenser	unità esterna

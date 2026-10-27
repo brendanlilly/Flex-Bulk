@@ -1,0 +1,13 @@
+data/
+.venv/
+.git/
+tests/
+docs/
+scripts/
+_samples/
+bom-samples/
+shots/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.superpowers/

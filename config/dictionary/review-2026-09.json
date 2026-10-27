@@ -1,0 +1,1636 @@
+{
+ "source": "ChatGPT workbook (combined-search-synonyms.xlsx), Sep 27 2026",
+ "additions_source": "Claude review, Sep 27 2026",
+ "overrides": {
+  "aquastat": {
+   "verdict": "Wrong: “aquastat” is the trade's generic word for a boiler water control (Honeywell, Hydrolevel, Taco...). Mapping it to one brand hides the rest.",
+   "kind": "block",
+   "to": "",
+   "status": "off"
+  },
+  "aqua stat": {
+   "verdict": "Fixed: a spacing variant of the generic word, not a brand.",
+   "kind": "synonym",
+   "to": "aquastat"
+  },
+  "honeywell aquastat": {
+   "verdict": "Review: Honeywell Home residential controls are sold as Resideo; Webb's catalog decides which name to search.",
+   "kind": "synonym",
+   "to": "Resideo aquastat",
+   "status": "review"
+  },
+  "freon": {
+   "verdict": "Fixed: “freon” is used for any refrigerant; mapping it to the Chemours brand misses R-410A, R-22 and the rest.",
+   "kind": "synonym",
+   "to": "refrigerant"
+  },
+  "freon refrigerant": {
+   "verdict": "Fixed: same as “freon”.",
+   "kind": "synonym",
+   "to": "refrigerant"
+  },
+  "variable refrigerant volume": {
+   "verdict": "Wrong: the generic term; the workbook's own note says generic VRF must not become Daikin-only.",
+   "kind": "synonym",
+   "to": "variable refrigerant flow",
+   "status": "review"
+  },
+  "he pex": {
+   "verdict": "Fixed: hePEX is Uponor's (Wirsbo was Uponor's former name).",
+   "kind": "synonym",
+   "to": "Uponor hePEX",
+   "status": "review"
+  },
+  "hepex": {
+   "verdict": "Fixed: hePEX is Uponor's (Wirsbo was Uponor's former name).",
+   "kind": "synonym",
+   "to": "Uponor hePEX",
+   "status": "review"
+  },
+  "wirsbo fittings": {
+   "verdict": "Replaced by the brand alias Wirsbo → Uponor, which keeps the product words.",
+   "status": "off"
+  },
+  "wirsbo pipe": {
+   "verdict": "Replaced by the brand alias Wirsbo → Uponor, which keeps the product words.",
+   "status": "off"
+  },
+  "b&g pump": {
+   "verdict": "Replaced by the brand alias B&G → Bell & Gossett: this rule dropped the word “pump”.",
+   "status": "off"
+  },
+  "b and g pump": {
+   "verdict": "Replaced by the brand alias B and G → Bell & Gossett: this rule dropped the word “pump”.",
+   "status": "off"
+  },
+  "bell and gossett": {
+   "verdict": "Off: redundant; the engine already reads “Bell and Gossett” as the brand.",
+   "status": "off"
+  },
+  "channel lock pliers": {
+   "verdict": "Replaced by the brand alias channel lock → Channellock: this rule dropped “pliers”.",
+   "status": "off"
+  },
+  "channel locks": {
+   "verdict": "Replaced by the brand alias channel lock → Channellock.",
+   "status": "off"
+  },
+  "fernco adapter": {
+   "verdict": "Off: dropped the product word; Fernco is also used generically for flexible couplings (see the added review row).",
+   "status": "off"
+  },
+  "fernco coupling": {
+   "verdict": "Off: dropped the product word; Fernco is also used generically for flexible couplings (see the added review row).",
+   "status": "off"
+  },
+  "extrol": {
+   "verdict": "Review: “Extrol” is used for any expansion tank; decide whether Webb wants Amtrol only or all expansion tanks.",
+   "status": "review"
+  },
+  "ex-trol": {
+   "verdict": "Review: see “extrol”.",
+   "status": "review"
+  },
+  "vrv": {
+   "verdict": "Review: VRV is Daikin's name; fine for Daikin, but many say VRV for any VRF system.",
+   "status": "review"
+  },
+  "tiger loop": {
+   "verdict": "Review: the prototype's catalog has no Tigerloop; check against Webb's.",
+   "status": "review"
+  },
+  "tigerloop": {
+   "verdict": "Review: the prototype's catalog has no Tigerloop; check against Webb's.",
+   "status": "review"
+  },
+  "r410a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-410A"
+  },
+  "410a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-410A"
+  },
+  "410a refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-410A refrigerant"
+  },
+  "r22": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-22"
+  },
+  "22 refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-22 refrigerant"
+  },
+  "r32": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-32"
+  },
+  "32 refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-32 refrigerant"
+  },
+  "r454b": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-454B"
+  },
+  "454b": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-454B"
+  },
+  "454b refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-454B refrigerant"
+  },
+  "r134a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-134a"
+  },
+  "134a refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-134a refrigerant"
+  },
+  "r404a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-404A"
+  },
+  "404a refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-404A refrigerant"
+  },
+  "r448a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-448A"
+  },
+  "448a refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-448A refrigerant"
+  },
+  "r449a": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-449A"
+  },
+  "449a refrigerant": {
+   "verdict": "Fixed: search the designation as the catalog writes it (R-410A). The engine reads “r410a” as “r410 amp” and finds capacitors.",
+   "kind": "synonym",
+   "to": "R-449A refrigerant"
+  },
+  "ci": {
+   "verdict": "Context added: CI alone is ambiguous. Measured: the engine already finds cast iron for CI pipe searches, so this adds little here.",
+   "kind": "synonym",
+   "to": "cast iron",
+   "any": [
+    "pipe",
+    "fitting",
+    "coupling",
+    "no hub",
+    "nohub",
+    "hub",
+    "soil",
+    "tee",
+    "wye",
+    "bend",
+    "elbow",
+    "cleanout",
+    "reducer"
+   ]
+  },
+  "ci pipe": {
+   "verdict": "Measured: the engine already finds cast iron pipe for “CI pipe”.",
+   "kind": "synonym",
+   "to": "cast iron pipe"
+  },
+  "cisp": {
+   "verdict": "Fixed: cast iron soil pipe.",
+   "kind": "synonym",
+   "to": "cast iron soil pipe",
+   "status": "review"
+  },
+  "cast-iron pipe": {
+   "verdict": "Fixed: the workbook's target dropped “pipe”.",
+   "kind": "synonym",
+   "to": "cast iron pipe"
+  },
+  "ng": {
+   "verdict": "Review, mixed: as typed, “ng boiler” finds propane and oil boilers and this rule fixes it; water heaters are found either way; “ng furnace” finds parts for a model named NG-261 either way in this catalog.",
+   "kind": "synonym",
+   "to": "natural gas",
+   "any": [
+    "water heater",
+    "furnace",
+    "boiler",
+    "heater",
+    "range",
+    "conversion",
+    "orifice",
+    "regulator",
+    "valve"
+   ],
+   "status": "review"
+  },
+  "nat gas": {
+   "verdict": "Fixed: search as the catalog writes it.",
+   "kind": "synonym",
+   "to": "natural gas"
+  },
+  "nat gas water heater": {
+   "verdict": "Fixed: the workbook's target dropped “water heater”.",
+   "kind": "synonym",
+   "to": "natural gas water heater"
+  },
+  "ng water heater": {
+   "verdict": "Fixed: the workbook's target dropped “water heater”.",
+   "kind": "synonym",
+   "to": "natural gas water heater"
+  },
+  "lp water heater": {
+   "verdict": "Fixed: the workbook's target dropped “water heater”.",
+   "kind": "synonym",
+   "to": "propane water heater"
+  },
+  "lpg water heater": {
+   "verdict": "Fixed: the workbook's target dropped “water heater”.",
+   "kind": "synonym",
+   "to": "propane water heater"
+  },
+  "liquid propane water heater": {
+   "verdict": "Fixed: the workbook's target dropped “water heater”.",
+   "kind": "synonym",
+   "to": "propane water heater"
+  },
+  "lp gas": {
+   "verdict": "Fixed: search as the catalog writes it.",
+   "kind": "synonym",
+   "to": "propane"
+  },
+  "lpg": {
+   "verdict": "Off: redundant; the engine already reads LPG as propane.",
+   "status": "off"
+  },
+  "liquefied petroleum gas": {
+   "verdict": "Fixed: search as the catalog writes it.",
+   "kind": "synonym",
+   "to": "propane"
+  },
+  "counterflow furnace": {
+   "verdict": "Fixed: the target was an attribute name, not what the catalog calls the product.",
+   "kind": "synonym",
+   "to": "downflow furnace"
+  },
+  "down flow": {
+   "verdict": "Fixed: a spacing variant.",
+   "kind": "synonym",
+   "to": "downflow"
+  },
+  "up flow": {
+   "verdict": "Fixed: a spacing variant.",
+   "kind": "synonym",
+   "to": "upflow"
+  },
+  "el toilet": {
+   "verdict": "Fixed: “EL” alone is elbow; with “toilet” it's elongated.",
+   "kind": "synonym",
+   "to": "elongated toilet"
+  },
+  "galv pipe": {
+   "verdict": "Off: redundant; the engine already reads galv as galvanized.",
+   "status": "off"
+  },
+  "galvanized iron pipe": {
+   "verdict": "Fixed: galvanized pipe is steel; search as the catalog writes it.",
+   "kind": "synonym",
+   "to": "galvanized pipe"
+  },
+  "sch 40": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 40",
+   "status": "off"
+  },
+  "sch40": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 40",
+   "status": null
+  },
+  "sched 40": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 40",
+   "status": null
+  },
+  "sch 80": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 80",
+   "status": "off"
+  },
+  "sch80": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 80",
+   "status": null
+  },
+  "sched 80": {
+   "verdict": "Backwards for this catalog: titles say “Sch 40”; “Schedule 40” would miss them.",
+   "kind": "synonym",
+   "to": "sch 80",
+   "status": null
+  },
+  "schedule 40": {
+   "verdict": "Added: titles say Sch 40.",
+   "kind": "synonym",
+   "to": "sch 40"
+  },
+  "fnpt": {
+   "verdict": "Backwards: the catalog says FIP (the engine already reads FNPT and FPT as FIP).",
+   "kind": "synonym",
+   "to": "fip",
+   "status": "off"
+  },
+  "f npt": {
+   "verdict": "Backwards: the catalog says FIP (the engine already reads FNPT and FPT as FIP).",
+   "kind": "synonym",
+   "to": "fip",
+   "status": null
+  },
+  "female npt": {
+   "verdict": "Backwards: the catalog says FIP (the engine already reads FNPT and FPT as FIP).",
+   "kind": "synonym",
+   "to": "fip",
+   "status": null
+  },
+  "mnpt": {
+   "verdict": "Backwards: the catalog says MIP (the engine already reads MNPT and MPT as MIP).",
+   "kind": "synonym",
+   "to": "mip",
+   "status": "off"
+  },
+  "m npt": {
+   "verdict": "Backwards: the catalog says MIP (the engine already reads MNPT and MPT as MIP).",
+   "kind": "synonym",
+   "to": "mip",
+   "status": null
+  },
+  "fip": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "fpt": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "mip": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "mpt": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "sweat": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "swt": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "ftg": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "solder socket": {
+   "verdict": "Backwards: this is the word the catalog uses; rewriting it to a description would miss products.",
+   "status": "off"
+  },
+  "female iron pipe": {
+   "verdict": "Fixed: FIP is the catalog's word.",
+   "kind": "synonym",
+   "to": "fip"
+  },
+  "male iron pipe": {
+   "verdict": "Fixed: MIP is the catalog's word.",
+   "kind": "synonym",
+   "to": "mip"
+  },
+  "comp": {
+   "verdict": "Off: COMP is also compressor.",
+   "kind": "block",
+   "to": "",
+   "status": "off"
+  },
+  "ptc": {
+   "verdict": "Off: PTC is also the PTC start relays and thermistors on compressors.",
+   "kind": "block",
+   "to": "",
+   "status": "off"
+  },
+  "rh": {
+   "verdict": "Glossary only: RH is also right-hand (and the Rh thermostat terminal).",
+   "kind": "glossary"
+  },
+  "ss": {
+   "verdict": "Off: redundant; the engine already reads SS as stainless.",
+   "status": "off"
+  },
+  "sst": {
+   "verdict": "Off: redundant; the engine already reads SST as stainless.",
+   "status": "off"
+  },
+  "uf": {
+   "verdict": "Off: redundant; the engine already reads uF as MFD.",
+   "status": "off"
+  },
+  "µf": {
+   "verdict": "Off: redundant; the engine already reads µF as MFD.",
+   "status": "off"
+  },
+  "45": {
+   "verdict": "Off: a bare number is a size, rating or part number too; the engine already reads 45 and 90 next to a fitting word.",
+   "status": "off"
+  },
+  "90": {
+   "verdict": "Off: a bare number is a size, rating or part number too; the engine already reads 45 and 90 next to a fitting word.",
+   "status": "off"
+  },
+  "ninety": {
+   "verdict": "Off: a bare number is a size, rating or part number too; the engine already reads 45 and 90 next to a fitting word.",
+   "status": "off"
+  },
+  "forty five elbow": {
+   "verdict": "Off: a bare number is a size, rating or part number too; the engine already reads 45 and 90 next to a fitting word.",
+   "status": "off"
+  },
+  "45 el": {
+   "verdict": "Off: redundant; the engine already reads ell and el as elbow.",
+   "status": "off"
+  },
+  "45 ell": {
+   "verdict": "Off: redundant; the engine already reads ell and el as elbow.",
+   "status": "off"
+  },
+  "90 el": {
+   "verdict": "Off: redundant; the engine already reads ell and el as elbow.",
+   "status": "off"
+  },
+  "90 ell": {
+   "verdict": "Off: redundant; the engine already reads ell and el as elbow.",
+   "status": "off"
+  },
+  "circulator": {
+   "verdict": "Wrong: narrows every circulator to hydronic ones; domestic hot-water circulators are circulators too.",
+   "status": "off"
+  },
+  "circ": {
+   "verdict": "Off: redundant; the engine already reads circ as circulator.",
+   "status": "off"
+  },
+  "lav": {
+   "verdict": "Fixed: “lavatory sink” added a word; lav alone means lavatory (faucet, sink or drain).",
+   "kind": "synonym",
+   "to": "lavatory",
+   "status": "off"
+  },
+  "tap": {
+   "verdict": "Review: tap is also a threading tap (tools); needs fixture words.",
+   "kind": "synonym",
+   "to": "faucet",
+   "any": [
+    "kitchen",
+    "bath",
+    "bathroom",
+    "sink",
+    "lav",
+    "lavatory",
+    "washroom"
+   ],
+   "status": "review"
+  },
+  "wc": {
+   "verdict": "Review: WC is also inches of water column on gauges; context added.",
+   "kind": "synonym",
+   "to": "toilet",
+   "any": [
+    "bowl",
+    "seat",
+    "carrier",
+    "flush",
+    "tank",
+    "elongated",
+    "round"
+   ],
+   "none": [
+    "in",
+    "inch",
+    "gauge",
+    "manometer",
+    "column"
+   ],
+   "status": "review"
+  },
+  "wh": {
+   "verdict": "Off: redundant; the engine already reads WH as water heater.",
+   "status": "off"
+  },
+  "hwh": {
+   "verdict": "Off: redundant; the engine already reads HWH as water heater.",
+   "status": "off"
+  },
+  "co": {
+   "verdict": "Fixed with context: CO also means carbon monoxide.",
+   "kind": "synonym",
+   "to": "cleanout",
+   "any": [
+    "plug",
+    "tee",
+    "adapter",
+    "fitting",
+    "cover",
+    "cap",
+    "ferrule",
+    "pvc",
+    "abs",
+    "cast iron",
+    "dwv",
+    "floor",
+    "wall"
+   ],
+   "none": [
+    "detector",
+    "alarm",
+    "sensor",
+    "carbon",
+    "monoxide",
+    "analyzer",
+    "tester"
+   ]
+  },
+  "co plug": {
+   "verdict": "Kept: “plug” makes CO unambiguous.",
+   "kind": "synonym",
+   "to": "cleanout plug"
+  },
+  "fd": {
+   "verdict": "Review: two letters; context added.",
+   "kind": "synonym",
+   "to": "floor drain",
+   "any": [
+    "strainer",
+    "drain",
+    "trap",
+    "body",
+    "grate",
+    "pvc",
+    "cast iron",
+    "top"
+   ],
+   "status": "review"
+  },
+  "nh": {
+   "verdict": "Review: NH is also New Hampshire (branch and address words); context added.",
+   "kind": "synonym",
+   "to": "no hub",
+   "any": [
+    "coupling",
+    "band",
+    "clamp",
+    "cast iron",
+    "pipe",
+    "fitting",
+    "bend",
+    "tee",
+    "wye"
+   ],
+   "status": "review"
+  },
+  "hubless": {
+   "verdict": "Off: redundant; products that say no-hub are already found by hubless.",
+   "status": "off"
+  },
+  "no hub": {
+   "verdict": "Off: the target added the word “connection”; the engine already reads no hub and no-hub alike.",
+   "status": "off"
+  },
+  "hp": {
+   "verdict": "Off: the engine already reads 1/2 HP as a motor rating; bare HP is also heat pump and high pressure.",
+   "status": "off"
+  },
+  "lf": {
+   "verdict": "Off: the engine already reads LF as lead-free; the workbook's worry (linear feet) is noted on the built-in rule.",
+   "status": "off"
+  },
+  "lead free": {
+   "verdict": "Off: redundant; the engine already reads lead free.",
+   "status": "off"
+  },
+  "mfd": {
+   "verdict": "Off: redundant; MFD is the catalog's word.",
+   "status": "off"
+  },
+  "ips": {
+   "verdict": "Off: IPS is iron pipe size and also a manufacturer (IPS Corporation, Weld-On).",
+   "status": "off"
+  },
+  "cfm": {
+   "verdict": "Glossary only: airflow unit; CFM motor is handled by its own row.",
+   "kind": "glossary"
+  },
+  "hvac": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "hvac/r": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "hvac-r": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "hvacr": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "h v a c": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "iaq": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "bas": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "bms": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "building management system": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "fresh air": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "outside air": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "oa air": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "delta t": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "delta p": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "dt reading": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "dp reading": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "δp": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "δt": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "sc reading": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "sh reading": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "super heat": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "sub cooling": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "sub-cooling": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "edr": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "sq ft radiation": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "square feet edr": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "i=b=r rating": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "ibr rating": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "net ahri rating": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "n/c contact": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "nc contact": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "no contact": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "n/o contact": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "normally open": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "normally closed": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "space heat circuit": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "ch heating": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "fha furnace": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "fwa": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "forced hot air": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "fhw": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "hot water heat": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "rough in": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "rough-in": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "ri dimension": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "hartford-loop": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "steam boiler loop": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "ddc": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "ddc controller": {
+   "verdict": "Glossary: a definition or concept, not a product people buy; no rewrite.",
+   "kind": "glossary"
+  },
+  "combi": {
+   "verdict": "Review: combi alone is ambiguous; context added.",
+   "kind": "synonym",
+   "to": "combination boiler",
+   "any": [
+    "boiler",
+    "gas",
+    "propane",
+    "btu",
+    "mbh",
+    "navien",
+    "wall hung"
+   ],
+   "status": "review"
+  },
+  "evaporator": {
+   "verdict": "Review: the target repeats the term and adds “coil”; useful only if Webb's titles say evaporator coil.",
+   "status": "review"
+  },
+  "auto vent": {
+   "verdict": "Review: two meanings (air admittance valve in drainage, automatic air vent in hydronics).",
+   "status": "review"
+  },
+  "condensate removal pump": {
+   "verdict": "Conflict in the workbook: two targets. Webb's catalog decides (HVAC condensate pump is the usual meaning).",
+   "status": "review"
+  },
+  "1/4 bend": {
+   "verdict": "Backwards for most catalogs: DWV fittings are titled “1/4 Bend”. Check Webb's titles before using.",
+   "status": "review"
+  },
+  "1/8 bend": {
+   "verdict": "Backwards for most catalogs: DWV fittings are titled “1/8 Bend”. Check Webb's titles before using.",
+   "status": "review"
+  },
+  "1/16 bend": {
+   "verdict": "Review: titles usually say 1/16 Bend.",
+   "status": "review"
+  },
+  "1/32 bend": {
+   "verdict": "Review: titles usually say 1/32 Bend.",
+   "status": "review"
+  },
+  "garbage disposal": {
+   "verdict": "Backwards for this catalog: titles say Garbage Disposal (454 products); “food waste disposer” finds 12.",
+   "kind": "synonym",
+   "to": "food waste disposer",
+   "status": "off"
+  },
+  "garbage disposer": {
+   "verdict": "Fixed: reversed to the catalog's words.",
+   "kind": "synonym",
+   "to": "garbage disposal"
+  },
+  "kitchen disposal": {
+   "verdict": "Fixed: reversed to the catalog's words.",
+   "kind": "synonym",
+   "to": "garbage disposal"
+  },
+  "wye": {
+   "verdict": "Off: the target repeats the term and adds “fitting”, which matches every fitting.",
+   "status": "off"
+  },
+  "y fitting": {
+   "verdict": "Fixed.",
+   "kind": "synonym",
+   "to": "wye"
+  },
+  "y branch": {
+   "verdict": "Fixed.",
+   "kind": "synonym",
+   "to": "wye"
+  },
+  "sweat flux": {
+   "verdict": "Kept.",
+   "kind": "synonym",
+   "to": "soldering flux"
+  },
+  "room stat": {
+   "verdict": "Kept; the engine reads stat as thermostat already, so this is redundant but harmless.",
+   "status": "off"
+  },
+  "t-stat": {
+   "verdict": "Off: redundant; the engine already reads tstat and t-stat.",
+   "status": "off"
+  },
+  "tstat": {
+   "verdict": "Off: redundant; the engine already reads tstat.",
+   "status": "off"
+  },
+  "mini split": {
+   "verdict": "Off: the target adds “system”; the engine already reads mini split, minisplit and ductless alike.",
+   "status": "off"
+  },
+  "minisplit": {
+   "verdict": "Off: redundant.",
+   "status": "off"
+  },
+  "ductless split": {
+   "verdict": "Off: redundant; the engine reads ductless as mini split.",
+   "status": "off"
+  },
+  "ductless system": {
+   "verdict": "Off: redundant; the engine reads ductless as mini split.",
+   "status": "off"
+  },
+  "hot surface ignitor": {
+   "verdict": "Off: redundant; the engine already reads ignitor as igniter.",
+   "status": "off"
+  },
+  "hsi": {
+   "verdict": "Off: redundant; the engine already reads HSI as igniter.",
+   "status": "off"
+  },
+  "pex cutter": {
+   "verdict": "Review: the target drops the material; a PEX cutter and a PVC cutter aren't the same tool.",
+   "status": "review"
+  },
+  "pvc cutter": {
+   "verdict": "Review: the target drops the material; a PEX cutter and a PVC cutter aren't the same tool.",
+   "status": "review"
+  },
+  "radiant pex": {
+   "verdict": "Review: the target drops “PEX”; check Webb's titles for radiant (oxygen-barrier) PEX.",
+   "status": "review"
+  },
+  "plastic pipe glue": {
+   "verdict": "Review: plastic pipe glue can be ABS or CPVC cement too.",
+   "status": "review"
+  },
+  "end cap": {
+   "verdict": "Review: end cap is also a baseboard or duct end cap.",
+   "status": "review"
+  },
+  "split flange": {
+   "verdict": "Review: split flange can be a structural fitting as well as a split escutcheon.",
+   "status": "review"
+  },
+  "condenser stand": {
+   "verdict": "Review: a condenser stand isn't necessarily a snow stand.",
+   "status": "review"
+  },
+  "supply line": {
+   "verdict": "Review: supply line also means gas and refrigerant lines.",
+   "status": "review"
+  },
+  "transfer valve": {
+   "verdict": "Review: transfer and diverter valves differ by manufacturer.",
+   "status": "review"
+  },
+  "bleed valve": {
+   "verdict": "Review: bleed valve is also used outside hydronic radiators.",
+   "status": "review"
+  },
+  "slip socket": {
+   "verdict": "Review: slip also describes repair couplings and tubular joints.",
+   "status": "review"
+  },
+  "fitting end": {
+   "verdict": "Review: FTG (fitting end) is the catalog's word in copper fittings; the target describes it.",
+   "status": "review"
+  },
+  "odm": {
+   "verdict": "Review: ODM is the catalog's word on refrigeration fittings; glossary may fit better.",
+   "status": "review"
+  },
+  "quarter bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  },
+  "quarter-bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  },
+  "eighth bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  },
+  "eighth-bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  },
+  "sixteenth bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  },
+  "thirty second bend": {
+   "verdict": "Review: DWV fittings are usually titled 1/4 Bend, 1/8 Bend; check Webb's titles.",
+   "status": "review"
+  }
+ },
+ "additions": [
+  {
+   "kind": "brand",
+   "term": "B&G",
+   "to": "Bell & Gossett",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Brand alias: “B&G pump” found B-Line clamps and PEX-B tubing.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "B and G",
+   "to": "Bell & Gossett",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Brand alias.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Bell and Gosset",
+   "to": "Bell & Gossett",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Misspelling of the brand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Wirsbo",
+   "to": "Uponor",
+   "status": "live",
+   "dept": "Plumbing",
+   "qc": "Wirsbo is Uponor's former name; many still say it.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "channel lock",
+   "to": "Channellock",
+   "status": "review",
+   "dept": "Tools",
+   "qc": "Brand alias; the prototype's catalog has no Channellock.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Bradford",
+   "to": "Bradford White",
+   "status": "live",
+   "dept": "Plumbing",
+   "qc": "Counter shorthand for the brand.",
+   "source": "Claude review, Sep 27 2026",
+   "none": [
+    "white"
+   ]
+  },
+  {
+   "kind": "brand",
+   "term": "Weil",
+   "to": "Weil-McLain",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Counter shorthand for the brand.",
+   "source": "Claude review, Sep 27 2026",
+   "none": [
+    "mclain",
+    "mc lain"
+   ]
+  },
+  {
+   "kind": "brand",
+   "term": "Weil McLain",
+   "to": "Weil-McLain",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Spacing variant.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "White Rodgers",
+   "to": "White-Rodgers",
+   "status": "live",
+   "dept": "HVAC/R",
+   "qc": "Spacing variant.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "White Rogers",
+   "to": "White-Rodgers",
+   "status": "live",
+   "dept": "HVAC/R",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Grundfoss",
+   "to": "Grundfos",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Navian",
+   "to": "Navien",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Rinai",
+   "to": "Rinnai",
+   "status": "live",
+   "dept": "Heating",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Sloane",
+   "to": "Sloan",
+   "status": "live",
+   "dept": "Plumbing",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Honeywel",
+   "to": "Honeywell",
+   "status": "live",
+   "dept": "HVAC/R",
+   "qc": "Common misspelling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "Slantfin",
+   "to": "Slant/Fin",
+   "status": "review",
+   "dept": "Heating",
+   "qc": "Spacing variant; check the brand name in Webb's catalog.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "AO Smith",
+   "to": "A. O. Smith",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Brand alias; the prototype's catalog has no A. O. Smith.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "brand",
+   "term": "AOS",
+   "to": "A. O. Smith",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Counter shorthand; three letters, check it doesn't collide in Webb's logs.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "pressuretrol",
+   "to": "steam pressure control",
+   "status": "review",
+   "dept": "Heating",
+   "qc": "Honeywell's trademark used for any steam pressure control.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "well x trol",
+   "to": "well tank",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Amtrol's Well-X-Trol, used for any well pressure tank.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "wellxtrol",
+   "to": "well tank",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Amtrol's Well-X-Trol, used for any well pressure tank.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "puron",
+   "to": "R-410A",
+   "status": "live",
+   "dept": "HVAC/R",
+   "qc": "Carrier's trade name for R-410A.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "vic coupling",
+   "to": "grooved coupling",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "Victaulic's name used for any grooved coupling.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "fernco",
+   "to": "flexible coupling",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Brand used for any flexible (rubber) coupling; decide whether Webb wants Fernco only.",
+   "source": "Claude review, Sep 27 2026",
+   "any": [
+    "coupling",
+    "adapter",
+    "coupler"
+   ]
+  },
+  {
+   "kind": "synonym",
+   "term": "sawzall",
+   "to": "reciprocating saw",
+   "status": "review",
+   "dept": "Tools",
+   "qc": "Milwaukee's trademark used for any reciprocating saw.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "x13 motor",
+   "to": "constant torque motor",
+   "status": "review",
+   "dept": "HVAC/R",
+   "qc": "Genteq's X13 used for any constant-torque ECM blower motor.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "stat wire",
+   "to": "thermostat wire",
+   "status": "review",
+   "dept": "HVAC/R",
+   "qc": "Counter shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "drip leg",
+   "to": "sediment trap",
+   "status": "live",
+   "dept": "Plumbing",
+   "qc": "Same fitting on a gas line.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "gas cock",
+   "to": "gas valve",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Old term for a gas shutoff; check Webb's titles (gas ball valve).",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "triple aquastat",
+   "to": "aquastat relay",
+   "status": "review",
+   "dept": "Heating",
+   "qc": "Honeywell L8124/L8148 style control, a New England staple.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "fco",
+   "to": "floor cleanout",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Drainage schedule abbreviation.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "wco",
+   "to": "wall cleanout",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "Drainage schedule abbreviation.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "f1960",
+   "to": "PEX expansion fitting",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "ASTM F1960 is the cold-expansion PEX fitting standard.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "f1807",
+   "to": "PEX crimp fitting",
+   "status": "review",
+   "dept": "Plumbing",
+   "qc": "ASTM F1807 is the metal insert crimp/clamp PEX fitting standard.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "wnrf",
+   "to": "weld neck raised face flange",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "PVF shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sorf",
+   "to": "slip on raised face flange",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "PVF shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "smls",
+   "to": "seamless",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "PVF shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "tbe nipple",
+   "to": "threaded both ends nipple",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "Nipple end shorthand (TBE, TOE, PBE).",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "toe nipple",
+   "to": "threaded one end nipple",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "Nipple end shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "pbe nipple",
+   "to": "plain both ends nipple",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "Nipple end shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "bw",
+   "to": "butt weld",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "PVF shorthand; two letters, context added.",
+   "source": "Claude review, Sep 27 2026",
+   "any": [
+    "elbow",
+    "ell",
+    "tee",
+    "cap",
+    "reducer",
+    "fitting",
+    "flange",
+    "sch",
+    "schedule"
+   ]
+  },
+  {
+   "kind": "synonym",
+   "term": "sw",
+   "to": "socket weld",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "PVF shorthand; two letters, context added.",
+   "source": "Claude review, Sep 27 2026",
+   "any": [
+    "elbow",
+    "ell",
+    "tee",
+    "cap",
+    "coupling",
+    "fitting",
+    "flange",
+    "3000",
+    "6000"
+   ]
+  },
+  {
+   "kind": "synonym",
+   "term": "sub pump",
+   "to": "submersible pump",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Well pump shorthand.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "well tank",
+   "to": "well pressure tank",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Check Webb's titles.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "30/50 switch",
+   "to": "30/50 pressure switch",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Well pump pressure switch settings.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "40/60 switch",
+   "to": "40/60 pressure switch",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Well pump pressure switch settings.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "snifter valve",
+   "to": "air volume control",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Older well systems (common in New England).",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "sprinkler head",
+   "to": "fire sprinkler",
+   "status": "review",
+   "dept": "PVF",
+   "qc": "Fire protection is barely covered by the workbook.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "synonym",
+   "term": "whole house filter",
+   "to": "whole house water filter",
+   "status": "review",
+   "dept": "Water systems",
+   "qc": "Water treatment.",
+   "source": "Claude review, Sep 27 2026"
+  },
+  {
+   "kind": "block",
+   "term": "watts",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Watts is a brand Webb carries and a unit (1500 watts).",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Watts is a brand Webb carries and a unit (1500 watts)."
+  },
+  {
+   "kind": "block",
+   "term": "delta",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Delta is a faucet brand; delta-T and delta-P are measurements.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Delta is a faucet brand; delta-T and delta-P are measurements."
+  },
+  {
+   "kind": "block",
+   "term": "carrier",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Carrier is an HVAC brand; a carrier is also a toilet or lavatory support.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Carrier is an HVAC brand; a carrier is also a toilet or lavatory support."
+  },
+  {
+   "kind": "block",
+   "term": "state",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "State is a water heater brand and a word in addresses.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "State is a water heater brand and a word in addresses."
+  },
+  {
+   "kind": "block",
+   "term": "stat",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Built-in: stat is read as thermostat; aquastat, humidistat and pressure stat are different products.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Built-in: stat is read as thermostat; aquastat, humidistat and pressure stat are different products."
+  },
+  {
+   "kind": "block",
+   "term": "ac",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Built-in: AC is read as air conditioner; it also means alternating current (24 VAC).",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Built-in: AC is read as air conditioner; it also means alternating current (24 VAC)."
+  },
+  {
+   "kind": "block",
+   "term": "prv",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Built-in: PRV is read as pressure reducing valve; it can also mean pressure relief valve.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Built-in: PRV is read as pressure reducing valve; it can also mean pressure relief valve."
+  },
+  {
+   "kind": "block",
+   "term": "lp",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Built-in: LP is read as propane; it can also mean low pressure (LP switch).",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Built-in: LP is read as propane; it can also mean low pressure (LP switch)."
+  },
+  {
+   "kind": "block",
+   "term": "condenser",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Built-in: condenser is read as condensing unit; it can also mean a condenser coil.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Built-in: condenser is read as condensing unit; it can also mean a condenser coil."
+  },
+  {
+   "kind": "block",
+   "term": "carrier",
+   "to": "",
+   "status": "live",
+   "dept": "General",
+   "qc": "Carrier is an HVAC brand; a carrier is also a toilet or lavatory support.",
+   "source": "Claude review, Sep 27 2026",
+   "note": "Carrier is an HVAC brand; a carrier is also a toilet or lavatory support."
+  },
+  {
+   "kind": "synonym",
+   "term": "dormont",
+   "to": "gas connector",
+   "status": "off",
+   "dept": "Plumbing",
+   "qc": "Off: Dormont is a brand the catalog carries; rewriting it hides Dormont's products. (Kept as a record.)",
+   "source": "Claude review, Sep 27 2026",
+   "any": [
+    "hose",
+    "line",
+    "flex",
+    "connector"
+   ]
+  }
+ ]
+}

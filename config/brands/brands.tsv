@@ -1,0 +1,90 @@
+# FlexSearch brand master (v2.42): how brands are typed, which catalog brands each name covers, and brands F.W. Webb
+# sells that the demo catalog doesn't carry (a search naming one says so instead of showing other brands).
+#
+# columns: brand	aliases (| separated, as typed)	covers (| separated catalog brands; empty = the brand itself)	context	note	makes
+#   brand    the name shown on the page; a catalog brand, or a real brand the demo catalog lacks
+#   aliases  other ways it's typed; matched on whole words after the analyzer reads them
+#   covers   the catalog brands a search for it accepts (a parent and its brands; one company listed two ways)
+#   context  a regex the search must also match for an alias to count ("bw" is Bradford White next to a heater word)
+#   note     "choose": the page asks which company was meant (Mueller is three); "same": one company listed under
+#            several names, one value in the Brand filter (B-Line, Cooper B-Line)
+#   makes    (brands the demo catalog doesn't carry) what they're known for: the brand alone ("kohler") shows other
+#            brands' products of that kind
+#
+# ---- catalog brands: the ways they're typed
+Weil-McLain	weil mclain|weilmclain|weil mc lain|weil-mc lain|weil
+American Standard	american std|am std|amstd|am standard|amer std|amer standard|american stnd
+Bradford White	brad white|bradford
+# "bw" is Bradford White only next to a heater word
+Bradford White	bw		water heater|heater|boiler|tank|anode|thermostat|gas valve
+Bell & Gossett	b&g|b and g|bell and gossett|bell gossett|bg pump	Bell & Gossett
+T&S Brass	t&s|t and s|t & s|ts brass
+Speedi-Products	speedi products|speedi|speedy products
+Zurn Wilkins	wilkins|zurn wilkins
+Zurn	zurn
+Honeywell	honeywell|honeywel|honywell	Honeywell|Honeywell Home|Resideo
+Honeywell Home	honeywell home	Honeywell Home|Resideo
+Resideo	resideo	Resideo|Honeywell Home
+B-Line	b line|bline|cooper b-line|cooper b line|cooper bline|eaton b-line	B-Line|Cooper B-Line		same
+Emerson	emerson	Emerson|Emerson Sensi
+White-Rodgers	white rodgers|white rogers|whiterodgers|white-rogers
+Victaulic Style	victaulic
+Slant/Fin Style	slant fin|slantfin|slant/fin
+InSinkErator	insinkerator|in sink erator|in-sink-erator|isinkerator
+Jay R. Smith	jay r smith|jr smith|j r smith|j.r. smith|jay smith
+A.Y. McDonald	ay mcdonald|a.y. mcdonald|a y mcdonald|aym
+Matco-Norca	matco|matco norca
+Smith-Cooper	smith cooper
+Hart & Cooley	hart and cooley|hart cooley|h&c
+Spirax Sarco	spirax|sarco
+Anvil Gruvlok	gruvlok
+Chicago Faucets	chicago faucet
+Great Lakes Copper	great lakes
+Charlotte Pipe	charlotte
+Sioux Chief	sioux
+Franklin Electric	franklin
+Bonney Forge	bonney
+LA-CO	laco|la co|la-co
+Triangle Tube	triangle
+Nidec US Motors	us motors|nidec
+Watson McDaniel	watson mcdaniel
+Ford Meter Box	ford meter
+Hoffman Specialty	hoffman
+Wheeler-Rex	wheeler rex
+Bernzomatic	bernz o matic|bernz-o-matic|bernz
+Yellow Jacket	yellowjacket
+Klein Tools	klein
+Little Giant	little giant
+# "milwaukee" is the valve maker next to a valve word, the tool maker otherwise
+Milwaukee Valve	milwaukee		valves?\b|butterfly
+Mueller	mueller	Mueller|Mueller Streamline|Mueller Co.		choose
+Mueller Streamline	mueller streamline|streamline|mueller industries
+Mueller Co.	mueller co|mueller company|mueller hydrant
+SharkBite	shark bite|sharkbite
+Rinnai	rinai|rinnia
+# v2.44: "mission" is Mission Rubber next to a coupling word (the trade's name for its shielded couplings)
+Mission Rubber	mission		coupl|band|clamp|transition|shielded|no.?hub|rubber
+Navien	navian|naiven
+# ---- brands F.W. Webb sells that the synthetic demo catalog doesn't carry
+A. O. Smith	ao smith|a.o. smith|a o smith|aosmith|a. o. smith|a.o smith|aos water heater				water heater
+State Water Heaters	state water heater|state water heaters|state industries				water heater
+Laars	laars				boiler
+Raypak	raypak				boiler
+Viessmann	viessmann|viesmann				boiler
+Kohler	kohler				toilet
+Grohe	grohe				faucet
+Hansgrohe	hansgrohe|hans grohe				shower
+Pfister	pfister|price pfister				faucet
+Takagi	takagi				tankless water heater
+# "carrier" alone is a toilet carrier (Josam, Zurn, Jay R. Smith): the HVAC maker only next to an HVAC word
+Carrier	carrier		furnace|condens|heat pump|air handler|\bac\b|a/c|coil|mini|infinity|performance		condensing unit
+Bryant	bryant				condensing unit
+Trane	trane				condensing unit
+Lennox	lennox				condensing unit
+Goodman	goodman				condensing unit
+Daikin	daikin				mini split
+Mitsubishi Electric	mitsubishi|mitsubishi electric|mitsu				mini split
+Fernco	fernco				no-hub coupling
+Generac	generac
+Spirotherm	spirotherm				air separator
+Armacell	armacell|armaflex
