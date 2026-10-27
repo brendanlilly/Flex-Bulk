@@ -225,7 +225,21 @@ class LocalBackend:
             top = np.argpartition(-sims, k - 1)[:k]
             top = top[np.argsort(-sims[top])]
             return top.astype(np.int64), sims[top].astype(np.float32)
-        labels, dist = self.hnsw.knn_query(vec.reshape(1, -1), k=k)
+        vec = np.asarray(vec, np.float32).reshape(1, -1)
+        if not np.any(vec):                    # no known words: nothing is near
+            return np.zeros(0, np.int64), np.zeros(0, np.float32)
+        k = min(k, self.hnsw.get_current_count())
+        try:
+            labels, dist = self.hnsw.knn_query(vec, k=k)
+        except RuntimeError:                   # the graph walk found fewer than k (a large k or a sparse region)
+            ef = self.hnsw.ef
+            try:
+                self.hnsw.set_ef(max(4 * k, 400))
+                labels, dist = self.hnsw.knn_query(vec, k=k)
+            except RuntimeError:
+                return np.zeros(0, np.int64), np.zeros(0, np.float32)
+            finally:
+                self.hnsw.set_ef(ef)
         return labels[0].astype(np.int64), (1.0 - dist[0]).astype(np.float32)
 
     def vectors(self, idx: list[int]) -> np.ndarray:
