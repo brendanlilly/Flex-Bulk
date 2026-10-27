@@ -17,7 +17,7 @@ order, and the customer's own earlier picks count for more the next time.
 
 On a Mac, double-click **Start Flex Bulk.command** (or run `bash start.sh`); on Windows, run `start-windows.bat`.
 The first run installs Python and the packages into this folder, loads the item files, builds the index (about
-2 minutes for 40,000 items, 20 to 30 for 750,000) and opens http://127.0.0.1:8080. The settings dashboard is at
+2 minutes for 40,000 items, 20 to 30 for 750,000) and opens http://127.0.0.1:8081 (8081, so it runs alongside FlexSearch on 8080). The settings dashboard is at
 `/admin`.
 
 With no files of your own yet, it loads a demo list: 36,092 items with stock at Webb's branches and two price levels

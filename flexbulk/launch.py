@@ -44,7 +44,7 @@ def needs_build(rebuild: bool) -> str | None:
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Start Flex Bulk on this computer")
-    ap.add_argument("--port", type=int, default=8080)
+    ap.add_argument("--port", type=int, default=8081)       # FlexSearch uses 8080; both can run
     ap.add_argument("--rebuild", action="store_true")
     ap.add_argument("--no-browser", action="store_true")
     a = ap.parse_args(argv)
