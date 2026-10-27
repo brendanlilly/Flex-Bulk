@@ -193,7 +193,7 @@ class Bom:
             need = units
         m["fulfil"] = fulfil(need, e.availability.all_qty(int(j)), e.availability, branch,
                              "special" if cat.stock_tier[j] == "special" else "dc")
-        why, bonus = [], 0.0
+        why, bonus, parts = [], 0.0, {}
         ms = (ctx or {}).get("ms") or (e.merch.get() if getattr(e, "merch", None) else None)
         bw = bulk_weights(ms) if ms else DEFAULT_BULK
         h = e.accounts.history_badge(p, int(j))
@@ -201,6 +201,7 @@ class Bom:
             job = self._jobs(p).get(sku, "")
             why.append({"k": "hist", "t": f"Bought {h['times']}× · last {h['last_date']}" + (f" · {job}" if job else "")})
             bonus += bw["bought_before"] + bw["bought_times"] * math.log1p(h["times"])
+            parts["bought before"] = bw["bought_before"] + bw["bought_times"] * math.log1p(h["times"])
             m["history"] = h
         iv = inv.get(sku)
         if iv:
@@ -222,8 +223,10 @@ class Bom:
         f = m["fulfil"]
         if f["status"] == "pickup":
             bonus += bw["on_shelf"]
+            parts["on the shelf"] = bw["on_shelf"]
         elif f["at_branch"]:
             bonus += 0.25 * bw["on_shelf"]
+            parts["some on the shelf"] = 0.25 * bw["on_shelf"]
         if ctx:
             ms = ms or {}
             # Webb's brand order for the category, when the line names no brand (a branch's own order first)
@@ -232,6 +235,7 @@ class Bom:
                 if rk:
                     r_, n_ = rk
                     bonus += bw["webb_brand"] * (n_ - r_) / n_
+                    parts[f"Webb brand #{r_ + 1}"] = bw["webb_brand"] * (n_ - r_) / n_
                     why.append({"k": "webb", "t": f"Webb's #{r_ + 1} brand for {str(cat.cat3[j]).lower()}"})
             lr = ctx.get("learned")
             if lr is not None:
@@ -239,9 +243,11 @@ class Bom:
                                   ctx.get("req_brand") or "", ctx.get("acct") or p.account_id)
                 if b_:
                     bonus += b_
+                    parts["learned"] = b_
                     why.append({"k": "learned", "t": w_})
         m["why"] = why
         m["_bonus"] = bonus
+        m["_parts"] = {k: round(v, 2) for k, v in parts.items()}
         return m
 
     def _webb_card(self, c: dict, need: int, branch) -> dict:
@@ -271,8 +277,13 @@ class Bom:
         e = self.e
         sp = linefit.spec(query, uom)
         ms = (ctx or {}).get("ms")             # the draft's settings when the dashboard tries lines, else live
+        tr = (ctx or {}).get("trace")
         res = e.results.results(query, p, branch=branch, llm="off", settings=ms)
         nt = res.get("notice") or {}
+        if tr is not None:
+            tr.append({"step": "search", "query": query, "results": res.get("total"), "notice": nt.get("kind"),
+                       "spec": {"product": sp.head, "size": sp.size, "material": sp.material, "joint": sp.conn,
+                                "angle": sp.angle, "reducing": sp.reducing}})
         if nt.get("kind") == "not_carried":
             # the catalog doesn't carry the product (a hydrant, C900 pipe): no recommendation, no focused re-search
             return [], True, {"head": sp.head, "not_carried": nt.get("what") or query}
@@ -286,6 +297,9 @@ class Bom:
                 break
             fq = linefit.focus_query(sp, with_size)
             if fq and fq.lower() != query.lower():
+                if tr is not None:
+                    tr.append({"step": "focused search", "query": fq, "why": "none of the first page is the line's product"
+                               + (" in its size" if with_size else "")})
                 seen = {it["sku"] for it in items}
                 more = [it for it in (e.results.results(fq, p, branch=branch, llm="off", settings=ms).get("items") or [])[:24]
                         if it["sku"] not in seen]
@@ -306,10 +320,22 @@ class Bom:
             noun, size, good = (True, True, True) if c["exact"] else (f["noun"], f["size"], f["good"])
             # the product the line names, in its size, as specified (street, 45, reducing...) first; then the
             # account's history, invoices, brand and stock, and search position
-            c["_key"] = (not noun, not size, not good, -(10 * (1 - pos / max(len(items), 1)) + c.pop("_bonus") + f["score"]))
+            bonus_ = c.pop("_bonus")
+            c["_key"] = (not noun, not size, not good, -(10 * (1 - pos / max(len(items), 1)) + bonus_ + f["score"]))
             c["_fit"] = {"good": True, "misses": []} if c["exact"] else f
+            if tr is not None:
+                c["_trace"] = {"sku": c["sku"], "title": c["title"], "brand": c.get("brand"), "search_pos": pos + 1,
+                               "product": noun, "size": size, "spec_ok": good, "misses": ", ".join(f.get("misses") or []),
+                               "search": round(10 * (1 - pos / max(len(items), 1)), 2), "fit": round(f["score"], 2),
+                               "bonus": round(bonus_, 2), "bonus_parts": c.get("_parts") or {},
+                               "total": round(-c["_key"][3], 2)}
             cards.append(c)
         cards.sort(key=lambda c: c["_key"])
+        if tr is not None:
+            tr.append({"step": "ranked", "rule": "the line's product first, then its size, then nothing missing, then "
+                       "search position + fit + bonus", "candidates": [dict(c.pop("_trace"), rank=k + 1) for k, c in enumerate(cards[:15])]})
+            for c in cards[15:]:
+                c.pop("_trace", None)
         top = cards[0]["_fit"] if cards else {"good": False, "misses": []}
         info = {"head": sp.head, "head_label": linefit.head_label(sp), "size": sp.size, "what": linefit.describe(sp),
                 "missing": bool(sp.head and cards and cards[0]["_key"][0]), "misses": top["misses"] + top.get("soft", []),
@@ -319,6 +345,7 @@ class Bom:
         for c in cards:
             c.pop("_key", None)
             c.pop("_fit", None)
+            c.pop("_parts", None)
         return cards[:k], weak, info
 
     def substitutes(self, j: int, p, branch, need: int, k: int = 3, uom: str = "", ctx: dict | None = None) -> list[dict]:
@@ -343,11 +370,13 @@ class Bom:
         cards.sort(key=lambda c: (-c["_bonus"], abs((c["list_price"] or price0) - price0)))
         for c in cards:
             c.pop("_bonus", None)
+            c.pop("_parts", None)
             c["how"] = f"Same spec, {c['fulfil']['at_branch']} on hand at {c['fulfil']['branch']}"
         return cards[:k]
 
     # -------------------------------------------------------------- one line
-    def match(self, ln: dict, p, branch, k: int = 6, settings: dict | None = None, acct: str | None = None) -> dict:
+    def match(self, ln: dict, p, branch, k: int = 6, settings: dict | None = None, acct: str | None = None,
+              trace: bool = False) -> dict:
         """`settings`: merchandising settings to match with instead of the live ones (the dashboard's draft test).
         `acct` (Flex Bulk): the customer the order is for, so their own past choices count for more."""
         from webbsearch.retrieval.analyzer import clean_dashes      # en / em dashes from Word and PDFs read as hyphens
@@ -365,7 +394,13 @@ class Bom:
         uncarried = "" if bc or parsed_brands else other_brand(line_text)
         req_brand = bc["from_brand"] if bc else ((ln.get("brand") or "").strip() or (parsed_brands[0] if parsed_brands else "") or uncarried)
         ctx = {"key": key, "req_brand": req_brand, "named_brand": bool(req_brand) and not bc and not uncarried,
-               "learned": getattr(e, "learned", None), "off": set(ms.get("learned_off") or []), "ms": ms, "acct": acct}
+               "learned": getattr(e, "learned", None), "off": set(ms.get("learned_off") or []), "ms": ms, "acct": acct,
+               "trace": [] if trace else None}
+        tr = ctx["trace"]
+        if tr is not None:
+            tr.append({"step": "read", "text": ln.get("text"), "desc": ln.get("desc"), "brand": ln.get("brand"),
+                       "part": ln.get("part"), "qty": need, "uom": uom, "from_ocr": bool(ln.get("from_ocr")),
+                       "line_key": key, "brand_named": req_brand or None})
         pkeys = {re.sub(r"[^a-z0-9]", "", t.lower()) for t in part_tokens(ln.get("part") or "") + part_tokens(ln.get("text") or "")}
         ic = item_cross(ms, branch, key, pkeys)
         if ic and ic["to_sku"] in e.catalog.sku_to_idx:
@@ -373,6 +408,11 @@ class Bom:
                   "alternates": [], "note": f"Webb cross: {ic['label']}" + (f" · {ic['note']}" if ic.get("note") else "")}
         else:
             r0 = self.res.one(ln, p, branch, best=False)
+        if tr is not None:
+            tr.append({"step": "item cross" if ic else "brand cross" if bc else "crosses", "found": (ic or bc or {}).get("label")
+                       or (f"{bc['from_brand']} -> {bc['to_brand']}" if bc else None)})
+            tr.append({"step": "exact lookup", "result": r0["status"], "via": r0.get("via"), "note": r0.get("note") or None,
+                       "item": (r0.get("item") or {}).get("sku")})
         out = {f: ln.get(f) for f in ("n", "raw", "text", "desc", "brand", "part", "qty", "uom", "qty_how",
                                       "src", "src_label", "crop", "conf", "from_ocr", "ocr_raw", "page")}
         out.update(status=r0["status"], via=r0["via"], note=r0.get("note") or "", options=[], sel=0,
@@ -424,6 +464,9 @@ class Bom:
             searched = expand(query, self._brands())
             if searched.lower() != query.lower():
                 out["searched_as"] = searched
+            if tr is not None:
+                tr.append({"step": "description", "query": query, "expanded": searched if searched != query else None,
+                           "part_numbers_on_line": pts, "searched": not (partish or not query.strip())})
             cards, weak, fit = ([], False, {}) if partish or not query.strip() else self.recommend(searched, p, branch, need, k, uom, ctx)
             if fit.get("not_carried"):
                 out["status"], out["via"] = "none", "Not in catalog"
@@ -471,6 +514,14 @@ class Bom:
             out["confirmed"] = False
             out["needs_confirm"] = bool(out["options"])
             out["note"] = ("Read from the note: check it against the handwriting" + (f" · {out['note']}" if out["note"] else ""))
+        if tr is not None:
+            for c in out["options"] + out["closest"]:
+                c.pop("_parts", None)
+            tr.append({"step": "result", "status": out["status"], "via": out["via"], "note": out["note"] or None,
+                       "top": out["options"][0]["sku"] if out["options"] else None})
+            out["trace"] = tr
+        for c in out["options"]:
+            c.pop("_parts", None)
         # short at the pickup branch: same-spec substitutes that are on the shelf
         if out["options"]:
             top = out["options"][0]
@@ -486,7 +537,7 @@ class Bom:
         return out
 
     def match_all(self, lines: list[dict], p, branch=None, k: int = 6, settings: dict | None = None,
-                  acct: str | None = None) -> dict:
+                  acct: str | None = None, trace: bool = False) -> dict:
         """Match up to 50 lines. Identical lines (same words, quantity and unit) are matched once: takeoffs repeat
         items, and the page sends a large file in parallel chunks, so a short-lived cache spans calls too."""
         t0 = time.perf_counter()
@@ -499,13 +550,13 @@ class Bom:
         for ln in lines[:50]:
             ck = json.dumps([p.account_id, p.user_id, acct, branch, k, ver] + [ln.get(x) for x in (
                 "text", "desc", "brand", "part", "qty", "uom", "from_ocr", "edited")], default=str)
-            got = None if settings is not None else self._cache.get(ck)
+            got = None if settings is not None or trace else self._cache.get(ck)
             if got is not None and time.time() - got[0] < 900:
                 m = copy.deepcopy(got[1])
                 hits += 1
             else:
-                m = self.match(ln, p, branch, k, settings, acct)
-                if settings is None:
+                m = self.match(ln, p, branch, k, settings, acct, trace)
+                if settings is None and not trace:
                     if len(self._cache) > 5000:
                         self._cache.clear()
                     self._cache[ck] = (time.time(), copy.deepcopy(m))

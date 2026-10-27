@@ -225,6 +225,7 @@ def lookup(q: str = "", branch: str | None = None, level: str | None = None, qty
             continue
         c = b._card(int(j), ANONYMOUS, branch, max(1, qty), {}, {}, uom.upper())
         c.pop("_bonus", None)
+        c.pop("_parts", None)
         prices().apply(c, level)
         out.append(c)
     return {"q": q, "items": out, "notice": (res.get("notice") or {}).get("text")}
@@ -379,6 +380,26 @@ def bom_match(body: MatchBody):
     return r
 
 
+class ExplainBody(BaseModel):
+    line: dict
+    branch: str | None = None
+    level: str | None = None
+    customer: str | None = None
+
+
+@app.post("/api/bom/explain")
+def bom_explain(body: ExplainBody):
+    """One line matched again with every step recorded: how it was read, crosses, the exact lookup, what was searched,
+    and each candidate's score (search position, fit, bonus and its parts). The staff app's "Why?"."""
+    ln = _clean_line(body.line)
+    if ln is None:
+        raise HTTPException(422, "an empty line")
+    level = body.level if body.level in prices().levels else None
+    r = bom().match_all([ln], ANONYMOUS, body.branch, k=8, acct=customer_key(body.customer), trace=True)
+    price_lines(r, level)
+    return r["lines"][0]
+
+
 class TrackBody(BaseModel):
     kind: str
     sid: str = ""
@@ -424,11 +445,13 @@ class OrderBody(BaseModel):
     notes: str = ""
     rows: list[dict] = []
     docs: list[dict] = []
+    test: bool = False                 # keep as a test case for match reports
+    files: list[dict] = []             # a test case's documents: [{name, b64}], sent once
 
 
 @app.get("/api/orders")
-def order_list(q: str = "", limit: int = 100, customer: str = ""):
-    return orders().list(q[:100], limit, customer[:60])
+def order_list(q: str = "", limit: int = 100, customer: str = "", tests: bool = False):
+    return orders().list(q[:100], limit, customer[:60], tests)
 
 
 @app.get("/api/customers")
@@ -486,6 +509,7 @@ class ReportBody(BaseModel):
     per_customer: bool = False
     file_name: str | None = None
     file_b64: str | None = None
+    files: list[dict] = []             # source "documents": customers' files [{name, b64}]
 
 
 _REPORT_JOB: dict = {}
@@ -503,6 +527,9 @@ def report_start(request: Request, body: ReportBody):
     data = base64.b64decode(body.file_b64.split(",", 1)[-1]) if body.file_b64 else None
     if data and len(data) > 30_000_000:
         raise HTTPException(413, "test file is over 30 MB")
+    docs = [(str(f.get("name") or "file"), base64.b64decode(str(f.get("b64") or "").split(",", 1)[-1])) for f in body.files[:30]]
+    if any(len(d) > 15_000_000 for _, d in docs):
+        raise HTTPException(413, "a document is over 15 MB")
     _REPORT_JOB.clear()
     _REPORT_JOB.update(running=True, done=0, total=0, error=None, result=None, started=time.time())
 
@@ -511,7 +538,7 @@ def report_start(request: Request, body: ReportBody):
         try:
             _REPORT_JOB["result"] = make(body.source, max(1, min(body.days, 3650)), body.file_name, data, body.branch or None,
                                          body.level or None, body.per_customer,
-                                         progress=lambda d, n: _REPORT_JOB.update(done=d, total=n))
+                                         progress=lambda d, n: _REPORT_JOB.update(done=d, total=n), documents=docs)
         except Exception as ex:  # noqa: BLE001
             _REPORT_JOB["error"] = f"{type(ex).__name__}: {ex}" if not isinstance(ex, ValueError) else str(ex)
         finally:
@@ -526,6 +553,19 @@ def report_list(request: Request):
     from webbsearch.api.admin import require
     require(request)
     return {"job": {k: v for k, v in _REPORT_JOB.items()}, "reports": listing()}
+
+
+@app.get("/api/admin/reports/{rid}.zip")
+def report_bundle(request: Request, rid: str, inputs: bool = True):
+    """The report with what's needed to work on the matching without the repo: the workbook, the matching and page
+    code, the live settings, the column mapping, and (inputs=1) the documents the lines were read from."""
+    from flexbulk.report import REPORTS, bundle
+    from webbsearch.api.admin import require
+    require(request)
+    if not re.fullmatch(r"R[\w-]{6,30}", rid) or not (REPORTS / f"{rid}.xlsx").exists():
+        raise HTTPException(404, "no such report")
+    return Response(bundle(rid, inputs), media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="flex-bulk-match-report-{rid}.zip"'})
 
 
 @app.get("/api/admin/reports/{rid}.xlsx")

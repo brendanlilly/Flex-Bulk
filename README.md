@@ -68,12 +68,22 @@ they hold). Without attributes in the file, size, material and joint are read fr
 Dashboard → **Match reports** (or `python -m flexbulk.report`) matches a set of lines again with today's settings
 and writes one Excel workbook:
 
-- **Lines from**: saved orders (each confirmed line's item is the answer), lines matched in the app (staff choices
-  are the answers), or a test file (a `Line` column and, to be scored, an `Expected` item #; template on the page).
+- **Lines from**:
+  - **test cases**: orders saved in the staff app with **Test case** ticked. Their customers' documents are kept and
+    read again, so the report checks the reading (lines, quantities, what was set aside) as well as the matching;
+    each confirmed item is the right answer. The staff page shows the running score while you confirm.
+  - **customers' documents** given to the report (emails, Excel, Word, PDFs, photos): read and matched, no answers.
+  - saved orders, lines matched in the app (staff choices are the answers), or a test file (a `Line` column and an
+    `Expected` item #; template on the page).
+- **Why?** on any line in the staff app shows how it was matched: how it was read, crosses, the exact lookup, what
+  was searched, and every candidate's points (search position, fit, bonus and its parts).
 - **Summary**: top-1 and top-3 (how often the answer came first / in the first three), lines matched, by category
   and line shape, compared with the previous report from the same source.
-- **Misses** (answer not first: what came first instead, and why), **Not found**, **Brands** not on the list,
-  **Changed** since staff saw it, the **Settings** in force.
+- **Lines** (each with its steps through the matcher), **Misses** (answer not first: what came first instead, and
+  why), **Trace** (every candidate's points), **Reading** (documents: every line read or set aside, checked against
+  the test case), **Not found**, **Brands** not on the list, **Changed** since staff saw it, the **Settings** in force.
+- **Bundle** downloads the workbook with the matching and page code, the live settings and the input documents:
+  everything needed to work on the matching from one file.
 
 Change a setting, run the same report again, compare. The workbook is also what to hand to Claude to work on the
 matching.

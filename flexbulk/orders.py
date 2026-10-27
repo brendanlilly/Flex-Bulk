@@ -46,7 +46,11 @@ class Orders:
             id TEXT PRIMARY KEY, created REAL, updated REAL, status TEXT, customer_no TEXT, customer_name TEXT,
             job TEXT, po TEXT, contact TEXT, branch TEXT, branch_name TEXT, level TEXT, staff TEXT, notes TEXT,
             n_lines INTEGER, n_confirmed INTEGER, total REAL, rows TEXT, docs TEXT)""")
+        cols = {r[1] for r in self.db.execute("PRAGMA table_info(orders)")}
+        if "test" not in cols:              # 1.1: an order kept as a test case for match reports
+            self.db.execute("ALTER TABLE orders ADD COLUMN test INTEGER DEFAULT 0")
         self.db.commit()
+        self.files_dir = self.path.parent / "testcases"
 
     # ------------------------------------------------------------------ write
     def save(self, body: dict) -> dict:
@@ -59,20 +63,43 @@ class Orders:
         status = body.get("status") if body.get("status") in ("draft", "done") else "draft"
         now = time.time()
         oid = body.get("id")
+        test = 1 if body.get("test") else 0
         with self.lock:
             if oid and self.db.execute("SELECT 1 FROM orders WHERE id=?", (oid,)).fetchone():
                 self.db.execute(f"UPDATE orders SET updated=?, status=?, {', '.join(f'{k}=?' for k in HEAD)}, n_lines=?, "
-                                "n_confirmed=?, total=?, rows=?, docs=? WHERE id=?",
+                                "n_confirmed=?, total=?, rows=?, docs=?, test=? WHERE id=?",
                                 (now, status, *[head[k] for k in HEAD], len(rows), len(conf), total, json.dumps(rows),
-                                 _docs(body), oid))
+                                 _docs(body), test, oid))
             else:
                 oid = time.strftime("B%y%m%d-") + secrets.token_hex(2).upper()
                 self.db.execute(f"INSERT INTO orders (id, created, updated, status, {', '.join(HEAD)}, n_lines, n_confirmed, "
-                                f"total, rows, docs) VALUES (?,?,?,?,{','.join('?' * len(HEAD))},?,?,?,?,?)",
+                                f"total, rows, docs, test) VALUES (?,?,?,?,{','.join('?' * len(HEAD))},?,?,?,?,?,?)",
                                 (oid, now, now, status, *[head[k] for k in HEAD], len(rows), len(conf), total,
-                                 json.dumps(rows), _docs(body)))
+                                 json.dumps(rows), _docs(body), test))
             self.db.commit()
+        self._keep_files(oid, body.get("files") or [] if test else [])
         return self.summary(oid)
+
+    # ------------------------------------------------------------------ test cases: the customer's own documents
+    def _keep_files(self, oid: str, files: list[dict]) -> None:
+        """A test case keeps the documents its lines were read from (so a report reads them again, not just
+        re-matches the lines). Sent once; later saves without files keep what's there."""
+        import base64
+        d = self.files_dir / oid
+        for f in files[:20]:
+            name = re.sub(r"[^\w.() -]+", "_", Path(str(f.get("name") or "file")).name)[:120]
+            b64 = str(f.get("b64") or "")
+            if not b64:
+                continue
+            raw = base64.b64decode(b64.split(",", 1)[-1])
+            if len(raw) > 15_000_000:
+                continue
+            d.mkdir(parents=True, exist_ok=True)
+            (d / name).write_bytes(raw)
+
+    def files(self, oid: str) -> list[Path]:
+        d = self.files_dir / oid
+        return sorted(f for f in d.iterdir() if f.is_file()) if d.exists() else []
 
     @staticmethod
     def _row(r: dict) -> dict:
@@ -106,10 +133,12 @@ class Orders:
         with self.lock:
             n = self.db.execute("DELETE FROM orders WHERE id=?", (oid,)).rowcount
             self.db.commit()
+        import shutil
+        shutil.rmtree(self.files_dir / oid, ignore_errors=True)
         return bool(n)
 
     # ------------------------------------------------------------------ read
-    COLS = ("id", "created", "updated", "status", *HEAD, "n_lines", "n_confirmed", "total")
+    COLS = ("id", "created", "updated", "status", *HEAD, "n_lines", "n_confirmed", "total", "test")
 
     def summary(self, oid: str) -> dict | None:
         r = self.db.execute(f"SELECT {', '.join(self.COLS)} FROM orders WHERE id=?", (oid,)).fetchone()
@@ -122,9 +151,10 @@ class Orders:
         d = dict(zip(self.COLS, r[:-2]))
         d["rows"] = json.loads(r[-2] or "[]")
         d["docs"] = json.loads(r[-1] or "[]")
+        d["files"] = [f.name for f in self.files(oid)]
         return d
 
-    def list(self, q: str = "", limit: int = 100, customer: str = "") -> list[dict]:
+    def list(self, q: str = "", limit: int = 100, customer: str = "", tests: bool = False) -> list[dict]:
         sql = f"SELECT {', '.join(self.COLS)} FROM orders"
         args: list = []
         where = []
@@ -135,6 +165,8 @@ class Orders:
         if customer:
             where.append("customer_no = ?")
             args.append(customer)
+        if tests:
+            where.append("test = 1")
         if where:
             sql += " WHERE " + " AND ".join(where)
         sql += " ORDER BY updated DESC LIMIT ?"

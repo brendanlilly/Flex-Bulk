@@ -274,7 +274,7 @@ def test_match_reports_from_orders_log_and_a_test_file(client, tmp_path, monkeyp
     assert s["lines"] == 3 and s["with_expected"] == 2 and s["top1"] == 0.5 and s["top3"] == 1.0
     assert s["how_staff_chose"] == {"chose another option": 1, "kept top pick": 1}
     wb = load_workbook(rp.REPORTS / f"{r['meta']['id']}.xlsx")
-    assert wb.sheetnames == ["Summary", "Lines", "Misses", "Not found", "Brands", "Changed", "Settings", "About"]
+    assert wb.sheetnames == ["Summary", "Lines", "Misses", "Trace", "Not found", "Brands", "Changed", "Settings", "About"]
     miss = list(wb["Misses"].iter_rows(min_row=2, values_only=True))
     assert len(miss) == 1 and miss[0][0] == "3/4 ball valve sweat" and miss[0][2] == second["sku"] and miss[0][4] == 2
     assert all(v != "'" for row in wb["Lines"].iter_rows(values_only=True) for v in row)          # no stray apostrophes
@@ -307,3 +307,66 @@ def test_reports_through_the_dashboard(client):
     assert d["job"]["error"] is None and d["reports"]
     x = client.get(f"/api/admin/reports/{d['reports'][0]['id']}.xlsx", headers=h)
     assert x.status_code == 200 and x.content[:2] == b"PK"
+
+
+def test_why_a_line_matched_what_it_did(client):
+    x = client.post("/api/bom/explain", json={"line": {"text": "3/4 cxc 90 elbow", "qty": 4}, "branch": "100"}).json()
+    steps = [t["step"] for t in x["trace"]]
+    assert steps[:4] == ["read", "crosses", "exact lookup", "description"] and "ranked" in steps and steps[-1] == "result"
+    rk = next(t for t in x["trace"] if t["step"] == "ranked")
+    top = rk["candidates"][0]
+    assert top["sku"] == x["options"][0]["sku"] and top["product"]
+    assert {"search", "fit", "bonus", "bonus_parts", "product", "size", "spec_ok"} <= set(top)
+    assert not any("_parts" in o or "_trace" in o for o in x["options"])
+    assert "trace" not in client.post("/api/bom/match", json={"lines": [{"text": "3/4 cxc 90 elbow", "qty": 4}]}).json()["lines"][0]
+
+
+def test_a_test_case_is_read_again_and_scored(client, tmp_path, monkeypatch):
+    import base64
+    import zipfile
+    import flexbulk.report as rp
+    from pathlib import Path
+    from openpyxl import load_workbook
+    monkeypatch.setattr(rp, "REPORTS", tmp_path / "reports")
+    raw = (Path(__file__).resolve().parents[1] / "samples" / "material-list.docx").read_bytes()
+    b64 = base64.b64encode(raw).decode()
+    doc = client.post("/api/bom/parse", json={"filename": "material-list.docx", "data_b64": b64}).json()
+    lines = doc["lines"]
+    m = client.post("/api/bom/match", json={"lines": lines}).json()["lines"]
+    rows = [{"ln": ln, "m": x, "ch": {"t": "opt", "i": 0}, "state": "ok" if x["options"] else "none",
+             "item": x["options"][0] if x["options"] else None, "confirmed": True} for ln, x in zip(lines, m)]
+    rows[0]["ln"] = {**rows[0]["ln"], "qty": 999}                    # staff "corrected" a quantity: reading should flag it
+    o = client.post("/api/orders", json={"customer_no": "T-1", "staff": "Pat", "test": True, "rows": rows,
+                                         "files": [{"name": "material-list.docx", "b64": b64}]}).json()
+    assert o["test"] == 1 and client.get(f"/api/orders/{o['id']}").json()["files"] == ["material-list.docx"]
+    assert [x["id"] for x in client.get("/api/orders", params={"tests": True}).json()] == [o["id"]]
+    r = rp.make("tests")
+    s = r["summary"]
+    answered = sum(1 for x in m if x["options"])
+    assert s["with_expected"] == answered and s["top1"] == 1.0
+    rd = json.loads((rp.REPORTS / f"{r['meta']['id']}.json").read_text())["summary"]["reading"]
+    assert rd["lines_read"] == len(lines) and rd["checked"] == len(lines) and rd["read_right"] == len(lines) - 1
+    wb = load_workbook(rp.REPORTS / f"{r['meta']['id']}.xlsx")
+    assert {"Trace", "Reading"} <= set(wb.sheetnames)
+    steps = [row[-1] for row in wb["Lines"].iter_rows(min_row=2, values_only=True)]
+    assert all(st and st.startswith("read:") and "result:" in st for st in steps)
+    checks = [row[-1] for row in wb["Reading"].iter_rows(min_row=2, values_only=True) if row[7] and row[7].startswith("item")]
+    assert sum(1 for c in checks if c.startswith("qty: read")) == 1
+    z = zipfile.ZipFile(io.BytesIO(rp.bundle(r["meta"]["id"])))
+    names = z.namelist()
+    assert {"README.md", "report.xlsx", "settings.json", "code/webbsearch/retrieval/bom.py", "code/webbsearch/api/static/bulk.js"} <= set(names)
+    assert any(n.startswith("inputs/") and n.endswith("material-list.docx") for n in names)
+    assert not any(n.startswith("inputs/") for n in zipfile.ZipFile(io.BytesIO(rp.bundle(r["meta"]["id"], inputs=False))).namelist())
+    client.delete(f"/api/orders/{o['id']}")
+
+
+def test_customers_documents_as_a_report(client, tmp_path, monkeypatch):
+    import flexbulk.report as rp
+    from pathlib import Path
+    monkeypatch.setattr(rp, "REPORTS", tmp_path / "reports")
+    raw = (Path(__file__).resolve().parents[1] / "samples" / "order-email.eml").read_bytes()
+    r = rp.make("documents", documents=[("order-email.eml", raw)])
+    assert r["summary"]["lines"] >= 6 and r["summary"]["with_expected"] == 0
+    rd = json.loads((rp.REPORTS / f"{r['meta']['id']}.json").read_text())["summary"]["reading"]
+    assert rd["lines_read"] >= 6 and rd["set_aside"] >= 5                          # greeting, signature, address...
+    assert (rp.REPORTS / f"{r['meta']['id']}-inputs" / "order-email.eml").exists()

@@ -62,3 +62,9 @@
 @media (max-width:820px){.fb-top{flex-wrap:wrap}.fb-sp{display:none}.fb-top .hdr-ctl{width:100%;justify-content:space-between}}
 .fb-web{color:var(--info);font-weight:600;text-decoration:none;white-space:nowrap}
 .fb-web:hover{text-decoration:underline}
+.fb-test{grid-column:1 / -1;display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600;color:var(--ink);text-transform:none;letter-spacing:0}
+.fb-test .muted{font-weight:400}
+.fb-testline{margin-top:6px;padding:6px 10px;border-radius:8px;background:var(--info-soft);color:var(--info);font-size:13px}
+.fb-steps{margin:0 0 12px;padding-left:20px;line-height:1.6;color:var(--ink)}
+.fb-why td,.fb-why th{padding:6px 8px;font-size:12.5px}
+.fb-chosen td{background:var(--ok-soft)}

@@ -21,7 +21,7 @@ let seq = 0;
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* private window */ } } };
 const SID = (() => { const mk = () => Math.random().toString(36).slice(2, 12); try { let v = sessionStorage.getItem("fb_sid"); if (!v) { v = mk(); sessionStorage.setItem("fb_sid", v); } return v; } catch (e) { return mk(); } })();
 
-function blankOrder() { return { id: null, status: "draft", customer_no: "", customer_name: "", job: "", po: "", contact: "", notes: "", updated: null }; }
+function blankOrder() { return { id: null, status: "draft", customer_no: "", customer_name: "", job: "", po: "", contact: "", notes: "", updated: null, test: false, files: [] }; }
 function qs(o) { const p = new URLSearchParams(); for (const [k, v] of Object.entries(o || {})) if (v !== undefined && v !== null && v !== "") p.append(k, v); return p.toString(); }
 async function api(path, params) { const r = await fetch(path + (params ? "?" + qs(params) : "")); if (!r.ok) throw new Error(r.status); return r.json(); }
 async function post(path, body, method = "POST") {
@@ -128,6 +128,7 @@ function pageOrder(my) {
       <label class="fl w1">PO<input class="fb-in" data-o="po" value="${esc(o.po)}" maxlength="60"></label>
       <label class="fl w2">Contact<input class="fb-in" data-o="contact" value="${esc(o.contact)}" maxlength="120" placeholder="Name, phone or email"></label>
       <label class="fl wfull">Notes<input class="fb-in" data-o="notes" value="${esc(o.notes)}" maxlength="2000" placeholder="Delivery, timing, anything the counter should know"></label>
+      <label class="fb-test" title="Keeps this order's documents and the items you confirm, so Match reports can read and match it again after a change and say whether it still comes out right"><input type="checkbox" data-o="test" ${o.test ? "checked" : ""}> Test case <span class="muted">· keep the customer's documents and the confirmed items as the right answers, for match reports${o.files && o.files.length ? ` (${o.files.length} document${o.files.length > 1 ? "s" : ""} kept)` : ""}</span></label>
       <datalist id="custList"></datalist>
       <div class="fb-custhint muted" id="custHint"></div>
     </div>
@@ -160,9 +161,13 @@ async function saveOrder(quiet) {
     const o = S.order;
     const r = await post("/api/orders", { id: o.id, status: o.status, customer_no: o.customer_no, customer_name: o.customer_name, job: o.job, po: o.po,
       contact: o.contact, notes: o.notes, branch: $("#branch").value, branch_name: branchName(), level: $("#level").value, staff: staffName(),
-      rows: bkRowsForSave(), docs: bkDocsForSave() });
+      rows: bkRowsForSave(), docs: bkDocsForSave(), test: !!o.test,
+      // a test case keeps the documents its lines came from (sent once; the server keeps them)
+      files: o.test ? (S.bk.raw || []).filter((f) => !(o.files || []).includes(f.name)) : [] });
     const first = !o.id;
+    const sent = o.test ? (S.bk.raw || []).map((f) => f.name) : [];
     Object.assign(S.order, r); S.dirty = false;
+    S.order.files = [...new Set([...(o.files || []), ...sent])];
     if (first) history.replaceState(null, "", "#order/" + encodeURIComponent(r.id));
     const h = $(".fb-otitle h1"); if (h) h.innerHTML = `Order <span class="mono">${esc(r.id)}</span>`;
     if (!quiet) toast(`Saved ${r.id}: ${r.n_lines} line${r.n_lines === 1 ? "" : "s"}, ${r.n_confirmed} confirmed`);
@@ -224,6 +229,34 @@ async function findItem(rowId, q) {
   go();
 }
 
+// ------------------------------------------------------------------ why a line matched what it did (the matcher's trace)
+const WHY_STEP = {
+  read: (t) => `Read as “${esc(t.text)}”${t.desc ? ` + “${esc(t.desc)}”` : ""}, qty ${t.qty}${t.uom ? " " + esc(t.uom) : ""}${t.brand_named ? `; names the brand <b>${esc(t.brand_named)}</b>` : ""}${t.from_ocr ? " (from handwriting)" : ""}.`,
+  crosses: () => "No merchandising cross for this line.",
+  "item cross": (t) => `Item cross: <b>${esc(t.found)}</b>.`,
+  "brand cross": (t) => `Brand cross: <b>${esc(t.found)}</b>.`,
+  "exact lookup": (t) => t.result === "none" ? `No item #, mfr part # or UPC on the line matched${t.note ? ` (${esc(t.note)})` : ""}.` : `Exact lookup: <b>${esc(t.result)}</b>${t.via ? ` (${esc(t.via)})` : ""}${t.item ? `, item ${esc(t.item)}` : ""}.`,
+  description: (t) => t.searched ? `Searched the item list for “${esc(t.expanded || t.query)}”${t.expanded ? ` (shorthand expanded from “${esc(t.query)}”)` : ""}.` : `Not searched: the line ${(t.part_numbers_on_line || []).length ? "is a part number (" + esc(t.part_numbers_on_line.join(", ")) + ") with no match" : "is empty"}.`,
+  search: (t) => { const sp = Object.entries(t.spec || {}).filter(([, v]) => v); return `${(t.results || 0).toLocaleString()} results${t.notice ? ` (${esc(t.notice)})` : ""}. The line asks for: ${sp.length ? sp.map(([k, v]) => `${k} <b>${esc(v === true ? "yes" : v)}</b>`).join(", ") : "nothing specific"}.`; },
+  "focused search": (t) => `Searched again for “${esc(t.query)}”: ${esc(t.why)}.`,
+  ranked: (t) => `Ranked ${t.candidates.length} candidates: ${esc(t.rule)}.`,
+  result: (t) => `Result: <b>${esc(t.status)}</b>${t.note ? `. ${esc(t.note)}` : ""}.`,
+};
+async function explainLine(r) {
+  $("#modal").innerHTML = `<div class="box"><div class="fb-mh"><div><h3>How line ${esc(r.ln.n || "")} was matched</h3><div class="muted">“${esc(r.ln.text)}”</div></div><button class="btn sm" data-act="modalclose">Close</button></div><div id="whyBody" class="muted">Matching with every step recorded…</div></div>`;
+  $("#modal").classList.add("on");
+  let x; try { x = await post("/api/bom/explain", { line: { ...r.ln, crop: undefined }, branch: $("#branch").value, level: $("#level").value, customer: custKey() }); }
+  catch (e) { $("#whyBody").textContent = "Couldn't explain: " + e.message; return; }
+  const chosen = (bkItem(r) || {}).sku, tr = x.trace || [];
+  const rk = tr.find((t) => t.step === "ranked");
+  $("#whyBody").innerHTML = `<ol class="fb-steps">${tr.map((t) => `<li>${(WHY_STEP[t.step] || (() => esc(JSON.stringify(t))))(t)}</li>`).join("")}</ol>
+    ${rk ? `<div class="bkscroll"><table class="bkt fb-why"><thead><tr><th>#</th><th>Item</th><th title="Position in the search results">Search</th><th>Product</th><th>Size</th><th>Spec</th><th>Misses</th><th class="n">Search pts</th><th class="n">Fit pts</th><th class="n">Bonus</th><th class="n">Total</th></tr></thead><tbody>
+      ${rk.candidates.map((c) => `<tr class="${c.sku === chosen ? "fb-chosen" : ""}"><td>${c.rank}</td><td><span class="link" data-act="open-sku" data-sku="${esc(c.sku)}">${esc(c.title)}</span><div class="muted">Item ${esc(c.sku)}${c.sku === chosen ? " · <b>on the order</b>" : ""}</div></td>
+        <td class="n">${c.search_pos}</td><td>${c.product ? "✓" : "✗"}</td><td>${c.size ? "✓" : "✗"}</td><td>${c.spec_ok ? "✓" : "✗"}</td><td class="muted">${esc(c.misses || "")}</td>
+        <td class="n">${c.search}</td><td class="n">${c.fit}</td><td class="n" title="${esc(Object.entries(c.bonus_parts || {}).map(([k, v]) => k + " " + v).join(", "))}">${c.bonus}</td><td class="n"><b>${c.total}</b></td></tr>`).join("")}</tbody></table></div>
+      <p class="muted" style="font-size:12px">Order: the line's product first (✓ before ✗), then its size, then nothing it asked for missing; within those, by total points (search position + fit + bonus). Hover a bonus for its parts (on the shelf, Webb's brand order, learned picks). The settings dashboard changes the weights.</p>` : ""}`;
+}
+
 // ------------------------------------------------------------------ events
 document.addEventListener("click", async (e) => {
   if (e.target.closest("[data-stop]")) return;
@@ -244,7 +277,8 @@ document.addEventListener("click", async (e) => {
 document.addEventListener("input", (e) => {
   const f = e.target.dataset && e.target.dataset.o; if (!f) return;
   const before = custKey();
-  S.order[f] = e.target.value; markDirty();
+  S.order[f] = e.target.type === "checkbox" ? e.target.checked : e.target.value; markDirty();
+  if (f === "test") { bkPaintCtx(); return; }
   if (f === "customer_no" || f === "customer_name") { custSuggest(e.target.value); if (custKey() !== before) custChanged(); }
 });
 document.addEventListener("change", (e) => {

@@ -138,7 +138,14 @@ function bkPaintCtx() {
   const c = S.bk.ctx, el = $("#bkCtx"); if (!el || !c) return;
   el.innerHTML = `Matched against <b>${c.items.toLocaleString()}</b> items · pickup <b>${esc(c.branch.name.split(",")[0])}</b> · <b>${esc($("#level").value || "List")}</b> prices`
     + (custKey() ? ` · ${c.customer_choices ? `this customer's ${c.customer_choices} earlier pick${c.customer_choices > 1 ? "s" : ""} count first` : "no earlier picks for this customer yet"}` : "")
-    + (c.stock ? "" : ` · <b>no stock loaded</b>`);
+    + (c.stock ? "" : ` · <b>no stock loaded</b>`) + bkTestLine();
+}
+// a test case: of the lines confirmed so far (the right answers), how many the matcher had as its top pick
+function bkTestLine() {
+  if (!S.order.test) return "";
+  const R = S.bk.rows.filter((r) => bkState(r) === "ok" && !r.excluded && r.m && (r.m.options || []).length);
+  const right = R.filter((r) => r.ch.t === "opt" && r.ch.i === 0 && r.m.via !== "Found by hand").length;
+  return `<div class="fb-testline"><b>Test case</b> · top pick right on <b>${right} of ${R.length}</b> confirmed line${R.length === 1 ? "" : "s"}${R.length ? ` (${Math.round(100 * right / R.length)}%)` : ""}. Confirm the right item on each line; the order's documents are kept when you save.</div>`;
 }
 // customer, branch or level changed on this page
 function bulkContextChanged() {
@@ -151,7 +158,7 @@ function bulkContextChanged() {
   bkLoadCtx();
 }
 // a new order, a saved one opened, an order saved
-function bkReset() { S.bk.seq++; S.bk.rows = []; S.bk.parse = null; S.bk.file = null; S.bk.docs = []; S.bk.filter = "all"; S.bk.limit = 200; S.bk.ctxKey = ""; }
+function bkReset() { S.bk.seq++; S.bk.rows = []; S.bk.parse = null; S.bk.file = null; S.bk.docs = []; S.bk.raw = []; S.bk.filter = "all"; S.bk.limit = 200; S.bk.ctxKey = ""; }
 function bkLoad(rows, docs) {
   bkReset();
   S.bk.rows = rows.map((x) => ({ id: ++bkId, ln: { ...(x.ln || { text: x.text, qty: x.qty, uom: x.uom, desc: x.desc, n: x.n }) }, m: x.m || null, mq: (x.ln || {}).qty || x.qty,
@@ -212,6 +219,8 @@ async function bkReadFiles(files) {
     if (f.size > 15e6) { toast(`${f.name} is over 15 MB`); continue; }
     const b64 = await readB64(f);
     S.bk.file = { name: f.name, b64 };
+    if (k === 0) S.bk.raw = [];
+    S.bk.raw.push({ name: f.name, b64 });        // kept for a test case (bulkapp.js saveOrder)
     $("#bkProg").textContent = `Reading ${f.name}${files.length > 1 ? ` (${k + 1} of ${files.length})` : ""}…`;
     await bkParseAndAdd({ filename: f.name, data_b64: b64 }, k === 0);
   }
@@ -292,7 +301,7 @@ function bkRowHTML(r, k) {
       ${m.note && it ? `<div class="qnote">${esc(m.note)}</div>` : ""}${m.searched_as ? `<div class="muted bksa">searched as “${esc(m.searched_as)}”</div>` : ""}</td>
     <td class="bkst">${it ? fulfilHTML(f) + subHint : ""}</td>
     <td class="bkpr">${it && it.price != null ? `${money(it.price)}<div class="muted">${money(priceOf(it, r))}</div>` : it && it.kind === "webb" ? `<span class="muted">at branch</span>` : ""}</td>
-    <td class="bkev">${ev}${it && st !== "out" ? ` <button class="linkbtn bkx" data-act="bkexclude" data-id="${r.id}" title="Leave this line out" aria-label="Leave line ${k + 1} out">×</button>` : ""}${r.m && st !== "busy" && st !== "skip" && st !== "none" ? `<div><button class="linkbtn fb-find1" data-act="bkfind" data-id="${r.id}" title="Search the item list for this line">Find another</button></div>` : ""}</td></tr>`;
+    <td class="bkev">${ev}${it && st !== "out" ? ` <button class="linkbtn bkx" data-act="bkexclude" data-id="${r.id}" title="Leave this line out" aria-label="Leave line ${k + 1} out">×</button>` : ""}${r.m && st !== "busy" && st !== "skip" && st !== "none" ? `<div><button class="linkbtn fb-find1" data-act="bkfind" data-id="${r.id}" title="Search the item list for this line">Find another</button></div>` : ""}${r.m && st !== "busy" && st !== "skip" ? `<div><button class="linkbtn fb-find1" data-act="bkwhy" data-id="${r.id}" title="How this line was matched, step by step">Why?</button></div>` : ""}</td></tr>`;
 }
 // the catalog has nothing of the product the line names: the nearest items, used only if the person says so
 function bkClosestHTML(r) {
@@ -328,6 +337,7 @@ function bkCounts() {
   return c;
 }
 function bkPaint() {
+  if (S.order && S.order.test) { const t = $(".fb-testline"); if (t) t.outerHTML = bkTestLine(); }
   const el = $("#bkBody"); if (!el) return;
   const rows = S.bk.rows, entry = S.bk.mode === "entry";
   if (entry && !rows.some((r) => !(r.ln.text || "").trim())) rows.push({ id: ++bkId, ln: { text: "", qty: 1 }, m: null, ch: { t: "opt", i: 0 }, confirmed: false, excluded: false, busy: false });
@@ -457,6 +467,7 @@ document.addEventListener("click", (e) => {
     case "bkreview": bkReview(); break;
     case "bkcommit": bkCommit(); break;
     case "bkfind": if (r) findItem(r.id); break;
+    case "bkwhy": if (r) explainLine(r); break;
     case "usefound": if (r && S.found && S.found[+t.dataset.i]) {
       const c = S.found[+t.dataset.i];
       r.m = { ...(r.m || {}), options: [c, ...((r.m && r.m.options) || []).filter((x) => x.sku !== c.sku)].slice(0, 8), closest: [], status: "rec", via: "Found by hand", weak: false,
