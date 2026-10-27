@@ -42,6 +42,7 @@ items:
     title_after: [Product Type, Bend Angle, Port Type, Schedule, Pressure Class, Tank Capacity, Fuel, BTU, Capacitance,
                   Voltage, Flush Rate, Finish]
     size: [Size, Nominal Pipe Size, Connection Size, Inlet Size]        # the nominal size line fit checks
+    joint: [End Connection]                                            # "Copper x Copper" also searchable as CxC
     attributes: rest
 
 stock:

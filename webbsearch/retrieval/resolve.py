@@ -369,6 +369,18 @@ class Resolver:
                 hits = e.catalog.id_lookup(k)
                 if hits:
                     break
+        if not hits:
+            # Flex Bulk: a manufacturer's all-digit part number with the manufacturer on the line ("Webstone 51414"):
+            # exact when an item with that part number is that manufacturer's
+            low = text.lower()
+            for w in re.findall(r"[A-Za-z0-9][\w./-]{3,}", text):
+                k = compact_id(w)
+                if len(k) < 4 or not any(ch.isdigit() for ch in k):
+                    continue
+                hits = [j for j in e.catalog.id_lookup(k) if len(str(e.catalog.brand[j])) >= 2
+                        and re.search(rf"\b{re.escape(str(e.catalog.brand[j]).lower())}\b", low)]
+                if hits:
+                    break
         if hits:
             items = [self._catalog_item(j, p, branch) for j in hits[:4]]
             r.update(status="exact", via="Exact", item=items[0], alternates=items[1:])

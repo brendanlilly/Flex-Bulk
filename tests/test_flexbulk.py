@@ -237,5 +237,15 @@ def test_an_attribute_export_gets_descriptions_built(tmp_path):
     assert "10" not in p.index and any("not products" in w for w in r["warnings"])
     assert p.loc["11", "brand"] == "Décor Co" and p.loc["11", "mfr_part"] == 'D 1/2"'      # cp1252 and an inch mark
     a = json.loads(p.loc["51414", "attrs"])
-    assert a["size"] == "1" and a["Port Type"] == "Full Port" and "Port Type: Full Port" in p.loc["51414", "description"]
+    assert a["size"] == "1" and a["Port Type"] == "Full Port" and a["joint"] == "SxR"
+    assert json.loads(p.loc["526401", "attrs"])["joint"] == "SxS" and "Port Type: Full Port" in p.loc["51414", "description"]
     assert p.loc["51414", "cat1"] == "Heating" and p.loc["51414", "cat3"] == "Ball Valve" and p.loc["51414", "family"] == "ball_valve"
+
+
+def test_a_manufacturers_number_part_with_the_brand_on_the_line_is_exact(client, engine):
+    import numpy as np
+    cat = engine.catalog
+    j = next(i for i in range(cat.n) if str(cat.mfr_part[i]).isdigit() and len(str(cat.mfr_part[i])) >= 4 and cat.brand[i]
+             and len(cat.id_lookup(str(cat.mfr_part[i]))) == 1)
+    x = client.post("/api/bom/match", json={"lines": [{"text": f"{cat.brand[j]} {cat.mfr_part[j]}", "qty": 1}]}).json()["lines"][0]
+    assert x["status"] == "exact" and x["options"][0]["sku"] == cat.sku[j]

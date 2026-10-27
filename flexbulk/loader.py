@@ -194,6 +194,13 @@ def compose(raw: pd.DataFrame, it: pd.DataFrame, comp: dict, mapped: set) -> pd.
     attrs = [dict() for _ in range(len(raw))]
     for r, c in zip(rows.tolist(), cs.tolist()):
         attrs[r][attr_cols[c]] = nice(vals[r, c])[:200]
+    # joints as the counter writes them: "Copper x Copper" is also CxC, "Female x Female" FxF (searchable attribute)
+    for c in [c for c in (pick(raw, x) for x in comp.get("joint") or []) if c]:
+        jv = raw[c].to_numpy(dtype=object)
+        for r in range(len(raw)):
+            parts = [x for x in re.split(r"\s+x\s+", nice(jv[r])) if x] if jv[r] else []
+            if len(parts) >= 2 and all(x[:1].isalpha() for x in parts):
+                attrs[r]["joint"] = "x".join(x[0].upper() for x in parts)
     size_cols = [c for c in (pick(raw, x) for x in comp.get("size") or []) if c]
     if size_cols:
         sv = raw[size_cols].to_numpy(dtype=object)
