@@ -249,3 +249,10 @@ def test_a_manufacturers_number_part_with_the_brand_on_the_line_is_exact(client,
              and len(cat.id_lookup(str(cat.mfr_part[i]))) == 1)
     x = client.post("/api/bom/match", json={"lines": [{"text": f"{cat.brand[j]} {cat.mfr_part[j]}", "qty": 1}]}).json()["lines"][0]
     assert x["status"] == "exact" and x["options"][0]["sku"] == cat.sku[j]
+
+
+def test_every_match_links_to_its_web_store_page(client):
+    x = client.post("/api/bom/match", json={"lines": [{"text": "3/4 ball valve", "qty": 1}]}).json()["lines"][0]
+    o = x["options"][0]
+    assert o["web_url"] == f"https://www.fwwebb.com/product/{o['sku']}"
+    assert client.get(f"/api/product/{o['sku']}").json()["web_url"] == o["web_url"]

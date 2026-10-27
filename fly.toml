@@ -29,5 +29,5 @@ primary_region = "iad"
     path = "/api/health"
 
 [[vm]]
-  size = "shared-cpu-2x"
-  memory = "4gb"
+  size = "shared-cpu-4x"
+  memory = "8gb"                    # 720k items: the catalog and indexes are held in memory

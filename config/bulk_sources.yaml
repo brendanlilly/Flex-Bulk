@@ -11,6 +11,10 @@
 # str | int | float | json | label ("P - Plumbing" read as "Plumbing"). Columns marked optional may be missing from the file; the note says what is used then.
 # Only this file changes when your export changes; nothing else refers to your column names.
 
+# Each item's page on the web store ({sku} is the item #). Shown as a link on every match and in exports;
+# items that aren't sold online open the store's "not available" page. Empty: no links.
+product_url: "https://www.fwwebb.com/product/{sku}"
+
 items:
   file: items.*
   sheet: null                       # Excel: the sheet to read (default: the first)

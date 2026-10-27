@@ -197,7 +197,7 @@ async function pageOrders(my) {
 async function openSku(sku) {
   let d; try { d = await api("/api/product/" + encodeURIComponent(sku), { branch: $("#branch").value, level: $("#level").value }); } catch (e) { toast("Not on the item list."); return; }
   const attrs = Object.entries(d.attrs || {});
-  $("#modal").innerHTML = `<div class="box fb-pdp"><div class="fb-mh"><div><h3>${esc(d.title)}</h3><div class="muted">Item ${esc(d.sku)}${d.brand ? " · " + esc(d.brand) : ""}${d.mfr_part ? " · " + esc(d.mfr_part) : ""} · ${esc(d.uom)}${d.status !== "A" ? ` · <b>${d.status === "D" ? "Discontinued" : "Special order"}</b>` : ""}</div></div><button class="btn sm" data-act="modalclose">Close</button></div>
+  $("#modal").innerHTML = `<div class="box fb-pdp"><div class="fb-mh"><div><h3>${esc(d.title)}</h3><div class="muted">Item ${esc(d.sku)}${d.brand ? " · " + esc(d.brand) : ""}${d.mfr_part ? " · " + esc(d.mfr_part) : ""} · ${esc(d.uom)}${d.status !== "A" ? ` · <b>${d.status === "D" ? "Discontinued" : "Special order"}</b>` : ""}${d.web_url ? ` · <a class="fb-web" href="${esc(d.web_url)}" target="_blank" rel="noopener">fwwebb.com ↗</a>` : ""}</div></div><button class="btn sm" data-act="modalclose">Close</button></div>
     <div class="fb-pdpg"><div><div class="fb-k">Category</div><div>${esc([d.cat1, d.cat2, d.cat3].filter((x, i, a) => x && a.indexOf(x) === i).join(" › "))}</div>
       ${attrs.length ? `<div class="fb-k">Read from the item</div><div>${attrs.map(([k, v]) => `<span class="tag">${esc(k)}: ${esc(v)}</span>`).join(" ")}</div>` : ""}
       <div class="fb-k">Prices</div><table class="fb-mini"><tr><td>List</td><td class="n">${d.list_price ? money(d.list_price) : "none"}</td></tr>${Object.entries(d.levels || {}).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="n">${v != null ? money(v) : "list"}</td></tr>`).join("")}</table></div>
@@ -215,7 +215,7 @@ async function findItem(rowId, q) {
     let d; try { d = await api("/api/lookup", { q: $("#findQ").value, branch: $("#branch").value, level: $("#level").value, qty: r.ln.qty, uom: r.ln.uom || "" }); } catch (e) { el.textContent = "Search failed."; return; }
     S.found = d.items;
     el.innerHTML = d.items.length ? `${d.notice ? `<div class="qnote">${esc(d.notice)}</div>` : ""}<div class="bkcards fb-found">${d.items.map((c, i) => `<div class="bkcard"><div class="bkcg">${G.forItem(c, 56)}</div>
-        <div class="bkct"><span class="link" data-act="open-sku" data-sku="${esc(c.sku)}">${esc(c.title)}</span></div><div class="muted" style="font-size:11.5px">Item ${esc(c.sku)}${c.mfr_part ? " · " + esc(c.mfr_part) : ""}${c.conv ? " · " + esc(c.conv) : ""}</div>
+        <div class="bkct"><span class="link" data-act="open-sku" data-sku="${esc(c.sku)}">${esc(c.title)}</span></div><div class="muted" style="font-size:11.5px">Item ${esc(c.sku)}${c.mfr_part ? " · " + esc(c.mfr_part) : ""}${c.conv ? " · " + esc(c.conv) : ""}${c.web_url ? ` · <a class="fb-web" href="${esc(c.web_url)}" target="_blank" rel="noopener" title="Open the item on fwwebb.com">fwwebb.com ↗</a>` : ""}</div>
         <div class="bkcp">${c.price != null ? `<b>${money(c.price)}</b>` : `<span class="muted">no price</span>`}</div>${fulfilHTML(c.fulfil, true)}
         <button class="btn sm primary" data-act="usefound" data-id="${r.id}" data-i="${i}">Use for this line</button></div>`).join("")}</div>` : `<div class="fb-empty">Nothing on the item list matches. Try fewer words, or a part number.</div>`;
   };

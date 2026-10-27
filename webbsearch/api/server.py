@@ -204,6 +204,7 @@ def product(sku: str, branch: str | None = None, level: str | None = None):
     return {"sku": sku, "title": cat.title[j], "brand": cat.brand[j], "mfr_part": cat.mfr_part[j], "uom": cat.uom[j],
             "cat1": cat.cat1[j], "cat2": cat.cat2[j], "cat3": cat.cat3[j], "status": cat.status[j],
             "stock_tier": cat.stock_tier[j], "attrs": cat.attrs(int(j)), "price": p, "price_basis": basis,
+            "web_url": __import__("flexbulk.prices", fromlist=["product_url"]).product_url(sku),
             "list_price": prices().list.get(sku), "levels": lv,
             "branches": e.availability.by_branch(int(j), branch, k=10), "branch": e.availability.branch_info(branch)}
 

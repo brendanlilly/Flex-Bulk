@@ -286,7 +286,7 @@ function bkRowHTML(r, k) {
     <td class="bkreqc">${req}${srcChip}</td>
     <td><input class="qoq" type="number" min="1" value="${r.ln.qty || 1}" data-act="bkqty" data-id="${r.id}" aria-label="Quantity for line ${k + 1}">${r.ln.uom && r.ln.uom !== "EA" ? `<div class="muted">${esc(r.ln.uom)}</div>` : ""}</td>
     <td class="bkm">${it ? `<div class="bkmi"><div class="bkg">${G.forItem(it, 34)}</div><div>${itemLink(it)}
-        <div class="muted">${it.kind === "webb" ? `Webb # ${esc(it.webb_item)}` : `Item ${esc(it.sku)}`}${it.mfr_part ? ` · ${esc(it.mfr_part)}` : ""}${it.conv ? ` · <b>${esc(it.conv)}</b>` : ""}</div>
+        <div class="muted">${it.kind === "webb" ? `Webb # ${esc(it.webb_item)}` : `Item ${esc(it.sku)}`}${it.mfr_part ? ` · ${esc(it.mfr_part)}` : ""}${it.conv ? ` · <b>${esc(it.conv)}</b>` : ""}${it.web_url ? ` · <a class="fb-web" href="${esc(it.web_url)}" target="_blank" rel="noopener" title="Open the item on fwwebb.com">fwwebb.com ↗</a>` : ""}</div>
         <div class="bkwhys">${whyHTML(it)}${r.ch.t === "sub" && it.how ? `<span class="bkwhy bkw-sub">${esc(it.how)}</span>` : ""}${it.how && r.ch.t === "opt" && it.kind === "webb" ? `<span class="bkwhy bkw-sub">${esc(it.how)}</span>` : ""}</div></div></div>${sel}`
       : st === "none" ? `<div class="muted">${esc(m.note || "No match")}</div>${bkClosestHTML(r)}<button class="linkbtn" data-act="bkfind" data-id="${r.id}">Find an item →</button>` : st === "skip" ? `<div class="muted">${esc(m.note || "")}</div>` : ""}
       ${m.note && it ? `<div class="qnote">${esc(m.note)}</div>` : ""}${m.searched_as ? `<div class="muted bksa">searched as “${esc(m.searched_as)}”</div>` : ""}</td>
@@ -305,7 +305,7 @@ function bkUseClosest(r, i, confirmed) {
 }
 function bkCardHTML(c, r, key, chosen) {
   return `<div class="bkcard ${chosen ? "on" : ""}" data-sku="${esc(c.sku)}"><div class="bkcg">${G.forItem(c, 64)}</div>
-    <div class="bkct">${itemLink(c)}</div><div class="muted" style="font-size:11.5px">${esc(c.brand || "")}${c.mfr_part ? " · " + esc(c.mfr_part) : ""}${c.conv ? " · " + esc(c.conv) : ""}</div>
+    <div class="bkct">${itemLink(c)}</div><div class="muted" style="font-size:11.5px">${esc(c.brand || "")}${c.mfr_part ? " · " + esc(c.mfr_part) : ""}${c.conv ? " · " + esc(c.conv) : ""}${c.web_url ? ` · <a class="fb-web" href="${esc(c.web_url)}" target="_blank" rel="noopener" title="Open the item on fwwebb.com">fwwebb.com ↗</a>` : ""}</div>
     <div class="bkcp">${c.price != null ? `<b>${money(c.price)}</b>` : `<span class="muted">${c.kind === "webb" ? "price at branch" : ""}</span>`}</div>
     ${fulfilHTML(c.fulfil, true)}<div class="bkwhys">${whyHTML(c)}${c.band ? bandPill(c.band, c.wmcr) : ""}${c.how ? `<span class="bkwhy bkw-sub">${esc(c.how)}</span>` : ""}</div>
     <button class="btn sm ${chosen ? "" : "primary"}" data-act="bkchoose" data-id="${r.id}" data-k="${key}">${chosen ? "Chosen ✓" : "Choose"}</button></div>`;

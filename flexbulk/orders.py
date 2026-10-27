@@ -93,7 +93,8 @@ class Orders:
                     "ext": round(price * units, 2) if isinstance(price, (int, float)) else None,
                     "stock": _clean((it.get("fulfil") or {}).get("text"), 300),
                     "stock_status": _clean((it.get("fulfil") or {}).get("status"), 20),
-                    "why": "; ".join(_clean(w.get("t"), 120) for w in (it.get("why") or []) if isinstance(w, dict))}
+                    "why": "; ".join(_clean(w.get("t"), 120) for w in (it.get("why") or []) if isinstance(w, dict)),
+                    "url": _clean(it.get("web_url"), 300)}
         return {"n": ln.get("n"), "text": _clean(ln.get("text"), 300), "desc": _clean(ln.get("desc"), 300),
                 "qty": qty, "uom": _clean(ln.get("uom"), 8), "src": _clean(ln.get("src_label"), 120),
                 "state": r.get("state") if r.get("state") in STATUS_LABEL else "new", "item": item,
@@ -159,7 +160,7 @@ def _safe(v):
 
 
 LINE_HEAD = ["Line", "Requested", "Description", "Qty", "UOM", "Status", "Item #", "Manufacturer", "Mfr part #",
-             "Item description", "Order qty", "Unit price", "Extended", "Stock", "Why this item", "Note", "Source"]
+             "Item description", "Order qty", "Unit price", "Extended", "Stock", "Why this item", "Note", "Source", "Web page"]
 
 
 def line_rows(o: dict) -> list[list]:
@@ -170,7 +171,7 @@ def line_rows(o: dict) -> list[list]:
         out.append([r.get("n") or k + 1, r.get("text"), r.get("desc") if r.get("desc") != r.get("text") else "", r.get("qty"),
                     r.get("uom") or "", st, it.get("sku", ""), it.get("brand", ""), it.get("mfr_part", ""), it.get("title", ""),
                     it.get("units", "") if it else "", it.get("price"), it.get("ext"), it.get("stock", ""), it.get("why", ""),
-                    r.get("note", ""), r.get("src", "")])
+                    r.get("note", ""), r.get("src", ""), it.get("url", "")])
     return out
 
 
@@ -239,7 +240,7 @@ def to_xlsx(o: dict) -> bytes:
     ws.cell(r, 11, len(conf))
     ws.cell(r, 12, "Total").font = bold
     ws.cell(r, 13, round(sum((x["item"].get("ext") or 0) for x in conf), 2)).number_format = '"$"#,##0.00'
-    widths = [6, 34, 24, 7, 6, 11, 12, 16, 16, 44, 9, 11, 12, 34, 30, 30, 18]
+    widths = [6, 34, 24, 7, 6, 11, 12, 16, 16, 44, 9, 11, 12, 34, 30, 30, 18, 40]
     for c, wdt in enumerate(widths, 1):
         ws.column_dimensions[get_column_letter(c)].width = wdt
     ws.freeze_panes = ws.cell(head_row + 1, 1)

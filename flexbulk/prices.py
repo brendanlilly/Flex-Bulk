@@ -8,6 +8,22 @@ import pandas as pd
 from webbsearch.config import settings
 
 
+def product_url(sku: str) -> str | None:
+    """The item's page on the web store (config/bulk_sources.yaml `product_url`, e.g.
+    https://www.fwwebb.com/product/{sku}); None when no template is set."""
+    global _URL
+    if _URL is None:
+        try:
+            from flexbulk.loader import config
+            _URL = config().get("product_url") or ""
+        except Exception:  # noqa: BLE001
+            _URL = ""
+    return _URL.format(sku=sku) if _URL and sku else None
+
+
+_URL: str | None = None
+
+
 class Prices:
     def __init__(self, path=None):
         f = path or settings.canonical_dir / "prices.parquet"
@@ -42,3 +58,6 @@ class Prices:
         card["price"] = p
         card["price_basis"] = basis
         card["list_price"] = round(lp, 2) if lp else None
+        u = product_url(card.get("sku", ""))
+        if u:
+            card["web_url"] = u
