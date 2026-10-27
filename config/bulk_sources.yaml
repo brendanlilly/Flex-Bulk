@@ -2,33 +2,47 @@
 #
 # Put the files in data/incoming/ (or set FLEXBULK_INCOMING to another folder) and run
 #     python -m flexbulk.build
-# CSV (also .csv.gz), Excel (.xlsx) and Parquet all work. A name pattern like items.* reads whichever file
+# CSV, pipe- or tab-delimited text (also gzipped), Excel (.xlsx) and Parquet all work; the delimiter and the text
+# encoding are worked out from the file. A name pattern like items.* reads whichever file
 # matches (the newest if several do).
 #
 # For each column: `src` is the column name in your file, or a list of names to try (matched without regard to
 # case, spaces or punctuation, so "Mfr Part #" finds MFR_PART_NO's twin "MFR PART #"). `t` is the type:
-# str | int | float | json. Columns marked optional may be missing from the file; the note says what is used then.
+# str | int | float | json | label ("P - Plumbing" read as "Plumbing"). Columns marked optional may be missing from the file; the note says what is used then.
 # Only this file changes when your export changes; nothing else refers to your column names.
 
 items:
   file: items.*
   sheet: null                       # Excel: the sheet to read (default: the first)
   columns:
-    sku:         {src: ["Item #", Item, Item No, ITEM_NO, SKU, Webb Item], t: str}
-    title:       {src: [Description, Short Description, DESC_SHORT, Title, Item Description], t: str}
+    sku:         {src: ["Item #", Item, Item No, ITEM_NO, SKU, Webb Item, "Control #"], t: str}
+    title:       {src: [Description, Short Description, DESC_SHORT, Title, Item Description], t: str, optional: true}   # none: built by `compose` below
     description: {src: [Long Description, DESC_LONG, Extended Description], t: str, optional: true}
-    brand:       {src: [Manufacturer, Brand, MFR_NAME, Vendor Name, Mfr], t: str, optional: true}       # default: none
+    brand:       {src: [Manufacturer, Manufacturer Name, Brand, MFR_NAME, Vendor Name, Mfr], t: str, optional: true}   # default: none; "Miscellaneous" reads as none
     mfr_part:    {src: ["Mfr Part #", Manufacturer Part Number, MFR_PART_NO, MPN, Vendor Part], t: str, optional: true}
     upc:         {src: [UPC, UPC_CD, GTIN], t: str, optional: true}
-    cat1:        {src: [Category, CAT_L1, Department], t: str, optional: true}                         # default: General
-    cat2:        {src: [Subcategory, CAT_L2, Class], t: str, optional: true}                           # default: cat1
-    cat3:        {src: [Product Type, CAT_L3, Subclass], t: str, optional: true}                       # default: cat2
+    cat1:        {src: [Category, CAT_L1, Department, Product Code], t: label, optional: true}         # default: General
+    cat2:        {src: [Subcategory, CAT_L2], t: str, optional: true}                                  # default: cat1
+    cat3:        {src: [Modifier Noun, Product Type, CAT_L3, Subclass], t: str, optional: true}        # default: cat2
     family:      {src: [Product Line, PROD_FAMILY, Price Line, P-Code], t: str, optional: true}       # default: from cat3
     uom:         {src: [UOM, Unit, U/M, Sell UOM], t: str, optional: true}                             # default: EA
     status:      {src: [Status, ITEM_STATUS, Item Status], t: str, optional: true}                     # A active (default), D discontinued, S special order
     stock_tier:  {src: [Stock Tier, STOCK_TIER, Stocking Type], t: str, optional: true}                # default: from the stock file
     attrs:       {src: [Attributes, ATTRS_JSON], t: json, optional: true}                              # default: size, material and joint read from the description
     list_price:  {src: [List Price, LIST_PRICE, List], t: float, optional: true}                       # default: the prices file
+  # Rows that aren't products: {column: [values]}
+  skip:
+    Product Code: ["N - Non-Product"]
+  # A product-attribute export with no description column (one column per attribute, like Webb's PIM export,
+  # Control # | Manufacturer Part Number | Manufacturer Name | Modifier Noun | Product Code | Size | Material | ...):
+  # the description is built from these columns, in order, empty ones skipped ({A|B}: A, else B; {brand}: the
+  # manufacturer), then `title_after` comma-separated. Every other column becomes a searchable attribute.
+  compose:
+    title: ["{brand}", "{Size|Nominal Pipe Size}", "{Material}", "{End Connection}", "{Modifier Noun|Product Type}"]
+    title_after: [Product Type, Bend Angle, Port Type, Schedule, Pressure Class, Tank Capacity, Fuel, BTU, Capacitance,
+                  Voltage, Flush Rate, Finish]
+    size: [Size, Nominal Pipe Size, Connection Size, Inlet Size]        # the nominal size line fit checks
+    attributes: rest
 
 stock:
   file: stock.*                     # optional: without it every item shows "ask the branch"

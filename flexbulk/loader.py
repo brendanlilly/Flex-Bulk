@@ -71,22 +71,36 @@ def find(pattern: str, folder: Path | None = None) -> Path | None:
     return max(files, key=lambda f: f.stat().st_mtime) if files else None
 
 
-def read_any(path: Path, sheet: str | None = None) -> pd.DataFrame:
-    """CSV / TSV / TXT (also gzipped), Excel or Parquet, every column as text."""
+def sniff(path: Path) -> tuple[str, str]:
+    """(delimiter, encoding) of a text export, from its first 256 KB: the delimiter the header line uses most
+    (| tab , ;), and UTF-8 unless the bytes say otherwise (then Windows-1252, which ERP exports usually are)."""
+    import gzip
+    opener = gzip.open if path.name.lower().endswith(".gz") else open
+    with opener(path, "rb") as fh:
+        head = fh.read(262_144)
+    try:
+        head.decode("utf-8")
+        enc = "utf-8-sig"
+    except UnicodeDecodeError as e:
+        enc = "utf-8-sig" if e.start >= len(head) - 4 else "cp1252"        # a character cut at the sample's end
+    first = head.split(b"\n", 1)[0].decode(enc if enc != "utf-8-sig" else "utf-8", "replace")
+    return max(["|", "\t", ",", ";"], key=first.count), enc
+
+
+def read_any(path: Path, sheet: str | None = None, chunksize: int | None = None):
+    """CSV / TSV / TXT / pipe-delimited (also gzipped), Excel or Parquet, every column as text. With `chunksize`,
+    an iterator of frames (text files; Excel and Parquet come back as one frame in a list)."""
     name = path.name.lower()
     if name.endswith(".parquet"):
-        return pd.read_parquet(path).astype(str).replace({"None": "", "nan": "", "NaT": ""})
+        df = pd.read_parquet(path).astype(str).replace({"None": "", "nan": "", "NaT": ""})
+        return [df] if chunksize else df
     if name.endswith((".xlsx", ".xlsm", ".xls")):
-        return pd.read_excel(path, sheet_name=sheet or 0, dtype=str, keep_default_na=False)
-    base = re.sub(r"\.(gz|zip|bz2)$", "", name)
-    sep = "\t" if base.endswith((".tsv", ".tab")) else None
-    for enc in ("utf-8-sig", "cp1252", "latin-1"):
-        try:
-            return pd.read_csv(path, sep=sep, engine="python" if sep is None else "c", dtype=str,
-                               keep_default_na=False, encoding=enc)
-        except UnicodeDecodeError:
-            continue
-    raise ValueError(f"can't read {path.name}: unknown text encoding")
+        df = pd.read_excel(path, sheet_name=sheet or 0, dtype=str, keep_default_na=False)
+        return [df] if chunksize else df
+    sep, enc = sniff(path)
+    # pipe- and tab-delimited exports don't quote: a 1/2" in a value is an inch mark, not the start of a quoted field
+    return pd.read_csv(path, sep=sep, dtype=str, keep_default_na=False, encoding=enc, encoding_errors="replace",
+                       quoting=3 if sep in "|\t" else 0, chunksize=chunksize, low_memory=False)
 
 
 def _key(s: str) -> str:
@@ -130,6 +144,8 @@ def columns(df: pd.DataFrame, spec: dict, table: str, report: dict) -> pd.DataFr
             out[name] = to_float(v).round().astype("Int64")
         elif t == "json":
             out[name] = v.astype(str)
+        elif t == "label":          # "P - Plumbing" -> "Plumbing"
+            out[name] = v.astype(str).str.strip().str.replace(r"^[A-Z0-9]{1,3}\s+-\s+", "", regex=True)
         else:
             out[name] = v.astype(str).str.strip().replace({"nan": "", "None": ""})
     report.setdefault("columns", {})[table] = found
@@ -155,6 +171,69 @@ def derive_attrs(title: str) -> str:
     return json.dumps(a)
 
 
+BLANK_BRANDS = {"miscellaneous", "misc", "unknown", "n/a", "na", "none", "various", "generic", "-"}
+SIZE_RX = re.compile(r"(\d+(?:-\d+/\d+)?|\d+/\d+|\d*\.\d+)\s*(?:in\.?|inch(?:es)?|\")?", re.I)
+
+
+def nice(v: str) -> str:
+    """Attribute values as words: "SweatxRotating Flange" -> "Sweat x Rotating Flange", "1-1/2 IN" -> "1-1/2 in."."""
+    v = re.sub(r"(?<=[a-z])x(?=[A-Z])", " x ", str(v).strip())
+    return re.sub(r"(?<=\d) IN\b\.?", " in.", v)
+
+
+def compose(raw: pd.DataFrame, it: pd.DataFrame, comp: dict, mapped: set) -> pd.DataFrame:
+    """A product-attribute export with no description column: the description (title) from the columns named in
+    `compose.title` ({Col} or {Col|Other} for the first non-empty, {brand} for the manufacturer), then
+    `compose.title_after` comma-joined; every other column (`attributes: rest`) as a searchable attribute; the
+    nominal size line-fit checks a match against from `compose.size`."""
+    cols = list(raw.columns)
+    attr_cols = [c for c in cols if c not in mapped] if comp.get("attributes", "rest") == "rest" else \
+        [c for c in (pick(raw, x) for x in comp.get("attributes") or []) if c]
+    vals = raw[attr_cols].to_numpy(dtype=object)
+    rows, cs = np.nonzero(vals != "")
+    attrs = [dict() for _ in range(len(raw))]
+    for r, c in zip(rows.tolist(), cs.tolist()):
+        attrs[r][attr_cols[c]] = nice(vals[r, c])[:200]
+    size_cols = [c for c in (pick(raw, x) for x in comp.get("size") or []) if c]
+    if size_cols:
+        sv = raw[size_cols].to_numpy(dtype=object)
+        for r in range(len(raw)):
+            for v in sv[r]:
+                m = SIZE_RX.fullmatch(v.strip()) if v else None
+                if m:
+                    attrs[r]["size"] = m.group(1)
+                    break
+    brand = it["brand"].to_numpy(dtype=object) if "brand" in it else np.array([""] * len(raw), dtype=object)
+
+    def field(tok: str):
+        if tok == "brand":
+            return brand
+        alts = [pick(raw, x.strip()) for x in tok.split("|")]
+        out = np.array([""] * len(raw), dtype=object)
+        for c in [a for a in alts if a][::-1]:
+            v = raw[c].to_numpy(dtype=object)
+            out = np.where(v != "", v, out)
+        return out
+    head = [field(re.sub(r"^\{|\}$", "", t)) for t in comp.get("title") or []]
+    after = [field(t) for t in comp.get("title_after") or []]
+    titles, descs = [], []
+    for r in range(len(raw)):
+        t = " ".join(nice(h[r]) for h in head if h[r])
+        low = t.lower()
+        extra = []
+        for a in after:
+            v = nice(a[r])
+            if v and v.lower() not in low and v not in extra:
+                extra.append(v)
+        titles.append((t + (", " + ", ".join(extra) if extra else ""))[:240])
+        descs.append("; ".join(f"{k}: {v}" for k, v in attrs[r].items() if k != "size")[:1500])
+    it = it.copy()
+    it["title"] = titles
+    it["description"] = descs
+    it["attrs"] = [json.dumps(a) for a in attrs]
+    return it
+
+
 def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", str(s).lower()).strip("_") or "general"
 
@@ -176,9 +255,33 @@ def load(write: bool = True, log=print, incoming: Path | None = None, data_dir: 
     if f is None:
         raise FileNotFoundError(f"no item file matching {ic['file']} in {inc}")
     report["files"]["items"] = f.name
-    raw = read_any(f, ic.get("sheet"))
-    log(f"items: {f.name}, {len(raw):,} rows")
-    it = columns(raw, ic["columns"], "items", report)
+    comp, skip = ic.get("compose") or {}, ic.get("skip") or {}
+    parts, nraw, nskip, t0 = [], 0, 0, time.time()
+    for raw in read_any(f, ic.get("sheet"), chunksize=100_000):
+        nraw += len(raw)
+        for col, values in skip.items():           # rows that aren't products (skip: {column: [values]})
+            c = pick(raw, col)
+            if c is not None:
+                keep = ~raw[c].isin(values)
+                nskip += int((~keep).sum())
+                raw = raw[keep]
+        part = columns(raw, ic["columns"], "items", report)
+        if "brand" in part:
+            part["brand"] = part["brand"].where(~part["brand"].str.lower().isin(BLANK_BRANDS), "")
+        if "title" not in part:
+            if not comp:
+                raise ValueError("items: no description column, and no `compose` section in config/bulk_sources.yaml "
+                                 f"to build one. The file has: {', '.join(map(str, raw.columns[:30]))}.")
+            part = compose(raw, part, comp, set(report["columns"]["items"].values()))
+            report["composed"] = True
+        parts.append(part)
+        if nraw >= 200_000:
+            log(f"  {nraw:,} rows read ({time.time() - t0:.0f}s)")
+    it = pd.concat(parts, ignore_index=True)
+    del parts
+    log(f"items: {f.name}, {nraw:,} rows" + (" (descriptions built from the attribute columns)" if report.get("composed") else ""))
+    if nskip:
+        warn(f"{nskip:,} rows skipped as not products ({', '.join(f'{k}: {v}' for k, v in skip.items())})")
     n0 = len(it)
     it = it[it["sku"].astype(str).str.strip() != ""]
     if len(it) < n0:

@@ -74,8 +74,13 @@ def test_wide_stock_layout(files, tmp_path):
 
 def test_a_missing_required_column_says_which_and_what_the_file_has(files, tmp_path):
     ITEMS.rename(columns={"Item Description": "Words"}).to_excel(files / "items.xlsx", index=False)
-    with pytest.raises(ValueError, match=r"no column for title.*The file has: ITEM NO, Words"):
-        loader.load(log=lambda *_: None, incoming=files, data_dir=tmp_path / "d", cfg=_cfg(), write=False)
+    c = _cfg()
+    c["items"].pop("compose")
+    with pytest.raises(ValueError, match=r"no description column.*The file has: ITEM NO, Words"):
+        loader.load(log=lambda *_: None, incoming=files, data_dir=tmp_path / "d", cfg=c, write=False)
+    c["items"]["columns"]["sku"]["src"] = ["Nope"]
+    with pytest.raises(ValueError, match=r"no column for sku"):
+        loader.load(log=lambda *_: None, incoming=files, data_dir=tmp_path / "d", cfg=c, write=False)
 
 
 def test_prices_fall_back_to_list(tmp_path):
@@ -211,3 +216,26 @@ def test_the_page_and_dashboard_load(client):
     assert "Flex<b>Bulk</b>" in h and "/static/bulk.js?v=" in h and "/static/app.js" not in h
     a = client.get("/admin").text
     assert "Flex<b>Bulk</b> <span class=\"w2\">Settings</span>" in a and 'data-page="crosses"' in a and 'data-page="overview"' not in a
+
+
+def test_an_attribute_export_gets_descriptions_built(tmp_path):
+    """Webb's PIM export: pipe-delimited Windows-1252 text, no description column, one column per attribute."""
+    inc = tmp_path / "incoming"
+    inc.mkdir()
+    head = "Control #|Manufacturer Part Number|Manufacturer Name|Modifier Noun|Product Code|Size|Material|End Connection|Port Type|Product Type|Finish|Bend Angle"
+    rows = ["51414|51414|Webstone|Ball Valve|H - Heating|1 IN|Forged Brass|SweatxRotating Flange Drain|Full Port|||",
+            "526401|526401|Georg Fischer|Elbow|L - Plastics|1-1/2 IN|Polypropylene|SocketxSpigot||Street||45 DEG",
+            "9|X1|Miscellaneous|Tee|C - Commodities|||||||",
+            "10|Z|Acme||N - Non-Product|||||||",
+            "11|D 1/2\"|Décor Co|Pull|D - Décor|3 IN|Brass|||Bar|Satin Brass|"]
+    (inc / "items.txt").write_bytes(("\n".join([head] + rows) + "\n").encode("cp1252"))
+    r = loader.load(log=lambda *_: None, incoming=inc, data_dir=tmp_path / "d", cfg=loader.config())
+    p = pd.read_parquet(tmp_path / "d" / "canonical" / "products.parquet").set_index("sku")
+    assert p.loc["51414", "title"] == "Webstone 1 in. Forged Brass Sweat x Rotating Flange Drain Ball Valve, Full Port"
+    assert p.loc["526401", "title"] == "Georg Fischer 1-1/2 in. Polypropylene Socket x Spigot Elbow, Street, 45 DEG"
+    assert p.loc["9", "title"] == "Tee" and p.loc["9", "brand"] == ""                       # "Miscellaneous": no brand
+    assert "10" not in p.index and any("not products" in w for w in r["warnings"])
+    assert p.loc["11", "brand"] == "Décor Co" and p.loc["11", "mfr_part"] == 'D 1/2"'      # cp1252 and an inch mark
+    a = json.loads(p.loc["51414", "attrs"])
+    assert a["size"] == "1" and a["Port Type"] == "Full Port" and "Port Type: Full Port" in p.loc["51414", "description"]
+    assert p.loc["51414", "cat1"] == "Heating" and p.loc["51414", "cat3"] == "Ball Valve" and p.loc["51414", "family"] == "ball_valve"
