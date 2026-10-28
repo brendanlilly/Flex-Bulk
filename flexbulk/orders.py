@@ -127,7 +127,8 @@ class Orders:
                 "state": r.get("state") if r.get("state") in STATUS_LABEL else "new", "item": item,
                 "note": _clean((m or {}).get("note"), 300), "ln": {k: v for k, v in ln.items() if k != "crop"},
                 "m": m, "ch": r.get("ch") or {"t": "opt", "i": 0}, "confirmed": bool(r.get("confirmed")),
-                "excluded": bool(r.get("excluded"))}
+                "excluded": bool(r.get("excluded")),
+                "fb": {k: fb.get(k) for k in ("id", "verdict", "reasons", "note", "right_sku")} if isinstance(fb := r.get("fb"), dict) else None}
 
     def delete(self, oid: str) -> bool:
         with self.lock:

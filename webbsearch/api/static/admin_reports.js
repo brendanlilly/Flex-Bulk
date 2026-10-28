@@ -11,11 +11,12 @@ PAGES.reports = async (el) => {
           <label class="fl">Lines from<select class="in" id="rpSrc">
             <option value="tests" ${RPT.source === "tests" ? "selected" : ""}>Test cases (customers' documents read again, confirmed items are the answers)</option>
             <option value="documents" ${RPT.source === "documents" ? "selected" : ""}>Customers' documents (read and matched; no answers)</option>
+            <option value="feedback" ${RPT.source === "feedback" ? "selected" : ""}>Staff feedback on lines (right items are the answers; says which are fixed now)</option>
             <option value="orders" ${RPT.source === "orders" ? "selected" : ""}>Saved orders (confirmed lines are the answers)</option>
             <option value="log" ${RPT.source === "log" ? "selected" : ""}>Lines matched in the app (staff choices are the answers)</option>
             <option value="file" ${RPT.source === "file" ? "selected" : ""}>A test file (lines, and the item each should match)</option></select></label>
           <label class="fl" id="rpDocsL" ${RPT.source === "documents" ? "" : "hidden"}>Documents<input type="file" class="in" id="rpDocs" multiple accept=".xlsx,.xlsm,.csv,.tsv,.txt,.pdf,.docx,.eml,.jpg,.jpeg,.png,.heic,.heif,.tif,.tiff,.webp,image/*" style="height:auto;padding:5px"></label>
-          <label class="fl" id="rpDaysL" ${["orders", "log"].includes(RPT.source) ? "" : "hidden"}>Last<select class="in" id="rpDays">${[7, 30, 90, 365, 3650].map((d) => `<option value="${d}" ${RPT.days === d ? "selected" : ""}>${d === 3650 ? "all time" : d + " days"}</option>`).join("")}</select></label>
+          <label class="fl" id="rpDaysL" ${["orders", "log", "feedback"].includes(RPT.source) ? "" : "hidden"}>Last<select class="in" id="rpDays">${[7, 30, 90, 365, 3650].map((d) => `<option value="${d}" ${RPT.days === d ? "selected" : ""}>${d === 3650 ? "all time" : d + " days"}</option>`).join("")}</select></label>
           <label class="fl" id="rpFileL" ${RPT.source === "file" ? "" : "hidden"}>Test file<input type="file" class="in" id="rpFile" accept=".csv,.txt,.tsv,.xlsx,.parquet" style="height:auto;padding:5px"></label>
           <label class="fl">Pickup branch<select class="in" id="rpBranch"><option value="">Default</option>${A.branches.map((b) => `<option value="${esc(b.branch_id)}" ${RPT.branch === b.branch_id ? "selected" : ""}>${esc(b.name)}</option>`).join("")}</select></label>
           <label class="row small" style="gap:6px"><input type="checkbox" id="rpCust" ${RPT.perCust ? "checked" : ""}>Count each customer's own picks</label>
@@ -26,7 +27,7 @@ PAGES.reports = async (el) => {
 </div>
       <div><div class="card"><h3>Reading a report</h3><div class="small" style="line-height:1.6"><b>Top-1</b>: of lines with a known answer, the share where it came first. <b>Top-3</b>: in the first three. <b>Matched</b>: lines with any match.<br><br><b>Misses</b> is the sheet to work from: each row is a line, the item it should have matched, what came first instead and why. The usual fixes, cheapest first: a dictionary entry (the line's words), a cross (a part # or brand Webb doesn't carry), a brand order for the category, then a weight.</div></div></div></div>
     <div class="card mt"><h3>Reports</h3><div id="rpList">Loading…</div></div>`;
-  $("#rpSrc").onchange = (e) => { RPT.source = e.target.value; $("#rpDaysL").hidden = !["orders", "log"].includes(RPT.source); $("#rpFileL").hidden = RPT.source !== "file"; $("#rpDocsL").hidden = RPT.source !== "documents"; };
+  $("#rpSrc").onchange = (e) => { RPT.source = e.target.value; $("#rpDaysL").hidden = !["orders", "log", "feedback"].includes(RPT.source); $("#rpFileL").hidden = RPT.source !== "file"; $("#rpDocsL").hidden = RPT.source !== "documents"; };
   $("#rpDays").onchange = (e) => { RPT.days = +e.target.value; };
   $("#rpBranch").onchange = (e) => { RPT.branch = e.target.value; };
   $("#rpCust").onchange = (e) => { RPT.perCust = e.target.checked; };

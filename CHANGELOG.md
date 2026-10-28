@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2 (2026-10-27)
+
+- **Line feedback** in the staff app: every matched line has "Match right? ✓ ✗". ✓ saves at once. ✗ asks what was wrong
+  (wrong item, size, brand, spec; right item further down; should have found it; not carried; line read wrong), a note,
+  and the right item when staff know it (item #, mfr part # or UPC, or one of the options shown). The right item goes
+  on the line, chosen, and counts as a staff pick. Each piece of feedback is kept with the line, what was shown, and
+  the matcher's steps at that moment; it's saved with the order too.
+- **Dashboard → Line feedback**: counts by what was wrong, every line with its note and right item, the matcher's steps
+  per line, Resolved / Won't fix, CSV download.
+- **Match reports on staff feedback**: lines marked right, or given their right item, are scored; a Feedback sheet
+  says per line whether it is fixed now, still shows the item marked wrong, or changed.
+- Lines that name a manufacturer search its items before saying "not carried"; an exact hit counts only for the
+  line's brand; "50GAL" reads as 50 GAL; brand suggestions are counted once per report and skip house-line names;
+  two-letter shorthand waits for review.
+
 ## 1.1 (2026-10-27)
 
 Matching on real vendor and ERP lists (worked out on a 500-line customer file against the 719,441-item Webb list).

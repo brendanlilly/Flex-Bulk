@@ -61,6 +61,8 @@ they hold). Without attributes in the file, size, material and joint are read fr
   confirmed (a part # is checked against the line's manufacturer: another manufacturer's item with the same part #
   is offered, flagged, not confirmed); everything else is a recommendation to confirm, with the reasons shown. **Find another** searches the
   item list for any line. Short at the pickup branch: the transfer plan and same-spec items on the shelf.
+- **Match right? ✓ ✗** on every line: feedback for improving the matcher. ✗ asks what was wrong, a note, and the
+  right item if known (it goes on the line). Each is kept with the matcher's steps; dashboard → Line feedback.
 - **Pickup branch** and **price level** (header) apply to the whole order; changing them re-matches the lines.
 - **Save** (Ctrl/Cmd+S) keeps the order with every line as left; **Orders** lists them. **Export**: an Excel workbook
   (header, every line, an order-entry sheet), a CSV, or the order-entry file (confirmed lines: item # and quantity).
@@ -75,6 +77,7 @@ and writes one Excel workbook:
     read again, so the report checks the reading (lines, quantities, what was set aside) as well as the matching;
     each confirmed item is the right answer. The staff page shows the running score while you confirm.
   - **customers' documents** given to the report (emails, Excel, Word, PDFs, photos): read and matched, no answers.
+  - **staff feedback**: lines marked right or given their right item are the answers; says which are fixed now.
   - saved orders, lines matched in the app (staff choices are the answers), or a test file (a `Line` column and an
     `Expected` item #; template on the page).
 - **Hide part #s**: for a customer's list with manufacturer and part # columns. Each line's part # finds its answer,
@@ -102,6 +105,7 @@ matching.
 | Brand preferences | Webb's brand order per category, for lines that name no brand |
 | Learned crosses | What staff pick for a line; make a pick permanent, or switch it off |
 | Match reports | Score the matcher on test cases, customers' documents, saved orders, the app's log or a test file; download the workbook or bundle |
+| Line feedback | Staff feedback per line (right / wrong, what was wrong, the right item), with the matcher's steps; resolve it, download it, or run a match report on it |
 | Brand names & shorthand | Which item-list manufacturers a list's manufacturer name means; ERP abbreviations searched as words; suggestions from match reports |
 | Ranking weights | Bulk order weights (Webb's brand order, learned picks, on the shelf) and search weights |
 | Relevance by field, Search dictionary, Rewrites, Rules | How the search underneath reads trade words |

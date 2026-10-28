@@ -260,6 +260,71 @@ async function explainLine(r) {
       <p class="muted" style="font-size:12px">Order: the line's product first (✓ before ✗), then the line's brand, then its size, then nothing it asked for missing; within those, by total points (search position + fit + bonus). Hover a bonus for its parts (on the shelf, Webb's brand order, learned picks). The settings dashboard changes the weights.</p>` : ""}`;
 }
 
+// ------------------------------------------------------------------ line feedback (flexbulk/feedback.py)
+const FB_REASONS = [["wrong_item", "Wrong item"], ["wrong_size", "Wrong size"], ["wrong_brand", "Wrong brand"],
+  ["wrong_spec", "Wrong material, joint or spec"], ["ranking", "Right item is in the options, not first"],
+  ["should_find", "It's on the list: should have found it"], ["not_carried", "We don't carry it"],
+  ["misread", "Line read wrong (text, qty, unit)"], ["other", "Other"]];
+function fbShown(r) {
+  const it = bkItem(r) || {}, m = r.m || {};
+  return { sku: it.sku || "", title: it.title || "", brand: it.brand || "", rank: r.ch.t === "opt" ? r.ch.i : -1, status: m.status || "",
+    via: m.via || "", note: m.note || "", options: (m.options || []).map((o) => o.sku) };
+}
+async function fbSend(r, body) {
+  const x = await post("/api/bom/feedback", { id: (r.fb && r.fb.id) || null, line: { ...r.ln, crop: undefined }, shown: fbShown(r),
+    order_id: S.order.id || "", customer: custKey(), staff: staffName(), branch: $("#branch").value, level: $("#level").value, ...body });
+  const f = x.feedback;
+  r.fb = { id: f.id, verdict: f.verdict, reasons: f.reasons, reason_labels: f.reason_labels, note: f.note, right_sku: f.right_sku };
+  if (x.right) {          // the right item goes on the line, chosen, and counts as a staff pick
+    const m = r.m || (r.m = { options: [], substitutes: [], closest: [] });
+    m.options = [x.right, ...(m.options || []).filter((o) => o.sku !== x.right.sku)].slice(0, 8);
+    m.status = m.status === "none" ? "rec" : m.status; m.closest = [];
+    r.ch = { t: "opt", i: 0 }; r.confirmed = true; r.excluded = false;
+    bkLogChoice(r, "feedback");
+  }
+  markDirty(); bkPaint();
+  return x;
+}
+async function feedbackQuick(r) {
+  try { await fbSend(r, { verdict: "good", reasons: [], note: "", right_item: "" }); toast("Marked right"); }
+  catch (e) { toast("Couldn't save: " + e.message); }
+}
+function feedbackLine(r, verdict) {
+  const f = r.fb || {}, it = bkItem(r), m = r.m || {}, v = verdict || f.verdict || "bad";
+  const others = (m.options || []).filter((o) => !it || o.sku !== it.sku);
+  $("#modal").innerHTML = `<div class="box fb-fbbox"><div class="fb-mh"><div><h3>Feedback on line ${esc(r.ln.n || "")}</h3><div class="muted">“${esc(r.ln.text)}”${r.ln.desc && r.ln.desc !== r.ln.text ? ` · ${esc(r.ln.desc)}` : ""}</div></div><button class="btn sm" data-act="modalclose">Close</button></div>
+    <div class="fb-fbshown">${it ? `Matched to <b>${esc(it.title)}</b> <span class="muted">item ${esc(it.sku)}${m.via ? " · " + esc(m.via) : ""}</span>` : `<span class="muted">${esc(m.note || "No match")}</span>`}</div>
+    <div class="fb-fbv" role="radiogroup" aria-label="Was the match right?">
+      <label><input type="radio" name="fbv" value="good" ${v === "good" ? "checked" : ""}> ${it ? "Right" : "Right: the list doesn't have it"}</label>
+      <label><input type="radio" name="fbv" value="bad" ${v === "bad" ? "checked" : ""}> Wrong</label></div>
+    <div id="fbBad" ${v === "good" ? "hidden" : ""}>
+      <div class="fb-fbl">What was wrong</div>
+      <div class="fb-fbr">${FB_REASONS.map(([k, l]) => `<label class="fb-chip"><input type="checkbox" value="${k}" ${(f.reasons || []).includes(k) ? "checked" : ""}> ${esc(l)}</label>`).join("")}</div>
+      <div class="fb-fbl">Right item <span class="muted">(if you know it: item #, mfr part # or UPC)</span></div>
+      <div class="fb-fbrow"><input class="fb-in" id="fbRight" value="${esc(f.right_sku || "")}" maxlength="60" placeholder="e.g. 24866" autocomplete="off">
+        ${others.length ? `<select class="fb-in" id="fbPick" aria-label="Or one of the options shown"><option value="">or one of the options shown…</option>${others.map((o) => `<option value="${esc(o.sku)}">${esc(o.title.slice(0, 70))} · ${esc(o.sku)}</option>`).join("")}</select>` : ""}</div>
+      <div class="muted fb-fbhint">The right item goes on the line, and counts toward what the matcher learns for lines like this.</div></div>
+    <div class="fb-fbl">Note <span class="muted">(what a person would have known)</span></div>
+    <textarea class="fb-in" id="fbNote" rows="3" maxlength="1000" placeholder="e.g. CxC means copper both ends; the customer always means Nibco">${esc(f.note || "")}</textarea>
+    <div class="qofoot">${f.id ? `<button class="btn ghost" id="fbDel">Remove feedback</button>` : ""}<span style="flex:1"></span><span class="muted" id="fbMsg"></span><button class="btn" data-act="modalclose">Cancel</button><button class="btn primary" id="fbOk">Save</button></div></div>`;
+  $("#modal").classList.add("on");
+  $$("input[name=fbv]").forEach((x) => (x.onchange = () => { $("#fbBad").hidden = $("input[name=fbv]:checked").value === "good"; }));
+  if ($("#fbPick")) $("#fbPick").onchange = (e) => { if (e.target.value) { $("#fbRight").value = e.target.value; const c = $('.fb-fbr input[value="ranking"]'); if (c) c.checked = true; } };
+  $("#fbOk").onclick = async () => {
+    const vv = $("input[name=fbv]:checked").value;
+    const body = { verdict: vv, reasons: vv === "bad" ? $$(".fb-fbr input:checked").map((x) => x.value) : [], note: $("#fbNote").value.trim(),
+      right_item: vv === "bad" ? $("#fbRight").value.trim() : "" };
+    $("#fbOk").disabled = true; $("#fbMsg").textContent = "Saving with the matcher's steps…";
+    try { const x = await fbSend(r, body); $("#modal").classList.remove("on"); toast(x.right ? "Saved, and the right item is on the line" : "Feedback saved"); }
+    catch (e) { $("#fbOk").disabled = false; $("#fbMsg").textContent = e.message; }
+  };
+  if ($("#fbDel")) $("#fbDel").onclick = async () => {
+    try { await post("/api/bom/feedback/delete", { id: f.id }); r.fb = null; markDirty(); bkPaint(); $("#modal").classList.remove("on"); toast("Feedback removed"); }
+    catch (e) { $("#fbMsg").textContent = e.message; }
+  };
+  setTimeout(() => { const el = v === "bad" ? $(".fb-fbr input") : $("#fbNote"); if (el) el.focus(); }, 30);
+}
+
 // ------------------------------------------------------------------ events
 document.addEventListener("click", async (e) => {
   if (e.target.closest("[data-stop]")) return;

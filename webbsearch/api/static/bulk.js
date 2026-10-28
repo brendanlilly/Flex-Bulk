@@ -162,13 +162,13 @@ function bkReset() { S.bk.seq++; S.bk.rows = []; S.bk.parse = null; S.bk.file = 
 function bkLoad(rows, docs) {
   bkReset();
   S.bk.rows = rows.map((x) => ({ id: ++bkId, ln: { ...(x.ln || { text: x.text, qty: x.qty, uom: x.uom, desc: x.desc, n: x.n }) }, m: x.m || null, mq: (x.ln || {}).qty || x.qty,
-    ch: x.ch || { t: "opt", i: 0 }, confirmed: !!x.confirmed, excluded: !!x.excluded, busy: false }));
+    ch: x.ch || { t: "opt", i: 0 }, confirmed: !!x.confirmed, excluded: !!x.excluded, busy: false, fb: x.fb || null }));
   S.bk.docs = docs || [];
   S.bk.ctxKey = bkKey();
   if (S.bk.rows.length && !S.bk.rows.some((r) => r.ln.from_ocr) && S.bk.mode === "entry") S.bk.mode = "bom";
 }
 function bkRowsForSave() {
-  return S.bk.rows.filter((r) => r.m || (r.ln.text || "").trim()).map((r) => ({ ln: r.ln, m: r.m, ch: r.ch, confirmed: r.confirmed, excluded: r.excluded,
+  return S.bk.rows.filter((r) => r.m || (r.ln.text || "").trim()).map((r) => ({ ln: r.ln, m: r.m, ch: r.ch, confirmed: r.confirmed, excluded: r.excluded, fb: r.fb || null,
     state: bkState(r), item: bkState(r) === "out" ? null : bkItem(r) }));
 }
 function bkDocsForSave() {
@@ -272,6 +272,14 @@ function fulfilHTML(f, short) {
 }
 function itemLink(c) { return c.kind === "webb" ? webbLink(c, esc(c.title)) : `<span class="link" data-act="open-sku" data-sku="${esc(c.sku)}">${esc(c.title)}</span>`; }
 function priceOf(c, r) { const q = c.units || r.ln.qty; return c.price == null ? null : c.price * q; }
+// line feedback (bulkapp.js feedbackLine): was the match right? what was wrong? the right item if known
+function bkFbHTML(r) {
+  const st = bkState(r);
+  if (!r.m || st === "busy" || st === "skip") return "";
+  const f = r.fb;
+  if (f && f.verdict) return `<div class="fb-fbk"><button class="linkbtn fb-fbdone fb-${f.verdict}" data-act="bkfb" data-id="${r.id}" title="${esc([...(f.reason_labels || []), f.note || ""].filter(Boolean).join(" · ") || "Change the feedback")}">${f.verdict === "good" ? "✓ marked right" : "✗ marked wrong"}${f.note ? " · note" : ""}</button></div>`;
+  return `<div class="fb-fbk"><span class="muted">${st === "none" ? "Right?" : "Match right?"}</span><button class="fb-thumb" data-act="bkfbgood" data-id="${r.id}" title="${st === "none" ? "Right: the list doesn't have it" : "The match is right"}" aria-label="Mark line right">✓</button><button class="fb-thumb" data-act="bkfbbad" data-id="${r.id}" title="Wrong: say what, and the right item if you know it" aria-label="Mark line wrong">✗</button></div>`;
+}
 function bkRowHTML(r, k) {
   const st = bkState(r), it = bkItem(r), m = r.m || {}, entry = S.bk.mode === "entry";
   const opts = m.options || [], subs = m.substitutes || [];
@@ -301,7 +309,7 @@ function bkRowHTML(r, k) {
       ${m.note && it ? `<div class="qnote">${esc(m.note)}</div>` : ""}${m.searched_as ? `<div class="muted bksa">searched as “${esc(m.searched_as)}”</div>` : ""}</td>
     <td class="bkst">${it ? fulfilHTML(f) + subHint : ""}</td>
     <td class="bkpr">${it && it.price != null ? `${money(it.price)}<div class="muted">${money(priceOf(it, r))}</div>` : it && it.kind === "webb" ? `<span class="muted">at branch</span>` : ""}</td>
-    <td class="bkev">${ev}${it && st !== "out" ? ` <button class="linkbtn bkx" data-act="bkexclude" data-id="${r.id}" title="Leave this line out" aria-label="Leave line ${k + 1} out">×</button>` : ""}${r.m && st !== "busy" && st !== "skip" && st !== "none" ? `<div><button class="linkbtn fb-find1" data-act="bkfind" data-id="${r.id}" title="Search the item list for this line">Find another</button></div>` : ""}${r.m && st !== "busy" && st !== "skip" ? `<div><button class="linkbtn fb-find1" data-act="bkwhy" data-id="${r.id}" title="How this line was matched, step by step">Why?</button></div>` : ""}</td></tr>`;
+    <td class="bkev">${ev}${it && st !== "out" ? ` <button class="linkbtn bkx" data-act="bkexclude" data-id="${r.id}" title="Leave this line out" aria-label="Leave line ${k + 1} out">×</button>` : ""}${r.m && st !== "busy" && st !== "skip" && st !== "none" ? `<div><button class="linkbtn fb-find1" data-act="bkfind" data-id="${r.id}" title="Search the item list for this line">Find another</button></div>` : ""}${r.m && st !== "busy" && st !== "skip" ? `<div><button class="linkbtn fb-find1" data-act="bkwhy" data-id="${r.id}" title="How this line was matched, step by step">Why?</button></div>` : ""}${bkFbHTML(r)}</td></tr>`;
 }
 // the catalog has nothing of the product the line names: the nearest items, used only if the person says so
 function bkClosestHTML(r) {
@@ -327,7 +335,7 @@ function bkStripHTML(r, k) {
   return `<div class="bkstrip bk-${st}" data-id="${r.id}"><div class="bksh">${r.ln.crop ? `<img class="bkcrop" src="${r.ln.crop}" alt="What the note says">` : ""}<b>${esc(r.ln.text || "")}</b> <label class="muted">qty <input class="qoq" type="number" min="1" value="${r.ln.qty || 1}" data-act="bkqty" data-id="${r.id}"></label>
       <span class="qs ${BK_ST[st][1]}">${st === "confirm" ? "Choose one" : st === "ok" ? "Chosen ✓" : BK_ST[st][0]}</span>${m.note ? `<span class="qnote">${esc(m.note)}</span>` : ""}</div>
     ${st === "busy" ? `<div class="muted">Matching…</div>` : cards ? `<div class="bkcards">${cards}</div>` : `<div class="muted">${esc(m.note || "Nothing found.")}</div>`}
-    ${r.m && st !== "busy" ? `<button class="linkbtn" data-act="bkfind" data-id="${r.id}">Find an item →</button>` : ""}</div>`;
+    ${r.m && st !== "busy" ? `<button class="linkbtn" data-act="bkfind" data-id="${r.id}">Find an item →</button>` : ""}${bkFbHTML(r)}</div>`;
 }
 function bkCounts() {
   const R = S.bk.rows.filter((r) => r.m && r.m.status !== "skip");
@@ -468,6 +476,9 @@ document.addEventListener("click", (e) => {
     case "bkcommit": bkCommit(); break;
     case "bkfind": if (r) findItem(r.id); break;
     case "bkwhy": if (r) explainLine(r); break;
+    case "bkfbgood": if (r) feedbackQuick(r); break;
+    case "bkfbbad": if (r) feedbackLine(r, "bad"); break;
+    case "bkfb": if (r) feedbackLine(r, r.fb && r.fb.verdict); break;
     case "usefound": if (r && S.found && S.found[+t.dataset.i]) {
       const c = S.found[+t.dataset.i];
       r.m = { ...(r.m || {}), options: [c, ...((r.m && r.m.options) || []).filter((x) => x.sku !== c.sku)].slice(0, 8), closest: [], status: "rec", via: "Found by hand", weak: false,

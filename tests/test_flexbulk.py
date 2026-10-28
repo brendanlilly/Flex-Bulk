@@ -525,3 +525,71 @@ def test_a_named_brand_is_searched_before_saying_not_carried(client, engine):
     y = client.post("/api/bom/match", json={"lines": [{"text": f"{b} {noun} qqzzx", "brand": b, "desc": f"{noun} qqzzx", "qty": 1}],
                                           "trace": True}).json()["lines"][0]
     assert y["status"] == "rec" and y["options"] and str(y["options"][0]["brand"]) == b
+
+
+# ------------------------------------------------------------------ 1.2: line feedback
+@pytest.fixture
+def fbstore(tmp_path, monkeypatch):
+    import flexbulk.feedback as fm
+    monkeypatch.setattr(fm, "_fb", fm.Feedback(path=tmp_path / "fb.sqlite"))
+    return fm.store()
+
+
+def test_line_feedback_saves_with_the_matchers_steps(client, engine, fbstore):
+    from webbsearch.api.admin import TOKEN
+    h = {"X-Admin-Token": TOKEN}
+    m = client.post("/api/bom/match", json={"lines": [{"text": "3/4 ball valve sweat", "qty": 2}]}).json()["lines"][0]
+    shown = m["options"][0]
+    right = m["options"][2] if len(m["options"]) > 2 else m["options"][-1]
+    x = client.post("/api/bom/feedback", json={"verdict": "bad", "reasons": ["ranking", "nonsense"], "note": "always the full port",
+                                               "right_item": right["sku"], "line": {"text": "3/4 ball valve sweat", "qty": 2},
+                                               "shown": {"sku": shown["sku"], "title": shown["title"], "rank": 0, "status": m["status"]},
+                                               "staff": "Pat", "customer": "C100", "order_id": "O1"}).json()
+    f = x["feedback"]
+    assert f["verdict"] == "bad" and f["reasons"] == ["ranking"] and f["right_sku"] == right["sku"] and f["status"] == "open"
+    assert x["right"]["sku"] == right["sku"] and x["right"]["how"].startswith("Right item")
+    full = client.get(f"/api/admin/line-feedback/{f['id']}", headers=h).json()
+    assert any(t["step"] == "ranked" for t in full["trace"]) and full["now"] and full["line"]["qty"] == 2
+    # change it: same id updates, doesn't add
+    y = client.post("/api/bom/feedback", json={"id": f["id"], "verdict": "good", "line": {"text": "3/4 ball valve sweat"}}).json()["feedback"]
+    assert y["id"] == f["id"] and y["verdict"] == "good" and fbstore.counts()["total"] == 1
+    # a right item # that isn't on the list
+    r = client.post("/api/bom/feedback", json={"verdict": "bad", "right_item": "NOPE-0000000", "line": {"text": "x y"}})
+    assert r.status_code == 422 and "No item" in r.json()["detail"]
+    # dashboard: list, resolve, csv; admin only
+    assert client.get("/api/admin/line-feedback").status_code == 403
+    d = client.get("/api/admin/line-feedback?status=open", headers=h).json()
+    assert d["counts"]["total"] == 1 and len(d["items"]) == 1 and "trace" not in d["items"][0]
+    assert client.post(f"/api/admin/line-feedback/{f['id']}", json={"status": "resolved", "resolution": "brand order"}, headers=h).json()["status"] == "resolved"
+    assert client.get("/api/admin/line-feedback?status=open", headers=h).json()["items"] == []
+    csv_ = client.get("/api/admin/line-feedback.csv", headers=h)
+    assert csv_.status_code == 200 and "3/4 ball valve sweat" in csv_.text
+    assert client.post("/api/bom/feedback/delete", json={"id": f["id"]}).json()["ok"] and fbstore.counts()["total"] == 0
+
+
+def test_feedback_is_kept_on_a_saved_order(client):
+    o = client.post("/api/orders", json={"customer_name": "Acme", "rows": [{"ln": {"text": "1/2 copper elbow", "qty": 1}, "state": "confirm",
+                                         "fb": {"id": "F1", "verdict": "bad", "reasons": ["wrong_size"], "note": "n", "right_sku": "", "extra": 1}}]}).json()
+    got = client.get(f"/api/orders/{o['id']}").json()
+    assert got["rows"][0]["fb"] == {"id": "F1", "verdict": "bad", "reasons": ["wrong_size"], "note": "n", "right_sku": ""}
+
+
+def test_match_report_on_feedback(client, engine, fbstore, tmp_path, monkeypatch):
+    import flexbulk.report as rp
+    monkeypatch.setattr(rp, "REPORTS", tmp_path / "reports")
+    m = client.post("/api/bom/match", json={"lines": [{"text": "3/4 ball valve sweat"}, {"text": "1/2 pex b tubing 100 ft"}]}).json()["lines"]
+    top0, top1 = m[0]["options"][0], m[1]["options"][0]
+    other = m[1]["options"][1]
+    client.post("/api/bom/feedback", json={"verdict": "good", "line": {"text": "3/4 ball valve sweat"}, "shown": {"sku": top0["sku"]}})
+    client.post("/api/bom/feedback", json={"verdict": "bad", "reasons": ["wrong_item"], "right_item": other["sku"],
+                                           "line": {"text": "1/2 pex b tubing 100 ft"}, "shown": {"sku": top1["sku"]}})
+    r = rp.make("feedback", days=30)
+    s = r["summary"]
+    assert s["lines"] == 2 and s["with_expected"] == 2 and s["top1"] == 0.5
+    full = json.loads((tmp_path / "reports" / f"{r['meta']['id']}.json").read_text())["summary"]["feedback"]
+    assert full == {"lines": 2, "marked_wrong": 1, "right_item_first_now": 0, "with_right_item": 1, "still_shows_the_wrong_item": 1}
+    from openpyxl import load_workbook
+    wb = load_workbook(tmp_path / "reports" / f"{r['meta']['id']}.xlsx")
+    ws = wb["Feedback"]
+    vals = [[c.value for c in row] for row in ws.iter_rows(min_row=2)]
+    assert {v[4] for v in vals} == {"right", "wrong"} and any(v[14] == "still wrong: shows the item marked wrong" for v in vals)

@@ -400,6 +400,140 @@ def bom_explain(body: ExplainBody):
     return r["lines"][0]
 
 
+# ------------------------------------------------------------------ line feedback (flexbulk/feedback.py)
+class FeedbackBody(BaseModel):
+    id: str | None = None
+    verdict: str
+    reasons: list[str] = []
+    note: str = ""
+    right_item: str = ""               # the item # (or mfr part # / UPC) staff say it should be
+    line: dict
+    shown: dict = {}
+    order_id: str = ""
+    customer: str | None = None
+    staff: str = ""
+    branch: str | None = None
+    level: str | None = None
+
+
+def _version() -> str:
+    try:
+        return (Path(__file__).resolve().parents[2] / "VERSION").read_text().strip()
+    except OSError:
+        return ""
+
+
+def _right_item(q: str) -> int | None:
+    """An item # on the list, or a mfr part # / UPC that finds exactly one item."""
+    from webbsearch.retrieval.analyzer import compact_id
+    cat = engine().catalog
+    q = q.strip()
+    if not q:
+        return None
+    j = cat.sku_to_idx.get(q)
+    if j is not None:
+        return int(j)
+    hits = cat.id_lookup(compact_id(q)) if len(compact_id(q)) >= 3 else []
+    if len(hits) == 1:
+        return int(hits[0])
+    if len(hits) > 1:
+        raise HTTPException(422, f"{q} is the part # of {len(hits)} items: give the item #")
+    raise HTTPException(422, f"No item {q} on the list")
+
+
+@app.post("/api/bom/feedback")
+def bom_feedback(body: FeedbackBody):
+    """Staff feedback on one line: right or wrong, what was wrong, a note, and the right item when they know it. The
+    line is matched again with every step recorded and kept with the feedback. Returns the saved feedback and, when a
+    right item was given, its card so the page can put it on the line."""
+    from flexbulk.feedback import store as fstore
+    ln = _clean_line(body.line)
+    if ln is None:
+        raise HTTPException(422, "an empty line")
+    if body.verdict not in ("good", "bad"):
+        raise HTTPException(422, "verdict is good or bad")
+    j = _right_item(body.right_item) if body.right_item.strip() else None
+    cat = engine().catalog
+    level = body.level if body.level in prices().levels else None
+    try:
+        r = bom().match_all([ln], ANONYMOUS, body.branch, k=8, acct=customer_key(body.customer), trace=True)["lines"][0]
+        trace, now = r.get("trace") or [], [{"sku": o.get("sku"), "title": o.get("title")} for o in (r.get("options") or [])[:8]]
+    except Exception:  # noqa: BLE001  (feedback is kept even if the re-match fails)
+        trace, now = [], []
+    try:
+        saved = fstore().save({**body.model_dump(), "line": {**body.line, **{k: ln.get(k) for k in ("text", "desc", "qty", "uom")}},
+                               "right_sku": str(cat.sku[j]) if j is not None else "",
+                               "right_title": str(cat.title[j]) if j is not None else "", "trace": trace, "now": now,
+                               "version": _version()})
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+    card = None
+    if j is not None:
+        card = bom()._card(j, ANONYMOUS, body.branch, max(1, int(ln.get("qty") or 1)), {}, {}, (ln.get("uom") or "").upper())
+        card.pop("_bonus", None)
+        card.pop("_parts", None)
+        prices().apply(card, level)
+        card["how"] = "Right item, from staff feedback"
+    return {"feedback": saved, "right": card}
+
+
+class FeedbackDeleteBody(BaseModel):
+    id: str
+
+
+@app.post("/api/bom/feedback/delete")
+def bom_feedback_delete(body: FeedbackDeleteBody):
+    from flexbulk.feedback import store as fstore
+    return {"ok": fstore().delete(body.id[:20])}
+
+
+@app.get("/api/admin/line-feedback")
+def feedback_list(request: Request, status: str = "", verdict: str = "", q: str = "", limit: int = 300):
+    from flexbulk.feedback import REASONS, store as fstore
+    from webbsearch.api.admin import require
+    require(request)
+    return {"counts": fstore().counts(), "reasons": REASONS,
+            "items": fstore().list(status, verdict, q[:100], max(1, min(limit, 2000)))}
+
+
+@app.get("/api/admin/line-feedback.csv")
+def feedback_csv(request: Request, status: str = "", verdict: str = "", q: str = ""):
+    from flexbulk.feedback import store as fstore
+    from webbsearch.api.admin import require
+    require(request)
+    data = fstore().to_csv(fstore().list(status, verdict, q[:100], 100_000))
+    return Response(data, media_type="text/csv", headers={"Content-Disposition": f'attachment; filename="flex-bulk-feedback-{time.strftime("%Y%m%d")}.csv"'})
+
+
+@app.get("/api/admin/line-feedback/{fid}")
+def feedback_get(request: Request, fid: str):
+    from flexbulk.feedback import store as fstore
+    from webbsearch.api.admin import require
+    require(request)
+    d = fstore().get(fid[:20])
+    if d is None:
+        raise HTTPException(404, "no such feedback")
+    return d
+
+
+class FeedbackResolveBody(BaseModel):
+    status: str
+    resolution: str = ""
+
+
+@app.post("/api/admin/line-feedback/{fid}")
+def feedback_resolve(request: Request, fid: str, body: FeedbackResolveBody):
+    from flexbulk.feedback import store as fstore
+    from webbsearch.api.admin import require
+    require(request)
+    try:
+        return fstore().resolve(fid[:20], body.status, body.resolution)
+    except ValueError as ex:
+        raise HTTPException(422, str(ex))
+    except KeyError:
+        raise HTTPException(404, "no such feedback")
+
+
 class TrackBody(BaseModel):
     kind: str
     sid: str = ""

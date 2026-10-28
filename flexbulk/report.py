@@ -9,6 +9,8 @@ Where the lines come from:
   orders   saved orders. A confirmed line's item is the answer the matcher should have given; lines left
            unconfirmed or not found are reported too.
   log      lines matched in the app (analytics), with what staff then chose for them when they chose.
+  feedback staff feedback on lines (the staff app's right / wrong per line). A line marked right, or given its right
+           item, has an answer; a line marked wrong is checked for whether it still shows the item staff said was wrong.
   file     a test file: CSV / Excel with a line column ("Line", "Requested", "Description"...) and, optionally,
            the item # it should match ("Expected", "Item #") and a quantity.
 
@@ -40,7 +42,7 @@ from webbsearch.config import settings
 
 REPORTS = Path(os.environ.get("FLEXBULK_REPORTS") or settings.data_dir / "bulk" / "reports")
 K = 8
-SOURCES = ("orders", "log", "file", "tests", "documents")
+SOURCES = ("orders", "log", "file", "tests", "documents", "feedback")
 
 
 # ------------------------------------------------------------------ the lines
@@ -73,6 +75,24 @@ def from_orders(days: int, limit: int = 5000) -> list[dict]:
                           "state": "left out" if r.get("excluded") else r.get("state") or ""})
             if len(cases) >= limit:
                 return cases
+    return cases
+
+
+def from_feedback(days: int, status: str = "", limit: int = 5000) -> list[dict]:
+    from flexbulk.feedback import store as fstore
+    cases = []
+    for f in fstore().list(status=status, since=time.time() - days * 86400, limit=limit):
+        ln, sh = f["line"] or {}, f["shown"] or {}
+        exp = f["right_sku"] or (sh.get("sku") if f["verdict"] == "good" else None)
+        cases.append({"src": f"feedback {f['id']}", "customer": f["customer"] or "", "text": ln.get("text") or "",
+                      "desc": ln.get("desc") or "", "qty": ln.get("qty") or 1, "uom": ln.get("uom") or "",
+                      "brand": ln.get("brand") or "", "part": ln.get("part") or "", "from_ocr": bool(ln.get("from_ocr")),
+                      "expected": exp or None, "how": "staff feedback", "then_status": sh.get("status") or "",
+                      "then_top": sh.get("sku") or None, "state": f["status"],
+                      "fb": {"id": f["id"], "verdict": f["verdict"], "reasons": "; ".join(f["reason_labels"]), "note": f["note"],
+                             "staff": f["staff"], "at": time.strftime("%Y-%m-%d", time.localtime(f["created"])),
+                             "wrong_sku": sh.get("sku") if f["verdict"] == "bad" else "", "status": f["status"],
+                             "resolution": f["resolution"]}})
     return cases
 
 
@@ -420,6 +440,11 @@ def summarize(rows: list[dict], engine) -> dict:
             "handwriting" if r["from_ocr"] else "description"
         shape[k][0] += 1
         shape[k][1] += r["hit1"]
+    fbs = [r for r in rows if r.get("fb")]
+    fb = {"lines": len(fbs), "marked_wrong": sum(r["fb"]["verdict"] == "bad" for r in fbs),
+          "right_item_first_now": sum(bool(r["hit1"]) for r in fbs if r["fb"]["verdict"] == "bad" and r["expected"]),
+          "with_right_item": sum(bool(r["expected"]) for r in fbs if r["fb"]["verdict"] == "bad"),
+          "still_shows_the_wrong_item": sum(bool(r["fb"]["wrong_sku"]) and r["now_top"] == r["fb"]["wrong_sku"] for r in fbs)} if fbs else None
     mrr = sum(1 / r["rank"] for r in withexp if r["rank"]) / len(withexp) if withexp else None
     return {"lines": n, "status": dict(st), "matched_rate": round(1 - st.get("none", 0) / n, 4) if n else None,
             "weak_rate": round(sum(r["weak"] for r in rows) / n, 4) if n else None,
@@ -434,7 +459,8 @@ def summarize(rows: list[dict], engine) -> dict:
             "by_line_shape": {k: [v[0], round(v[1] / v[0], 3)] for k, v in shape.items()},
             "ms_per_line": round(sum(r["ms"] for r in rows) / n, 1) if n else None,
             "not_found": Counter((r["missing"] or r["text"]).lower() for r in rows if r["status"] == "none").most_common(60),
-            "brands_not_carried": Counter(r["req_brand"] for r in rows if r["uncarried"] and r["req_brand"]).most_common(40)}
+            "brands_not_carried": Counter(r["req_brand"] for r in rows if r["uncarried"] and r["req_brand"]).most_common(40),
+            "feedback": fb}
 
 
 # ------------------------------------------------------------------ the workbook
@@ -444,6 +470,7 @@ ABOUT = [
     ("Reading", "Documents only (tests, documents): every line read from each document, lines set aside and why, and for test cases whether the text and quantity were read as staff corrected them."),
     ("Lines", "Every line. expected: the item it should match (a confirmed order line, a staff choice in the log, or the test file's answer). rank: where the matcher put it now (blank: not in the first 8). then_top: what was shown at the time. top1..3: today's first three, with the reasons shown to staff."),
     ("Misses", "Lines with an expected item the matcher didn't rank first: the place to look for fixes (a dictionary entry, a cross, a brand order, a weight)."),
+    ("Feedback", "Staff feedback (source: feedback): each line marked right or wrong in the staff app, what was wrong, the note, the item shown then, the right item when staff gave it, and what the matcher gives now. Now: fixed (the right item is first), still wrong (the item marked wrong is still first), changed, or the same as then."),
     ("Not found", "Lines with no match, grouped by what was asked for."),
     ("Brands", "Brands named on lines that aren't on the item list: candidates for brand crosses."),
     ("Changed", "Lines whose top match today differs from what staff saw then (settings or the item list changed)."),
@@ -494,6 +521,8 @@ def workbook(meta: dict, summary: dict, rows: list[dict], engine, reading: list 
         s.append([k, v, p, round(v - p, 4) if isinstance(v, (int, float)) and isinstance(p, (int, float)) else None])
     for k, v in (summary.get("reading") or {}).items():
         s.append([f"reading: {k}", v])
+    for k, v in (summary.get("feedback") or {}).items():
+        s.append([f"feedback: {k.replace('_', ' ')}", v])
     lr = meta.get("learned") or {}
     if lr:
         s.append([])
@@ -544,6 +573,19 @@ def workbook(meta: dict, summary: dict, rows: list[dict], engine, reading: list 
           [[r["text"], r["qty"], r["expected"], title(r["expected"]), r["rank"] or "not in top 8", *tops(r, 0), r["status"], r["note"],
             r["searched_as"], r["src"]] for r in miss],
           [36, 6, 12, 44, 10, 12, 44, 30, 8, 30, 24, 22])
+    fbr = [r for r in rows if r.get("fb")]
+    if fbr:
+        sheet("Feedback", ["Feedback", "Date", "Staff", "Requested", "Verdict", "What was wrong", "Note", "Shown then", "Shown description",
+                           "Right item", "Right description", "Now top 1", "Now description", "Rank of right item now", "Now",
+                           "Status", "Resolution", "Steps"],
+              [[r["fb"]["id"], r["fb"]["at"], r["fb"]["staff"], r["text"] + (f" | {r['desc']}" if r["desc"] else ""),
+                "right" if r["fb"]["verdict"] == "good" else "wrong", r["fb"]["reasons"], r["fb"]["note"], r["then_top"], title(r["then_top"]),
+                r["expected"] if r["fb"]["verdict"] == "bad" else "", title(r["expected"]) if r["fb"]["verdict"] == "bad" else "",
+                r["now_top"], title(r["now_top"]), r["rank"],
+                ("fixed: right item first" if r["hit1"] else "still wrong: shows the item marked wrong" if r["fb"]["wrong_sku"] and r["now_top"] == r["fb"]["wrong_sku"]
+                 else "changed" if r["changed"] else "same as then") if r["fb"]["verdict"] == "bad" else ("still right" if r["hit1"] else "now different"),
+                r["fb"]["status"], r["fb"]["resolution"], r["steps"]] for r in fbr],
+              [14, 10, 14, 36, 7, 30, 40, 12, 36, 12, 36, 12, 36, 8, 24, 9, 30, 90])
     trace_rows = []
     for r in rows:
         for t in r["trace"]:
@@ -613,6 +655,8 @@ def make(source: str, days: int = 90, file_name: str | None = None, file_data: b
         cases, label = from_orders(days), f"saved orders, last {days} days"
     elif source == "log":
         cases, label = from_log(days), f"lines matched in the app, last {days} days"
+    elif source == "feedback":
+        cases, label = from_feedback(days), f"staff feedback on lines, last {days} days"
     elif source == "file":
         if not file_data:
             raise ValueError("a test file is needed")
