@@ -99,7 +99,8 @@ class Shorthand:
             x = t.get(w.lower().rstrip("."))
             return x if x else w
         out = re.sub(r"(?<![\w-])[A-Za-z][A-Za-z.]*(?![\w-])", rep, text)
-        out = re.sub(r"\b(\d)(1/[248])\b", r"\1-\2", out)          # 11/4 -> 1-1/4, 21/2 -> 2-1/2 (ERP fields drop the dash)
+        out = re.sub(r"\b(\d)(1/[248])\b", r"\1-\2", out)
+        out = re.sub(r"\b(\d+(?:\.\d+)?)(GAL|GALLON|LBS?|OZ|FT|HP|AMPS?|BTU|MBH|TON|PK|PC|YD)\b", r"\1 \2", out, flags=re.I)  # 50GAL -> 50 GAL          # 11/4 -> 1-1/4, 21/2 -> 2-1/2 (ERP fields drop the dash)
         out = re.sub(r"(?<=\d)\s*inch(es)?\b", '"', out, flags=re.I)
         out = re.sub(r"(?<=\d)\s*(?:foot|feet)\b", "'", out, flags=re.I)
         return out
@@ -132,7 +133,7 @@ class Shorthand:
                     continue                     # two words tie: not sure what it means
                 if a in self.data["off"]:
                     continue
-                if n >= 3:
+                if n >= 3 and len(a) >= 3:          # two letters (ST, PR) mean too many things to use unreviewed
                     self.data["on"][a] = w
                     self.data["review"].pop(a, None)
                     new_on[a] = w

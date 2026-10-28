@@ -25,6 +25,10 @@ from pathlib import Path
 from webbsearch.config import settings
 
 
+# a list's "manufacturer" that names no company: a house line, commodity, the rep agency
+GENERIC = re.compile(r"commodity|house line|distributor|generic|various|misc|no brand|unbranded|\(rep\)", re.I)
+
+
 def key(s: str) -> str:
     return re.sub(r"[^a-z0-9]", "", str(s or "").lower())
 
@@ -120,17 +124,20 @@ class BrandNames:
             self._write()
         return self.table()
 
-    def suggest(self, pairs: Counter) -> None:
-        """Count (line brand, item brand) pairs seen on part # hits (from match reports)."""
+    def suggest(self, pairs: Counter, source: str = "") -> None:
+        """Count (line brand, item brand) pairs seen on part # hits (from match reports). Counts are kept per
+        source (the report's file or source), so running the same report again doesn't add them twice."""
         if not pairs:
             return
         with self.lock:
             for (a, b), n in pairs.items():
-                if not a or not b or self.same(a, b) or f"{a}=>{b}" in self.data["dismissed"]:
+                if not a or not b or GENERIC.search(a) or self.same(a, b) or f"{a}=>{b}" in self.data["dismissed"]:
                     continue
                 k = f"{a}=>{b}"
                 s = self.data["suggested"].get(k) or {"name": a, "brand": b, "n": 0, "last": ""}
-                s["n"] += n
+                by = s.setdefault("by", {})
+                by[source or "?"] = n
+                s["n"] = sum(by.values())
                 s["last"] = time.strftime("%Y-%m-%d")
                 self.data["suggested"][k] = s
             self._write()

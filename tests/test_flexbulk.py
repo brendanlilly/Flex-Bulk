@@ -424,7 +424,7 @@ def test_shorthand_expands_and_learns(tmp_path):
             [("HMDFR PAD 35", "Humidifier Pad Water Panel")]
     got = sh.learn(pairs, known_words=lambda w: w in {"pad"})
     assert got["on"] == {"antfrz": "antifreeze"} and got["review"] == {"hmdfr": "humidifier"}
-    assert sh.expand("ANTFRZ 5GAL") == "antifreeze 5GAL"
+    assert sh.expand("ANTFRZ 5GAL") == "antifreeze 5 GAL"
     sh.switch_off("antfrz")
     assert sh.expand("ANTFRZ") == "ANTFRZ" and sh.listing()["off"] == ["antfrz"]
 
@@ -495,3 +495,33 @@ def test_brand_names_and_shorthand_pages(client, engine, tmp_path, monkeypatch):
     assert shm.get().expand("QQV 1/2") == "quarterturn 1/2"
     client.post("/api/admin/names/brand/remove", json={"name": "Some Vendor Name"}, headers=h)
     assert client.get("/api/admin/names", headers=h).json()["brands"]["names"] == []
+
+
+def test_brand_suggestions_dont_add_up_on_a_rerun(tmp_path):
+    from collections import Counter
+    from flexbulk.brands import BrandNames
+    bn = BrandNames(["Taco", "Line Set"], path=tmp_path / "b.json")
+    for _ in range(3):
+        bn.suggest(Counter({("Taco Comfort Solutions", "Taco"): 2, ("Commodity / Distributor House Line", "Line Set"): 6}), "file a")
+    assert [(s["name"], s["n"]) for s in bn.table()["suggested"]] == [("Taco Comfort Solutions", 2)]
+    bn.suggest(Counter({("Taco Comfort Solutions", "Taco"): 3}), "file b")
+    assert bn.table()["suggested"][0]["n"] == 5
+
+
+def test_units_split_and_two_letter_shorthand_waits(tmp_path):
+    from flexbulk.shorthand import Shorthand
+    sh = Shorthand(path=tmp_path / "s.json")
+    assert sh.expand("AO SMITH 50GAL 6YR ELECTRIC") == "AO SMITH 50 GAL 6YR ELECTRIC"
+    got = sh.learn([("ST 90 1/2", "Street Elbow 90")] * 4)
+    assert got["on"] == {} and got["review"] == {"st": "street"}
+
+
+def test_a_named_brand_is_searched_before_saying_not_carried(client, engine):
+    cat = engine.catalog
+    from collections import Counter
+    b = Counter(map(str, cat.brand)).most_common(5)[2][0]
+    j = next(i for i in range(cat.n) if str(cat.brand[i]) == b)
+    noun = str(cat.title[j]).split()[-1]
+    y = client.post("/api/bom/match", json={"lines": [{"text": f"{b} {noun} qqzzx", "brand": b, "desc": f"{noun} qqzzx", "qty": 1}],
+                                          "trace": True}).json()["lines"][0]
+    assert y["status"] == "rec" and y["options"] and str(y["options"][0]["brand"]) == b

@@ -306,7 +306,7 @@ def hide_parts(cases: list[dict], e) -> list[dict]:
     return out
 
 
-def learn(cases: list[dict], e) -> dict:
+def learn(cases: list[dict], e, source: str = "") -> dict:
     """Shorthand and brand names from the lines whose part # found their item."""
     from flexbulk.brands import get as bget
     from flexbulk.shorthand import get as sget
@@ -319,7 +319,7 @@ def learn(cases: list[dict], e) -> dict:
         except Exception:  # noqa: BLE001
             return False
     got = sget().learn(pairs, known_words=known) if pairs else {"on": {}, "review": {}}
-    bget(e).suggest(other)
+    bget(e).suggest(other, source)
     return {"pairs": len(pairs), "shorthand_on": got["on"], "shorthand_review": got["review"],
             "brand_pairs": {f"{a} -> {b}": n for (a, b), n in other.most_common(30)}}
 
@@ -631,7 +631,7 @@ def make(source: str, days: int = 90, file_name: str | None = None, file_data: b
     t0 = time.time()
     rows = run(cases, branch, level, per_customer, progress)
     summary = summarize(rows, e)
-    learned = learn(all_cases, e) if source in ("documents", "tests", "file") else None
+    learned = learn(all_cases, e, label.replace(" · part #s hidden (descriptions scored)", "")) if source in ("documents", "tests", "file") else None
     if reading:
         chk = [r for r in reading if r["check"]]
         summary["reading"] = {"lines_read": sum(1 for r in reading if r["read_as"].startswith("item")),

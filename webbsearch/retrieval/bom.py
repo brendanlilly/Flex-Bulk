@@ -325,19 +325,32 @@ class Bom:
             tr.append({"step": "search", "query": query, "results": res.get("total"), "notice": nt.get("kind"),
                        "spec": {"product": sp.head, "size": sp.size, "material": sp.material, "joint": sp.conn,
                                 "angle": sp.angle, "reducing": sp.reducing}})
-        if nt.get("kind") == "not_carried":
+        bset = (ctx or {}).get("brands") or frozenset()
+        if nt.get("kind") == "not_carried" and not bset:
             # the catalog doesn't carry the product (a hydrant, C900 pipe): no recommendation, no focused re-search
             return [], True, {"head": sp.head, "not_carried": nt.get("what") or query}
-        items = (res.get("items") or [])[:24]
-        bset = (ctx or {}).get("brands") or frozenset()
+        items = [] if nt.get("kind") == "not_carried" else (res.get("items") or [])[:24]
         if bset and not any(str(it.get("brand")) in bset for it in items):
+            # the line names a manufacturer the list has: look among its items before saying it isn't carried
             cb = max(bset, key=lambda b: self._brand_count().get(b, 0))
-            bq = query if cb.lower() in query.lower() else f"{cb} {query}"
-            more = [it for it in (e.results.results(bq, p, branch=branch, llm="off", settings=ms).get("items") or [])[:24]
-                    if str(it.get("brand")) in bset and it["sku"] not in {x["sku"] for x in items}]
-            if tr is not None:
-                tr.append({"step": "brand search", "query": bq, "found": len(more)})
-            items = items + more
+            bwords = set(re.findall(r"[a-z0-9]+", " ".join(bset).lower() + " " + (ctx or {}).get("line_brand", "").lower()))
+            content = [w for w in re.findall(r"[A-Za-z][A-Za-z-]{2,}", query) if w.lower() not in bwords]
+            tries = [query if cb.lower() in query.lower() else f"{cb} {query}"]
+            if sp.head:
+                tries.append(f"{cb} {sp.head}")
+            if content:
+                tries.append(f"{cb} {' '.join(content[-3:])}")
+            seen_ = {x["sku"] for x in items}
+            for bq in dict.fromkeys(tries):
+                more = [it for it in (e.results.results(bq, p, branch=branch, llm="off", settings=ms).get("items") or [])[:24]
+                        if str(it.get("brand")) in bset and it["sku"] not in seen_]
+                if tr is not None:
+                    tr.append({"step": "brand search", "query": bq, "found": len(more)})
+                if more:
+                    items = items + more
+                    break
+            if nt.get("kind") == "not_carried" and not items:
+                return [], True, {"head": sp.head, "not_carried": nt.get("what") or query}
         weak = bool(res.get("notice") and res["notice"].get("kind") in ("fallback", "partial", "phrase_miss"))
         fits = {it["sku"]: linefit.fit(sp, it) for it in items}
         # none of the right product, size and spec on the first page: search for just that; then without the
@@ -449,7 +462,7 @@ class Bom:
         line_brand = (ln.get("brand") or "").strip() or (parsed_brands[0] if parsed_brands else "")
         bset = bn.resolve(line_brand) if bn is not None and line_brand and not bc else frozenset()
         ctx = {"key": key, "req_brand": req_brand, "named_brand": (bool(req_brand) and not bc and not uncarried) or bool(bset),
-               "brands": bset,
+               "brands": bset, "line_brand": line_brand,
                "learned": getattr(e, "learned", None), "off": set(ms.get("learned_off") or []), "ms": ms, "acct": acct,
                "trace": [] if trace else None}
         tr = ctx["trace"]
@@ -582,7 +595,7 @@ class Bom:
                 out["note"] = f"No {fit['not_carried']} in this catalog."
                 out["missing_what"] = fit["not_carried"]
                 out["needs_confirm"] = False
-            if cards and fit.get("missing"):
+            if cards and fit.get("missing") and not (bset and any(str(c.get("brand")) in bset for c in cards)):
                 # none of the candidates is the product the line names: say so, keep the nearest to pick from
                 out["status"], out["via"] = "none", "Not in catalog"
                 out["note"] = f"No {fit['what']} in this catalog."
@@ -597,7 +610,7 @@ class Bom:
                 weak = True
             if cards:
                 out["options"] = cards
-                exact = cards[0].get("exact") and not pts and not extra
+                exact = cards[0].get("exact") and not pts and not extra and (not bset or str(cards[0].get("brand")) in bset)
                 out["status"] = "exact" if exact else "rec"
                 out["via"] = "Exact" if exact else "Recommended"
                 out["confirmed"] = bool(exact)
